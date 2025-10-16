@@ -11,10 +11,8 @@
     <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <i class="fas fa-layer-group text-white text-sm"></i>
-            </div>
-            <span class="text-lg font-semibold text-gray-800 sidebar-text">Admin Panel</span>
+            <img src="/images/logo2.jpg" alt="Logo" class="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow">
+            <span class="text-lg font-semibold text-gray-800 sidebar-text">RIVANA</span>
         </div>
         <div class="flex items-center space-x-1">
             <!-- Desktop Toggle Button - Langsung klik tanpa hover -->

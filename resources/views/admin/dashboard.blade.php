@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'RIVANA')
 
 @section('content')
 <div x-data="dashboardData()" class="space-y-8">
@@ -30,8 +30,8 @@
                     </div>
                 </div>
                 <div class="hidden md:block">
-                    <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-chart-line text-4xl text-white"></i>
+                    <div class="w-24 h-24 rounded-full flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-80 shadow-lg">
+                        <img src="/images/logo2.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover">
                     </div>
                 </div>
             </div>

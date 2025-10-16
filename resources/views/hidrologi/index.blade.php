@@ -1,158 +1,263 @@
 @extends('layouts.app')
 
-@section('title', 'Hidrologi Analysis Jobs')
+@section('title', 'Analisis Hidrologi')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">Hidrologi Analysis</h1>
-            <p class="text-gray-600 mt-1">Manage and monitor your hydrological analysis jobs</p>
-        </div>
-        @can('create hidrologi')
-            <a href="{{ route('hidrologi.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">
-                <i class="fas fa-plus mr-2"></i>
-                New Analysis
-            </a>
-        @endcan
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-sm">Total Jobs</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $jobs->total() }}</p>
-                </div>
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-tasks text-blue-600 text-xl"></i>
-                </div>
+    <!-- Header dengan Gradient Modern -->
+    <div class="mb-8">
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 shadow-2xl">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full -ml-24 -mb-24"></div>
             </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-sm">Processing</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $jobs->where('status', 'processing')->count() }}</p>
+            
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-water text-2xl text-white"></i>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white">Analisis Hidrologi</h1>
+                    </div>
+                    <p class="text-blue-100 text-lg">Kelola dan pantau pekerjaan analisis hidrologi Anda dengan mudah</p>
+                    <div class="mt-3 flex items-center text-blue-200">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span class="text-sm">Total {{ $jobs->total() }} pekerjaan tercatat dalam sistem</span>
+                    </div>
                 </div>
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-spinner text-yellow-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-sm">Completed</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}</p>
-                </div>
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-red-500">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-sm">Failed</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $jobs->where('status', 'failed')->count() }}</p>
-                </div>
-                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
-                </div>
+                @can('create hidrologi')
+                    <a href="{{ route('hidrologi.create') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-plus-circle mr-2 text-lg"></i>
+                        Analisis Baru
+                    </a>
+                @endcan
             </div>
         </div>
     </div>
 
-    <!-- Jobs Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <!-- Statistik Cards dengan Animasi Modern -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Pekerjaan -->
+        <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-blue-500 opacity-10 rounded-bl-full"></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div class="flex-1">
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Total Pekerjaan</p>
+                        <p class="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{{ $jobs->total() }}</p>
+                        <div class="mt-2 flex items-center text-blue-600">
+                            <i class="fas fa-chart-line text-xs mr-1"></i>
+                            <span class="text-xs font-medium">Semua status</span>
+                        </div>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-tasks text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+        </div>
+
+        <!-- Sedang Diproses -->
+        <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-500 opacity-10 rounded-bl-full"></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div class="flex-1">
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Sedang Diproses</p>
+                        <p class="text-3xl font-bold text-gray-900 group-hover:text-yellow-600 transition-colors">{{ $jobs->where('status', 'processing')->count() }}</p>
+                        <div class="mt-2 flex items-center text-yellow-600">
+                            <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse mr-2"></div>
+                            <span class="text-xs font-medium">Aktif sekarang</span>
+                        </div>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-spinner fa-spin text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="h-1 bg-gradient-to-r from-yellow-500 to-yellow-600"></div>
+        </div>
+
+        <!-- Selesai -->
+        <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-green-500 opacity-10 rounded-bl-full"></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div class="flex-1">
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Selesai</p>
+                        <p class="text-3xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">{{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}</p>
+                        <div class="mt-2 flex items-center text-green-600">
+                            <i class="fas fa-check text-xs mr-1"></i>
+                            <span class="text-xs font-medium">Berhasil diproses</span>
+                        </div>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-check-circle text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
+        </div>
+
+        <!-- Gagal -->
+        <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-red-500 opacity-10 rounded-bl-full"></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div class="flex-1">
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Gagal</p>
+                        <p class="text-3xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">{{ $jobs->where('status', 'failed')->count() }}</p>
+                        <div class="mt-2 flex items-center text-red-600">
+                            {{-- <i class="fas fa-exclamation text-xs mr-1"></i> --}}
+                            <span class="text-xs font-medium">Perlu perhatian !</span>
+                        </div>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-exclamation-circle text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
+        </div>
+    </div>
+
+    <!-- Tabel Pekerjaan dengan Design Modern -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+        <!-- Header Tabel -->
+        <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-list-ul text-blue-600 mr-3"></i>
+                        Daftar Pekerjaan Analisis
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1">Pantau progress dan status setiap pekerjaan</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="location.reload()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
+                        <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+                <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Range</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Files</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">ID Pekerjaan</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Lokasi</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Rentang Tanggal</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Progress</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">File</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Dibuat</th>
+                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($jobs as $job)
-                        <tr class="hover:bg-gray-50 transition duration-150">
+                        <tr class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 group">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ Str::limit($job->job_id, 12) }}</div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                                        <i class="fas fa-hashtag text-blue-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-900">{{ Str::limit($job->job_id, 12) }}</span>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $job->location_name ?? 'N/A' }}</div>
-                                <div class="text-xs text-gray-500">{{ $job->latitude }}, {{ $job->longitude }}</div>
+                                <div class="flex items-start space-x-2">
+                                    <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $job->location_name ?? 'Tidak Diketahui' }}</div>
+                                        <div class="text-xs text-gray-500 flex items-center mt-1">
+                                            <i class="fas fa-globe text-gray-400 mr-1"></i>
+                                            {{ $job->latitude }}, {{ $job->longitude }}
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}</div>
-                                <div class="text-xs text-gray-500">to {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-blue-500"></i>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}</div>
+                                        <div class="text-xs text-gray-500">sampai {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
                                     $statusConfig = [
-                                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock'],
-                                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane'],
-                                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin'],
-                                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle'],
-                                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle'],
-                                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle'],
-                                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban']
+                                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'label' => 'Menunggu'],
+                                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'label' => 'Dikirim'],
+                                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'label' => 'Diproses'],
+                                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'label' => 'Selesai'],
+                                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'label' => 'Selesai (Peringatan)'],
+                                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'label' => 'Gagal'],
+                                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'label' => 'Dibatalkan']
                                     ];
                                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                                 @endphp
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $config['bg'] }} {{ $config['text'] }}">
-                                    <i class="fas {{ $config['icon'] }} mr-1"></i>
-                                    {{ ucfirst(str_replace('_', ' ', $job->status)) }}
+                                <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold {{ $config['bg'] }} {{ $config['text'] }} shadow-sm">
+                                    <i class="fas {{ $config['icon'] }} mr-2"></i>
+                                    {{ $config['label'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
-                                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {{ $job->progress }}%"></div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
+                                            <div class="h-2.5 rounded-full transition-all duration-500 {{ $job->progress == 100 ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-gradient-to-r from-blue-400 to-blue-600' }}" style="width: {{ $job->progress }}%"></div>
+                                        </div>
                                     </div>
-                                    <span class="text-sm text-gray-600">{{ $job->progress }}%</span>
+                                    <span class="text-sm font-semibold text-gray-700 min-w-[45px] text-right">{{ $job->progress }}%</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if($job->total_files > 0)
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fas fa-file text-gray-400"></i>
-                                        <span>{{ $job->total_files }}</span>
+                                    <div class="inline-flex items-center space-x-2 px-3 py-1.5 bg-blue-50 rounded-lg">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span class="text-sm font-semibold text-blue-700">{{ $job->total_files }}</span>
                                     </div>
                                 @else
-                                    <span class="text-gray-400">-</span>
+                                    <span class="text-gray-400 text-sm">Tidak ada file</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $job->created_at->diffForHumans() }}
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                    <i class="fas fa-clock text-gray-400"></i>
+                                    <span>{{ $job->created_at->diffForHumans() }}</span>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <a href="{{ route('hidrologi.show', $job->id) }}" class="text-blue-600 hover:text-blue-900" title="View Details">
-                                        <i class="fas fa-eye"></i>
+                                    <a href="{{ route('hidrologi.show', $job->id) }}" 
+                                       class="inline-flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all duration-200 group/btn" 
+                                       title="Lihat Detail">
+                                        <i class="fas fa-eye mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
+                                        <span class="text-xs font-semibold">Detail</span>
                                     </a>
                                     @can('edit hidrologi')
                                         @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                                            <button onclick="cancelJob({{ $job->id }})" class="text-yellow-600 hover:text-yellow-900" title="Cancel">
-                                                <i class="fas fa-stop-circle"></i>
+                                            <button onclick="cancelJob({{ $job->id }})" 
+                                                    class="inline-flex items-center px-3 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-all duration-200 group/btn" 
+                                                    title="Batalkan">
+                                                <i class="fas fa-stop-circle mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
+                                                <span class="text-xs font-semibold">Batal</span>
                                             </button>
                                         @endif
                                     @endcan
                                     @can('delete hidrologi')
-                                        <button onclick="deleteJob({{ $job->id }})" class="text-red-600 hover:text-red-900" title="Delete">
-                                            <i class="fas fa-trash"></i>
+                                        <button onclick="deleteJob({{ $job->id }})" 
+                                                class="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all duration-200 group/btn" 
+                                                title="Hapus">
+                                            <i class="fas fa-trash mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
+                                            <span class="text-xs font-semibold">Hapus</span>
                                         </button>
                                     @endcan
                                 </div>
@@ -160,13 +265,18 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center">
+                            <td colspan="8" class="px-6 py-16 text-center">
                                 <div class="flex flex-col items-center justify-center">
-                                    <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
-                                    <p class="text-gray-500 text-lg">No analysis jobs found</p>
+                                    <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-6 shadow-lg">
+                                        <i class="fas fa-folder-open text-4xl text-blue-400"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-700 mb-2">Belum Ada Pekerjaan Analisis</h3>
+                                    <p class="text-gray-500 mb-6">Mulai analisis hidrologi pertama Anda sekarang</p>
                                     @can('create hidrologi')
-                                        <a href="{{ route('hidrologi.create') }}" class="mt-4 text-blue-600 hover:text-blue-800">
-                                            Create your first analysis
+                                        <a href="{{ route('hidrologi.create') }}" 
+                                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                                            <i class="fas fa-plus-circle mr-2"></i>
+                                            Buat Analisis Pertama
                                         </a>
                                     @endcan
                                 </div>
@@ -177,9 +287,9 @@
             </table>
         </div>
 
-        <!-- Pagination -->
+        <!-- Pagination dengan Style Modern -->
         @if($jobs->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
                 {{ $jobs->links() }}
             </div>
         @endif
@@ -190,20 +300,20 @@
 <script>
 function cancelJob(jobId) {
     Swal.fire({
-        title: 'Cancel Job?',
-        text: "Are you sure you want to cancel this job?",
+        title: 'Batalkan Pekerjaan?',
+        text: "Apakah Anda yakin ingin membatalkan pekerjaan ini?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!',
-        cancelButtonText: 'No, keep it'
+        confirmButtonText: 'Ya, Batalkan!',
+        cancelButtonText: 'Tidak, Biarkan'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Cancelling...',
-                text: 'Please wait',
+                title: 'Membatalkan...',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -222,8 +332,8 @@ function cancelJob(jobId) {
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Cancelled!',
-                        text: data.message || 'Job has been cancelled successfully.',
+                        title: 'Berhasil!',
+                        text: data.message || 'Pekerjaan berhasil dibatalkan.',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
@@ -232,8 +342,8 @@ function cancelJob(jobId) {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Failed!',
-                        text: data.message || 'Failed to cancel job'
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal membatalkan pekerjaan'
                     });
                 }
             })
@@ -242,7 +352,7 @@ function cancelJob(jobId) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred while cancelling the job'
+                    text: 'Terjadi kesalahan saat membatalkan pekerjaan'
                 });
             });
         }
@@ -251,20 +361,20 @@ function cancelJob(jobId) {
 
 function deleteJob(jobId) {
     Swal.fire({
-        title: 'Delete Job?',
-        html: "Are you sure you want to delete this job?<br><strong class='text-red-600'>This action cannot be undone!</strong>",
+        title: 'Hapus Pekerjaan?',
+        html: "Apakah Anda yakin ingin menghapus pekerjaan ini?<br><strong class='text-red-600'>Tindakan ini tidak dapat dibatalkan!</strong>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Deleting...',
-                text: 'Please wait',
+                title: 'Menghapus...',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -289,8 +399,8 @@ function deleteJob(jobId) {
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Deleted!',
-                        text: data.message || 'Job has been deleted successfully.',
+                        title: 'Berhasil!',
+                        text: data.message || 'Pekerjaan berhasil dihapus.',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
@@ -299,8 +409,8 @@ function deleteJob(jobId) {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Failed!',
-                        text: data.message || 'Failed to delete job'
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal menghapus pekerjaan'
                     });
                 }
             })
@@ -309,7 +419,7 @@ function deleteJob(jobId) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred while deleting the job: ' + error.message
+                    text: 'Terjadi kesalahan saat menghapus pekerjaan: ' + error.message
                 });
             });
         }

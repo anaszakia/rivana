@@ -41,6 +41,11 @@ Route::get('/test-submit', function () {
     return view('test-submit');
 })->middleware('auth')->name('test.submit');
 
+// Test route for API preview (REMOVE IN PRODUCTION!)
+Route::get('/test-api-preview', function () {
+    return view('test-api-preview');
+})->middleware('auth')->name('test.api.preview');
+
 
 // Authenticated routes - Permission based access control
 Route::middleware(['auth', 'log.sensitive'])->group(function () {

@@ -209,7 +209,18 @@ class HidrologiApiService
      */
     public function getPreviewUrl($jobId, $filename)
     {
-        return "{$this->apiUrl}/preview/{$jobId}/{$filename}";
+        // Encode filename untuk menghindari masalah dengan karakter spesial
+        $encodedFilename = rawurlencode($filename);
+        $url = "{$this->apiUrl}/preview/{$jobId}/{$encodedFilename}";
+        
+        Log::info('Generated preview URL', [
+            'job_id' => $jobId,
+            'filename' => $filename,
+            'encoded_filename' => $encodedFilename,
+            'url' => $url
+        ]);
+        
+        return $url;
     }
 
     /**
@@ -217,7 +228,9 @@ class HidrologiApiService
      */
     public function getDownloadUrl($jobId, $filename)
     {
-        return "{$this->apiUrl}/download/{$jobId}/{$filename}";
+        // Encode filename untuk menghindari masalah dengan karakter spesial
+        $encodedFilename = rawurlencode($filename);
+        return "{$this->apiUrl}/download/{$jobId}/{$encodedFilename}";
     }
 
      /**

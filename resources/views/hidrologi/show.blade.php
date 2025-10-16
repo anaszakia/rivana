@@ -1,72 +1,95 @@
 @extends('layouts.app')
 
-@section('title', 'Job Details - ' . $job->job_id)
+@section('title', 'Detail Pekerjaan - ' . $job->job_id)
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    <!-- Header -->
-    <div class="mb-6">
-        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-            <a href="{{ route('hidrologi.index') }}" class="hover:text-blue-600">Hidrologi</a>
-            <i class="fas fa-chevron-right text-xs"></i>
-            <span class="text-gray-800">Job Details</span>
-        </div>
-        <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Job Details</h1>
-                <p class="text-gray-600 mt-1">Job ID: <span class="font-mono">{{ $job->job_id }}</span></p>
+    <!-- Header dengan Gradient Modern -->
+    <div class="mb-8">
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 shadow-2xl">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full -ml-24 -mb-24"></div>
             </div>
-            <div class="flex space-x-2">
-                @can('edit hidrologi')
-                    @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                        <button onclick="cancelJob({{ $job->id }})" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition duration-200">
-                            <i class="fas fa-stop-circle mr-2"></i>Cancel
-                        </button>
-                    @endif
-                @endcan
-                @can('delete hidrologi')
-                    <button onclick="deleteJob({{ $job->id }})" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-200">
-                        <i class="fas fa-trash mr-2"></i>Delete
-                    </button>
-                @endcan
+            
+            <div class="relative z-10">
+                <!-- Breadcrumb -->
+                <div class="flex items-center space-x-2 text-blue-200 mb-4">
+                    <a href="{{ route('hidrologi.index') }}" class="hover:text-white transition-colors">
+                        <i class="fas fa-water mr-1"></i>
+                        Hidrologi
+                    </a>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                    <span class="text-white font-semibold">Detail Pekerjaan</span>
+                </div>
+                
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-file-alt text-3xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Detail Pekerjaan</h1>
+                            <p class="text-blue-100 text-lg">Job ID: <span class="font-mono bg-white bg-opacity-20 px-3 py-1 rounded-lg">{{ $job->job_id }}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        @can('edit hidrologi')
+                            @if(in_array($job->status, ['pending', 'submitted', 'processing']))
+                                <button onclick="cancelJob({{ $job->id }})" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    <i class="fas fa-stop-circle mr-2"></i>Batalkan
+                                </button>
+                            @endif
+                        @endcan
+                        @can('delete hidrologi')
+                            <button onclick="deleteJob({{ $job->id }})" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                <i class="fas fa-trash mr-2"></i>Hapus
+                            </button>
+                        @endcan
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Status Card -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <!-- Status Card Modern -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
         <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-6">
                 @php
                     $statusConfig = [
-                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'ring' => 'ring-gray-300'],
-                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'ring' => 'ring-blue-300'],
-                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'ring' => 'ring-yellow-300'],
-                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'ring' => 'ring-green-300'],
-                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'ring' => 'ring-orange-300'],
-                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'ring' => 'ring-red-300'],
-                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'ring' => 'ring-gray-300']
+                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => 'Menunggu'],
+                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'ring' => 'ring-blue-300', 'gradient' => 'from-blue-400 to-blue-600', 'label' => 'Dikirim'],
+                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'ring' => 'ring-yellow-300', 'gradient' => 'from-yellow-400 to-yellow-600', 'label' => 'Diproses'],
+                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'ring' => 'ring-green-300', 'gradient' => 'from-green-400 to-green-600', 'label' => 'Selesai'],
+                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'ring' => 'ring-orange-300', 'gradient' => 'from-orange-400 to-orange-600', 'label' => 'Selesai (Peringatan)'],
+                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'ring' => 'ring-red-300', 'gradient' => 'from-red-400 to-red-600', 'label' => 'Gagal'],
+                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => 'Dibatalkan']
                     ];
                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                 @endphp
-                <div class="w-16 h-16 {{ $config['bg'] }} rounded-full flex items-center justify-center ring-4 {{ $config['ring'] }}">
-                    <i class="fas {{ $config['icon'] }} text-2xl {{ $config['text'] }}"></i>
+                <div class="relative">
+                    <div class="w-20 h-20 {{ $config['bg'] }} rounded-2xl flex items-center justify-center ring-4 {{ $config['ring'] }} shadow-lg">
+                        <i class="fas {{ $config['icon'] }} text-3xl {{ $config['text'] }}"></i>
+                    </div>
+                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-gradient-to-br {{ $config['gradient'] }} rounded-full border-2 border-white"></div>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold {{ $config['text'] }}">{{ ucfirst(str_replace('_', ' ', $job->status)) }}</h3>
-                    <p class="text-gray-600">{{ $job->status_message ?? 'Processing...' }}</p>
+                    <h3 class="text-3xl font-bold {{ $config['text'] }} mb-1">{{ $config['label'] }}</h3>
+                    <p class="text-gray-600 text-sm">{{ $job->status_message ?? 'Memproses pekerjaan...' }}</p>
                 </div>
             </div>
             
             <!-- Progress Bar -->
             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                <div class="w-64">
-                    <div class="flex justify-between text-sm text-gray-600 mb-1">
+                <div class="w-80">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2 font-semibold">
                         <span>Progress</span>
-                        <span id="progress-percent">{{ $job->progress }}%</span>
+                        <span id="progress-percent" class="text-blue-600">{{ $job->progress }}%</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                        <div id="progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: {{ $job->progress }}%"></div>
+                    <div class="w-full bg-gray-200 rounded-full h-4 shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-4 rounded-full transition-all duration-500 shadow-lg" style="width: {{ $job->progress }}%"></div>
                     </div>
                 </div>
             @endif
@@ -74,24 +97,28 @@
 
         <!-- Warning/Error Messages -->
         @if($job->warning_message)
-            <div class="mt-4 p-4 bg-orange-50 border-l-4 border-orange-500 rounded">
+            <div class="mt-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500 rounded-xl shadow-sm">
                 <div class="flex items-start">
-                    <i class="fas fa-exclamation-triangle text-orange-500 mt-1 mr-3"></i>
-                    <div>
-                        <h4 class="font-semibold text-orange-800">Warning</h4>
-                        <p class="text-sm text-orange-700">{{ $job->warning_message }}</p>
+                    <div class="flex-shrink-0 w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-orange-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-orange-800 text-lg">Peringatan</h4>
+                        <p class="text-sm text-orange-700 mt-1">{{ $job->warning_message }}</p>
                     </div>
                 </div>
             </div>
         @endif
 
         @if($job->error_message)
-            <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+            <div class="mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 rounded-xl shadow-sm">
                 <div class="flex items-start">
-                    <i class="fas fa-times-circle text-red-500 mt-1 mr-3"></i>
-                    <div>
-                        <h4 class="font-semibold text-red-800">Error</h4>
-                        <p class="text-sm text-red-700">{{ $job->error_message }}</p>
+                    <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-red-800 text-lg">Error</h4>
+                        <p class="text-sm text-red-700 mt-1">{{ $job->error_message }}</p>
                     </div>
                 </div>
             </div>
@@ -102,23 +129,31 @@
         <!-- Job Information -->
         <div class="lg:col-span-2 space-y-6">
             <!-- Location Info -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
-                    Location Information
-                </h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-600">Location Name</p>
-                        <p class="font-medium text-gray-800">{{ $job->location_name ?? 'N/A' }}</p>
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-red-600 text-lg"></i>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Coordinates</p>
-                        <p class="font-medium text-gray-800">{{ $job->latitude }}, {{ $job->longitude }}</p>
+                    <h3 class="text-xl font-bold text-gray-800">Informasi Lokasi</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                        <p class="text-sm font-semibold text-blue-700 mb-2 flex items-center">
+                            <i class="fas fa-map-pin mr-2"></i>Nama Lokasi
+                        </p>
+                        <p class="font-bold text-gray-800">{{ $job->location_name ?? 'Tidak Tersedia' }}</p>
+                    </div>
+                    <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+                        <p class="text-sm font-semibold text-green-700 mb-2 flex items-center">
+                            <i class="fas fa-globe mr-2"></i>Koordinat
+                        </p>
+                        <p class="font-bold text-gray-800">{{ $job->latitude }}, {{ $job->longitude }}</p>
                     </div>
                     @if($job->location_description)
-                        <div class="col-span-2">
-                            <p class="text-sm text-gray-600">Description</p>
+                        <div class="col-span-2 p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                            <p class="text-sm font-semibold text-purple-700 mb-2 flex items-center">
+                                <i class="fas fa-file-alt mr-2"></i>Deskripsi
+                            </p>
                             <p class="text-gray-800">{{ $job->location_description }}</p>
                         </div>
                     @endif
@@ -126,24 +161,32 @@
             </div>
 
             <!-- Analysis Period -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
-                    Analysis Period
-                </h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-600">Start Date</p>
-                        <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($job->start_date)->format('d F Y') }}</p>
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-purple-600 text-lg"></i>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-600">End Date</p>
-                        <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($job->end_date)->format('d F Y') }}</p>
+                    <h3 class="text-xl font-bold text-gray-800">Periode Analisis</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+                        <p class="text-sm font-semibold text-green-700 mb-2 flex items-center">
+                            <i class="fas fa-calendar-check mr-2"></i>Tanggal Mulai
+                        </p>
+                        <p class="font-bold text-gray-800">{{ \Carbon\Carbon::parse($job->start_date)->format('d F Y') }}</p>
                     </div>
-                    <div class="col-span-2">
-                        <p class="text-sm text-gray-600">Duration</p>
-                        <p class="font-medium text-gray-800">
-                            {{ \Carbon\Carbon::parse($job->start_date)->diffInDays(\Carbon\Carbon::parse($job->end_date)) + 1 }} days
+                    <div class="p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
+                        <p class="text-sm font-semibold text-red-700 mb-2 flex items-center">
+                            <i class="fas fa-calendar-times mr-2"></i>Tanggal Selesai
+                        </p>
+                        <p class="font-bold text-gray-800">{{ \Carbon\Carbon::parse($job->end_date)->format('d F Y') }}</p>
+                    </div>
+                    <div class="col-span-2 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                        <p class="text-sm font-semibold text-blue-700 mb-2 flex items-center">
+                            <i class="fas fa-hourglass-half mr-2"></i>Durasi
+                        </p>
+                        <p class="font-bold text-gray-800">
+                            {{ \Carbon\Carbon::parse($job->start_date)->diffInDays(\Carbon\Carbon::parse($job->end_date)) + 1 }} hari
                         </p>
                     </div>
                 </div>
@@ -680,23 +723,28 @@
 
             <!-- Generated Files -->
             @if($job->files->count() > 0)
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-file-download text-blue-600 mr-2"></i>
-                            Generated Files ({{ $job->files->count() }})
-                        </h3>
+                <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-file-download text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">File yang Dihasilkan</h3>
+                                <p class="text-sm text-gray-500">Total {{ $job->files->count() }} file</p>
+                            </div>
+                        </div>
                         <div class="flex space-x-2">
-                            <button onclick="filterFiles('all')" class="filter-btn active px-3 py-1 text-xs rounded transition" data-type="all">
-                                <i class="fas fa-th mr-1"></i>All
+                            <button onclick="filterFiles('all')" class="filter-btn active px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="all">
+                                <i class="fas fa-th mr-1"></i>Semua
                             </button>
-                            <button onclick="filterFiles('png')" class="filter-btn px-3 py-1 text-xs rounded transition" data-type="png">
+                            <button onclick="filterFiles('png')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="png">
                                 <i class="fas fa-image mr-1"></i>PNG
                             </button>
-                            <button onclick="filterFiles('csv')" class="filter-btn px-3 py-1 text-xs rounded transition" data-type="csv">
+                            <button onclick="filterFiles('csv')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="csv">
                                 <i class="fas fa-table mr-1"></i>CSV
                             </button>
-                            <button onclick="filterFiles('json')" class="filter-btn px-3 py-1 text-xs rounded transition" data-type="json">
+                            <button onclick="filterFiles('json')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="json">
                                 <i class="fas fa-code mr-1"></i>JSON
                             </button>
                         </div>
@@ -774,40 +822,45 @@
         <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-6">
             <!-- Timeline -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Timeline</h3>
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-6 border border-blue-200">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-clock text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-900">Timeline</h3>
+                </div>
                 <div class="space-y-4">
-                    <div class="flex items-start">
-                        <div class="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
+                    <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
+                        <div class="w-3 h-3 bg-blue-600 rounded-full mt-2 mr-4 shadow"></div>
                         <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-800">Created</p>
-                            <p class="text-xs text-gray-600">{{ $job->created_at->format('d M Y, H:i') }}</p>
+                            <p class="text-sm font-bold text-gray-800">Dibuat</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ $job->created_at->format('d M Y, H:i') }}</p>
                         </div>
                     </div>
                     @if($job->submitted_at)
-                        <div class="flex items-start">
-                            <div class="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
+                            <div class="w-3 h-3 bg-blue-600 rounded-full mt-2 mr-4 shadow"></div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Submitted</p>
-                                <p class="text-xs text-gray-600">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
+                                <p class="text-sm font-bold text-gray-800">Dikirim</p>
+                                <p class="text-xs text-gray-600 mt-1">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
                     @if($job->started_at)
-                        <div class="flex items-start">
-                            <div class="w-2 h-2 bg-yellow-600 rounded-full mt-2 mr-3"></div>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
+                            <div class="w-3 h-3 bg-yellow-600 rounded-full mt-2 mr-4 shadow"></div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Started Processing</p>
-                                <p class="text-xs text-gray-600">{{ $job->started_at->format('d M Y, H:i') }}</p>
+                                <p class="text-sm font-bold text-gray-800">Mulai Diproses</p>
+                                <p class="text-xs text-gray-600 mt-1">{{ $job->started_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
                     @if($job->completed_at)
-                        <div class="flex items-start">
-                            <div class="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3"></div>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
+                            <div class="w-3 h-3 bg-green-600 rounded-full mt-2 mr-4 shadow"></div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Completed</p>
-                                <p class="text-xs text-gray-600">{{ $job->completed_at->format('d M Y, H:i') }}</p>
+                                <p class="text-sm font-bold text-gray-800">Selesai</p>
+                                <p class="text-xs text-gray-600 mt-1">{{ $job->completed_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
@@ -815,24 +868,37 @@
             </div>
 
             <!-- Statistics -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-6 border border-purple-200">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-chart-bar text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900">Statistik</h3>
+                </div>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600">PNG Files</span>
-                        <span class="font-medium text-gray-800">{{ $job->png_count }}</span>
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
+                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-image text-blue-500 mr-2"></i>File PNG
+                        </span>
+                        <span class="font-bold text-gray-800 text-lg">{{ $job->png_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600">CSV Files</span>
-                        <span class="font-medium text-gray-800">{{ $job->csv_count }}</span>
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
+                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-table text-green-500 mr-2"></i>File CSV
+                        </span>
+                        <span class="font-bold text-gray-800 text-lg">{{ $job->csv_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600">JSON Files</span>
-                        <span class="font-medium text-gray-800">{{ $job->json_count }}</span>
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
+                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-code text-orange-500 mr-2"></i>File JSON
+                        </span>
+                        <span class="font-bold text-gray-800 text-lg">{{ $job->json_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center border-t pt-3">
-                        <span class="text-sm font-medium text-gray-800">Total Files</span>
-                        <span class="font-bold text-blue-600">{{ $job->total_files }}</span>
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg border-t-2 border-white">
+                        <span class="text-sm font-bold text-white flex items-center">
+                            <i class="fas fa-folder text-white mr-2"></i>Total File
+                        </span>
+                        <span class="font-bold text-white text-2xl">{{ $job->total_files }}</span>
                     </div>
                 </div>
             </div>
@@ -1228,20 +1294,20 @@ window.addEventListener('beforeunload', function() {
 
 function cancelJob(jobId) {
     Swal.fire({
-        title: 'Cancel Job?',
-        text: "Are you sure you want to cancel this job?",
+        title: 'Batalkan Pekerjaan?',
+        text: "Apakah Anda yakin ingin membatalkan pekerjaan ini?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!',
-        cancelButtonText: 'No, keep it'
+        confirmButtonText: 'Ya, Batalkan!',
+        cancelButtonText: 'Tidak, Biarkan'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Cancelling...',
-                text: 'Please wait',
+                title: 'Membatalkan...',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -1260,8 +1326,8 @@ function cancelJob(jobId) {
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Cancelled!',
-                        text: data.message || 'Job has been cancelled successfully.',
+                        title: 'Berhasil!',
+                        text: data.message || 'Pekerjaan berhasil dibatalkan.',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
@@ -1270,8 +1336,8 @@ function cancelJob(jobId) {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Failed!',
-                        text: data.message || 'Failed to cancel job'
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal membatalkan pekerjaan'
                     });
                 }
             })
@@ -1280,7 +1346,7 @@ function cancelJob(jobId) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred while cancelling the job'
+                    text: 'Terjadi kesalahan saat membatalkan pekerjaan'
                 });
             });
         }
@@ -1289,20 +1355,20 @@ function cancelJob(jobId) {
 
 function deleteJob(jobId) {
     Swal.fire({
-        title: 'Delete Job?',
-        html: "Are you sure you want to delete this job?<br><strong class='text-red-600'>This action cannot be undone!</strong>",
+        title: 'Hapus Pekerjaan?',
+        html: "Apakah Anda yakin ingin menghapus pekerjaan ini?<br><strong class='text-red-600'>Tindakan ini tidak dapat dibatalkan!</strong>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Deleting...',
-                text: 'Please wait',
+                title: 'Menghapus...',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -1327,8 +1393,8 @@ function deleteJob(jobId) {
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Deleted!',
-                        text: data.message || 'Job has been deleted successfully.',
+                        title: 'Berhasil!',
+                        text: data.message || 'Pekerjaan berhasil dihapus.',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(function() {
@@ -1337,8 +1403,8 @@ function deleteJob(jobId) {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Failed!',
-                        text: data.message || 'Failed to delete job'
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal menghapus pekerjaan'
                     });
                 }
             })
@@ -1347,7 +1413,7 @@ function deleteJob(jobId) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred while deleting the job: ' + error.message
+                    text: 'Terjadi kesalahan saat menghapus pekerjaan: ' + error.message
                 });
             });
         }
@@ -1595,7 +1661,7 @@ function filterFiles(type) {
     });
 }
 
-// View PNG Image
+// View PNG Image - Preview inline dengan proteksi anti-crash
 function viewImage(fileId, fileName) {
     const previewContainer = document.getElementById(`preview-${fileId}`);
     const previewContent = document.getElementById(`preview-content-${fileId}`);
@@ -1605,63 +1671,178 @@ function viewImage(fileId, fileName) {
         previewContent.innerHTML = `
             <div class="flex items-center justify-center py-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                <span class="ml-3 text-gray-600">Loading image...</span>
+                <span class="ml-3 text-gray-600">Memuat gambar...</span>
             </div>
         `;
         previewContainer.classList.remove('hidden');
         
-        // Fetch image as blob
-        fetch(`/hidrologi/file/${fileId}/preview`)
+        const downloadUrl = `/hidrologi/file/download/${fileId}`;
+        console.log('Loading image from:', downloadUrl);
+        
+        // Fetch dengan HEAD request dulu untuk cek ukuran
+        fetch(downloadUrl, { method: 'HEAD' })
             .then(response => {
-                if (!response.ok) {
+                const contentLength = response.headers.get('Content-Length');
+                const fileSizeBytes = parseInt(contentLength || '0');
+                const fileSizeMB = (fileSizeBytes / 1024 / 1024).toFixed(2);
+                
+                console.log('Image size:', fileSizeMB, 'MB');
+                
+                // Jika file > 10MB, jangan preview inline - terlalu besar
+                if (fileSizeBytes > 10 * 1024 * 1024) {
+                    previewContent.innerHTML = `
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-4xl mb-3"></i>
+                            <p class="text-yellow-800 font-semibold text-lg mb-2">Gambar Terlalu Besar</p>
+                            <p class="text-yellow-700 text-sm mb-4">Ukuran: ${fileSizeMB} MB. Gunakan tombol di bawah untuk melihat gambar.</p>
+                            <div class="space-x-2">
+                                <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Buka di Tab Baru
+                                </button>
+                                <a href="/hidrologi/file/download/${fileId}" download="${fileName}"
+                                   class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return Promise.reject('File too large');
+                }
+                
+                // File cukup kecil, lanjutkan fetch untuk preview
+                return fetch(downloadUrl);
+            })
+            .then(response => {
+                if (!response || !response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                // Get the final URL after redirect
-                return response.blob().then(blob => ({
-                    blob: blob,
-                    url: response.url
-                }));
+                return response.blob();
             })
-            .then(data => {
-                // Create object URL from blob
-                const imageUrl = URL.createObjectURL(data.blob);
-                const finalUrl = data.url;
+            .then(blob => {
+                console.log('Image blob received:', blob.type, blob.size, 'bytes');
                 
-                previewContent.innerHTML = `
-                    <div class="bg-gray-50 rounded-lg p-4 overflow-auto" style="max-height: 500px;">
-                        <img src="${imageUrl}" 
-                             alt="${fileName}" 
-                             class="max-w-full h-auto mx-auto rounded shadow-lg cursor-pointer hover:opacity-90 transition"
-                             style="max-height: 450px;"
-                             onclick="window.open('${finalUrl}', '_blank')">
-                        <div class="text-center mt-3 space-x-2">
-                            <span class="text-xs text-gray-500">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                Click image to view in full size
-                            </span>
-                            <button onclick="downloadImageFromBlob('${imageUrl}', '${fileName}')" 
-                                    class="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
-                                <i class="fas fa-download mr-1"></i>Save Image
-                            </button>
+                // Convert blob to data URL (untuk bypass CSP yang tidak allow blob:)
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result; // data: URL
+                    const fileSizeKB = (blob.size / 1024).toFixed(2);
+                    const fileSizeMB = (blob.size / 1024 / 1024).toFixed(2);
+                    const displaySize = blob.size > 1024 * 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`;
+                    
+                    console.log('Image converted to data URL, size:', displaySize);
+                    
+                    previewContent.innerHTML = `
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <!-- Image Info Bar -->
+                            <div class="flex justify-between items-center mb-3 p-2 bg-white rounded border border-gray-200">
+                                <div class="text-sm text-gray-600">
+                                    <i class="fas fa-image text-blue-600 mr-2"></i>
+                                    <span class="font-semibold">${fileName}</span>
+                                    <span class="ml-2 text-xs text-gray-500">(${displaySize})</span>
+                                </div>
+                                <div class="space-x-2">
+                                    <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                            class="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
+                                        <i class="fas fa-external-link-alt mr-1"></i>Tab Baru
+                                    </button>
+                                    <a href="/hidrologi/file/download/${fileId}" download="${fileName}"
+                                       class="text-xs px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition inline-block">
+                                        <i class="fas fa-download mr-1"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Image Preview dengan loading lazy -->
+                            <div class="overflow-auto rounded border border-gray-200 bg-white" style="max-height: 500px;">
+                                <img src="${imageUrl}" 
+                                     alt="${fileName}"
+                                     loading="lazy"
+                                     class="max-w-full h-auto mx-auto cursor-zoom-in hover:opacity-90 transition"
+                                     style="max-height: 480px;"
+                                     onclick="openImageFullscreen('${imageUrl}', '${fileName}')">
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <span class="text-xs text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Klik gambar untuk melihat fullscreen
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    
+                    const img = previewContent.querySelector('img');
+                    img.onload = function() {
+                        console.log('Image loaded successfully from data URL');
+                    };
+                    img.onerror = function() {
+                        console.error('Failed to load image from data URL');
+                        previewContent.innerHTML = `
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-3xl mb-2"></i>
+                                <p class="text-red-700 font-medium">Gagal memuat gambar</p>
+                                <p class="text-red-600 text-sm mt-1">Gambar corrupt atau format tidak didukung</p>
+                                <div class="mt-3 space-x-2">
+                                    <button onclick="viewImage(${fileId}, '${fileName}')" 
+                                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                        <i class="fas fa-redo mr-1"></i>Coba Lagi
+                                    </button>
+                                    <a href="/hidrologi/file/download/${fileId}" download="${fileName}"
+                                       class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                        <i class="fas fa-download mr-1"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    };
+                };
+                
+                reader.onerror = function() {
+                    console.error('Failed to convert blob to data URL');
+                    previewContent.innerHTML = `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-3xl mb-2"></i>
+                            <p class="text-red-700 font-medium">Gagal memproses gambar</p>
+                            <p class="text-red-600 text-sm mt-1">Tidak dapat membaca file image</p>
+                            <div class="mt-3">
+                                <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                        class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded">
+                                    <i class="fas fa-external-link-alt mr-1"></i>
+                                    Buka di Tab Baru
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                };
+                
+                // Read blob as data URL
+                reader.readAsDataURL(blob);
             })
             .catch(error => {
+                if (error === 'File too large') {
+                    // Already handled above
+                    return;
+                }
+                
                 console.error('Error loading image:', error);
                 previewContent.innerHTML = `
                     <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
                         <i class="fas fa-exclamation-triangle text-red-600 text-3xl mb-2"></i>
-                        <p class="text-red-700 font-medium">Failed to load image</p>
+                        <p class="text-red-700 font-medium">Gagal memuat gambar</p>
                         <p class="text-red-600 text-sm mt-1">${error.message}</p>
                         <div class="mt-3 space-x-2">
-                            <button onclick="retryImageLoad(${fileId}, '${fileName}')" 
+                            <button onclick="viewImage(${fileId}, '${fileName}')" 
                                     class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                                <i class="fas fa-redo mr-1"></i>Retry
+                                <i class="fas fa-redo mr-1"></i>Coba Lagi
                             </button>
-                            <a href="/hidrologi/file/${fileId}/download" 
+                            <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                    class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+                                <i class="fas fa-external-link-alt mr-1"></i>Buka Tab Baru
+                            </button>
+                            <a href="/hidrologi/file/download/${fileId}" download="${fileName}"
                                class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                                <i class="fas fa-download mr-1"></i>Download Instead
+                                <i class="fas fa-download mr-1"></i>Download
                             </a>
                         </div>
                     </div>
@@ -1672,11 +1853,26 @@ function viewImage(fileId, fileName) {
     }
 }
 
-// Retry image load
-function retryImageLoad(fileId, fileName) {
-    const previewContainer = document.getElementById(`preview-${fileId}`);
-    previewContainer.classList.add('hidden');
-    setTimeout(() => viewImage(fileId, fileName), 100);
+// Open image in fullscreen modal
+function openImageFullscreen(imageUrl, fileName) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: fileName,
+            imageUrl: imageUrl,
+            imageAlt: fileName,
+            width: '90%',
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: {
+                image: 'max-h-screen'
+            },
+            background: '#000',
+            backdrop: 'rgba(0,0,0,0.9)'
+        });
+    } else {
+        // Fallback: open in new tab
+        window.open(imageUrl, '_blank');
+    }
 }
 
 // Download image from blob
@@ -1689,7 +1885,7 @@ function downloadImageFromBlob(blobUrl, fileName) {
     document.body.removeChild(link);
 }
 
-// View CSV File
+// View CSV File - Inline preview dengan limit untuk menghindari crash
 function viewCSV(fileId, fileName) {
     const previewContainer = document.getElementById(`preview-${fileId}`);
     const previewContent = document.getElementById(`preview-content-${fileId}`);
@@ -1699,14 +1895,19 @@ function viewCSV(fileId, fileName) {
         previewContent.innerHTML = `
             <div class="flex items-center justify-center py-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-                <span class="ml-3 text-gray-600">Loading CSV data...</span>
+                <span class="ml-3 text-gray-600">Memuat data CSV...</span>
             </div>
         `;
         previewContainer.classList.remove('hidden');
         
-        // Fetch CSV content as blob
-        fetch(`/hidrologi/file/${fileId}/preview`)
+        // Gunakan download URL
+        const downloadUrl = `/hidrologi/file/download/${fileId}`;
+        console.log('Loading CSV from:', downloadUrl);
+        
+        // Fetch CSV content
+        fetch(downloadUrl)
             .then(response => {
+                console.log('CSV Response status:', response.status, response.statusText);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.text();
             })
@@ -1717,16 +1918,41 @@ function viewCSV(fileId, fileName) {
                     throw new Error('Empty CSV file');
                 }
                 
+                // Calculate file size first
+                const fileSize = new Blob([csvText]).size;
+                const fileSizeKB = (fileSize / 1024).toFixed(2);
+                const fileSizeMB = (fileSize / 1024 / 1024).toFixed(2);
+                
+                // Jika file terlalu besar (> 2MB), buka di tab baru saja
+                if (fileSize > 2 * 1024 * 1024) {
+                    previewContent.innerHTML = `
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-4xl mb-3"></i>
+                            <p class="text-yellow-800 font-semibold text-lg mb-2">File Terlalu Besar untuk Preview</p>
+                            <p class="text-yellow-700 text-sm mb-4">Ukuran file: ${fileSizeMB} MB. Preview inline tidak tersedia untuk file besar.</p>
+                            <div class="space-x-2">
+                                <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Buka di Tab Baru
+                                </button>
+                                <a href="/hidrologi/file/download/${fileId}" 
+                                   class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                    <i class="fas fa-download mr-1"></i>Download CSV
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
                 // Get headers and rows
                 const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-                const maxRows = 100; // Limit to first 100 rows
+                const maxRows = 50; // Kurangi jadi 50 rows untuk performa lebih baik
                 const dataRows = lines.slice(1, Math.min(lines.length, maxRows + 1));
                 
                 // Calculate statistics
                 const totalRows = lines.length - 1;
                 const displayedRows = dataRows.length;
-                const fileSize = new Blob([csvText]).size;
-                const fileSizeKB = (fileSize / 1024).toFixed(2);
                 
                 // Build table HTML with enhanced header
                 let tableHtml = `
@@ -1755,7 +1981,7 @@ function viewCSV(fileId, fileName) {
                                             class="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition text-xs font-medium">
                                         <i class="fas fa-file-excel mr-1"></i>Excel
                                     </button>
-                                    <a href="/hidrologi/file/${fileId}/download" 
+                                    <a href="/hidrologi/file/download/${fileId}" 
                                        class="px-3 py-1.5 bg-gray-600 text-white rounded hover:bg-gray-700 transition text-xs font-medium inline-flex items-center">
                                         <i class="fas fa-download mr-1"></i>Download
                                     </a>
@@ -1835,14 +2061,14 @@ function viewCSV(fileId, fileName) {
                 previewContent.innerHTML = `
                     <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
                         <i class="fas fa-exclamation-triangle text-red-600 text-4xl mb-3"></i>
-                        <p class="text-red-700 font-semibold text-lg mb-2">Failed to load CSV file</p>
+                        <p class="text-red-700 font-semibold text-lg mb-2">Gagal memuat file CSV</p>
                         <p class="text-red-600 text-sm mb-4">${error.message}</p>
                         <div class="space-x-2">
                             <button onclick="retryCSVLoad(${fileId}, '${fileName}')" 
                                     class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                                <i class="fas fa-redo mr-1"></i>Retry
+                                <i class="fas fa-redo mr-1"></i>Coba Lagi
                             </button>
-                            <a href="/hidrologi/file/${fileId}/download" 
+                            <a href="/hidrologi/file/download/${fileId}" 
                                class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                                 <i class="fas fa-download mr-1"></i>Download CSV
                             </a>
@@ -1890,7 +2116,7 @@ function exportCSVToExcel(fileId, fileName) {
     }
 }
 
-// View JSON File
+// View JSON File - Inline preview dengan size limit
 function viewJSON(fileId, fileName) {
     const previewContainer = document.getElementById(`preview-${fileId}`);
     const previewContent = document.getElementById(`preview-content-${fileId}`);
@@ -1900,34 +2126,86 @@ function viewJSON(fileId, fileName) {
         previewContent.innerHTML = `
             <div class="flex items-center justify-center py-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
-                <span class="ml-3 text-gray-600">Loading JSON data...</span>
+                <span class="ml-3 text-gray-600">Memuat data JSON...</span>
             </div>
         `;
         previewContainer.classList.remove('hidden');
         
+        // Gunakan download URL
+        const downloadUrl = `/hidrologi/file/download/${fileId}`;
+        console.log('Loading JSON from:', downloadUrl);
+        
         // Fetch JSON content
-        fetch(`/hidrologi/file/${fileId}/preview`)
+        fetch(downloadUrl)
             .then(response => {
-                if (!response.ok) throw new Error('Failed to load JSON');
-                return response.json();
+                console.log('JSON Response status:', response.status, response.statusText);
+                if (!response.ok) throw new Error(`Failed to load JSON: ${response.status}`);
+                return response.text();
             })
-            .then(jsonData => {
+            .then(text => {
+                // Check file size first
+                const fileSize = new Blob([text]).size;
+                const fileSizeKB = (fileSize / 1024).toFixed(2);
+                const fileSizeMB = (fileSize / 1024 / 1024).toFixed(2);
+                
+                // Jika file terlalu besar (> 1MB), buka di tab baru
+                if (fileSize > 1 * 1024 * 1024) {
+                    previewContent.innerHTML = `
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-4xl mb-3"></i>
+                            <p class="text-yellow-800 font-semibold text-lg mb-2">File JSON Terlalu Besar</p>
+                            <p class="text-yellow-700 text-sm mb-4">Ukuran file: ${fileSizeMB} MB. Preview inline tidak tersedia untuk file besar.</p>
+                            <div class="space-x-2">
+                                <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Buka di Tab Baru
+                                </button>
+                                <a href="/hidrologi/file/download/${fileId}" 
+                                   class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                    <i class="fas fa-download mr-1"></i>Download JSON
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Parse JSON from text
+                const jsonData = JSON.parse(text);
                 const jsonString = JSON.stringify(jsonData, null, 2);
+                
+                // Limit displayed characters to prevent browser crash
+                const maxChars = 50000; // 50K characters max
+                const displayString = jsonString.length > maxChars 
+                    ? jsonString.substring(0, maxChars) + '\n\n... (truncated)'
+                    : jsonString;
                 
                 previewContent.innerHTML = `
                     <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
                         <div class="bg-gray-100 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
                             <div class="text-sm text-gray-700">
                                 <i class="fas fa-code mr-1"></i>
-                                JSON Data
+                                JSON Data <span class="text-xs text-gray-500">(${fileSizeKB} KB)</span>
                             </div>
-                            <button onclick="copyJSONData('${fileId}')" 
-                                    class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-xs">
-                                <i class="fas fa-copy mr-1"></i>Copy JSON
-                            </button>
+                            <div class="space-x-2">
+                                <button onclick="copyJSONData('${fileId}')" 
+                                        class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-xs">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                                <button onclick="window.open('/hidrologi/file/download/${fileId}', '_blank')" 
+                                        class="px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-xs">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Buka Tab Baru
+                                </button>
+                            </div>
                         </div>
+                        ${jsonString.length > maxChars ? `
+                        <div class="bg-yellow-50 px-4 py-2 text-xs text-yellow-800 border-b border-yellow-200">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Preview terpotong untuk performa. Buka di tab baru atau download untuk melihat semua data.
+                        </div>
+                        ` : ''}
                         <div class="overflow-auto p-4" style="max-height: 400px;">
-                            <pre class="text-xs text-gray-800 font-mono">${jsonString}</pre>
+                            <pre class="text-xs text-gray-800 font-mono">${displayString}</pre>
                         </div>
                     </div>
                 `;
@@ -1941,7 +2219,7 @@ function viewJSON(fileId, fileName) {
                         <i class="fas fa-exclamation-triangle text-red-600 text-3xl mb-2"></i>
                         <p class="text-red-700 font-medium">Failed to load JSON file</p>
                         <p class="text-red-600 text-sm mt-1">${error.message}</p>
-                        <a href="/hidrologi/file/${fileId}/download" 
+                        <a href="/hidrologi/file/download/${fileId}" 
                            class="mt-3 inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
                             <i class="fas fa-download mr-1"></i>
                             Download JSON instead
