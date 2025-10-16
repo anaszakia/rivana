@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Submit Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #00cc00; }
+        .log {
+            background: #000;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #00ff00;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .log div { margin: 5px 0; }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffaa00; }
+        .info { color: #00aaff; }
+    </style>
+</head>
+<body>
+    <h1>🚀 QUICK SUBMIT TEST</h1>
+    <p>Test cepat untuk cek apakah Laravel merespon dengan benar</p>
+    
+    <button onclick="testSubmit()">▶ RUN TEST SUBMIT</button>
+    
+    <div class="log" id="log"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = type;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function testSubmit() {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = '';
+            
+            log('='.repeat(60), 'info');
+            log('STARTING QUICK SUBMIT TEST', 'warning');
+            log('='.repeat(60), 'info');
+            
+            try {
+                // Step 1: Get CSRF Token
+                log('Step 1: Getting CSRF token...', 'info');
+                
+                // Auto-detect base URL from current page
+                const baseUrl = window.location.origin;
+                log(`  Base URL: ${baseUrl}`, 'info');
+                
+                const pageResponse = await fetch(`${baseUrl}/hidrologi/create`);
+                const html = await pageResponse.text();
+                const match = html.match(/name="csrf-token"\s+content="([^"]+)"/);
+                
+                if (!match) {
+                    log('❌ CSRF token not found!', 'error');
+                    return;
+                }
+                
+                const csrfToken = match[1];
+                log(`✓ CSRF Token: ${csrfToken.substring(0, 20)}...`, 'success');
+                
+                // Step 2: Prepare form data
+                log('Step 2: Preparing form data...', 'info');
+                const formData = new FormData();
+                formData.append('longitude', '106.845599');
+                formData.append('latitude', '-6.208763');
+                formData.append('start_date', '2024-01-01');
+                formData.append('end_date', '2024-01-15');
+                formData.append('location_name', 'Jakarta Test');
+                formData.append('location_description', 'Quick test submission');
+                
+                log('✓ Form data prepared', 'success');
+                log('  longitude: 106.845599', 'info');
+                log('  latitude: -6.208763', 'info');
+                log('  start_date: 2024-01-01', 'info');
+                log('  end_date: 2024-01-15', 'info');
+                
+                // Step 3: Submit
+                log('Step 3: Submitting to Laravel...', 'warning');
+                log(`  URL: ${baseUrl}/hidrologi/submit`, 'info');
+                
+                const startTime = Date.now();
+                
+                const response = await Promise.race([
+                    fetch(`${baseUrl}/hidrologi/submit`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    }),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Timeout after 15 seconds')), 15000)
+                    )
+                ]);
+                
+                const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+                log(`✓ Response received in ${duration}s`, 'success');
+                
+                // Step 4: Check response
+                log('Step 4: Checking response...', 'info');
+                log(`  Status: ${response.status} ${response.statusText}`, 
+                    response.status === 200 ? 'success' : 'error');
+                
+                const contentType = response.headers.get('content-type');
+                log(`  Content-Type: ${contentType}`, 'info');
+                
+                // Read response
+                const text = await response.text();
+                log(`  Body length: ${text.length} bytes`, 'info');
+                log(`  Body preview: ${text.substring(0, 200)}...`, 'info');
+                
+                // Try parse JSON
+                let data;
+                try {
+                    data = JSON.parse(text);
+                    log('✓ Response is valid JSON', 'success');
+                } catch (e) {
+                    log('❌ Response is NOT valid JSON!', 'error');
+                    log(`  Parse error: ${e.message}`, 'error');
+                    log(`  Full response: ${text}`, 'error');
+                    return;
+                }
+                
+                // Step 5: Check result
+                log('Step 5: Checking result...', 'warning');
+                log(`  Full response: ${JSON.stringify(data, null, 2)}`, 'info');
+                
+                if (data.success) {
+                    log('='.repeat(60), 'success');
+                    log('✅ SUCCESS! JOB SUBMITTED!', 'success');
+                    log('='.repeat(60), 'success');
+                    log(`  Job ID (database): ${data.job_id}`, 'success');
+                    log(`  Job UUID (API): ${data.job_uuid}`, 'success');
+                    log(`  Message: ${data.message}`, 'success');
+                    log('', 'info');
+                    log('✓ Laravel backend is working correctly!', 'success');
+                    log('✓ Python API connection is OK!', 'success');
+                    log('', 'info');
+                    log('NEXT: Check your actual form at /hidrologi/create', 'warning');
+                    log('Open browser console (F12) when submitting', 'warning');
+                } else {
+                    log('='.repeat(60), 'error');
+                    log('❌ FAILED! Laravel returned error', 'error');
+                    log('='.repeat(60), 'error');
+                    log(`  Message: ${data.message}`, 'error');
+                    if (data.debug) {
+                        log(`  Debug: ${JSON.stringify(data.debug, null, 2)}`, 'error');
+                    }
+                }
+                
+            } catch (error) {
+                log('='.repeat(60), 'error');
+                log('❌ ERROR OCCURRED!', 'error');
+                log('='.repeat(60), 'error');
+                log(`  Error: ${error.message}`, 'error');
+                log(`  Stack: ${error.stack}`, 'error');
+                
+                if (error.message.includes('Timeout')) {
+                    log('', 'error');
+                    log('⏱️  REQUEST TIMEOUT!', 'error');
+                    log('Possible causes:', 'warning');
+                    log('  1. Python API not responding (check if running)', 'warning');
+                    log('  2. Database query taking too long', 'warning');
+                    log('  3. Network issue', 'warning');
+                    log('', 'warning');
+                    log('Check Laravel logs: storage/logs/laravel.log', 'warning');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
