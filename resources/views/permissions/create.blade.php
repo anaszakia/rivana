@@ -38,10 +38,10 @@
                 <div class="mt-2 text-sm text-gray-500">
                     <p class="mb-1"><strong>Konvensi Penamaan:</strong></p>
                     <ul class="list-disc list-inside space-y-1 text-xs">
-                        <li>Use lowercase with spaces (e.g., "view users", "create posts")</li>
-                        <li>Start with action verb (view, create, edit, delete, manage)</li>
-                        <li>Be specific and descriptive</li>
-                        <li>Avoid spaces at the beginning or end</li>
+                        <li>Gunakan huruf kecil dengan spasi (e.g., "view users", "create posts")</li>
+                        <li>Mulai dengan kata kerja tindakan (view, create, edit, delete, manage)</li>
+                        <li>Spesifik dan deskriptif</li>
+                        <li>Hindari spasi di awal atau akhir</li>
                     </ul>
                 </div>
             </div>
@@ -50,7 +50,7 @@
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h4 class="font-medium text-blue-900 mb-2">
                     <i class="fas fa-lightbulb mr-2"></i>
-                    Permission Examples
+                    Contoh Permission
                 </h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-800">
                     <div class="space-y-1">

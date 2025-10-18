@@ -18,25 +18,6 @@
         @endcan
     </div>
 
-    <!-- Success/Error Messages -->
-    @if(session('success'))
-        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                <span class="text-green-800">{{ session('success') }}</span>
-            </div>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div class="flex items-center">
-                <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
-                <span class="text-red-800">{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
     <!-- Tabel Role -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
@@ -149,14 +130,14 @@
 <script>
 function deleteRole(roleId, roleName) {
     Swal.fire({
-        title: 'Delete Role?',
-        text: `Are you sure you want to delete the role "${roleName}"? This action cannot be undone.`,
+        title: 'Hapus Role?',
+        text: `Apakah anda yakin ingin menghapus role "${roleName}"? Tindakan ini tidak dapat dibatalkan.`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Delete',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.getElementById('delete-form');

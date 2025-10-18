@@ -11,7 +11,7 @@
         </a>
         <div>
             <h1 class="text-2xl font-semibold text-gray-900">Edit Role: {{ ucwords(str_replace('_', ' ', $role->name)) }}</h1>
-            <p class="text-gray-600 mt-1">Modify role details and permissions</p>
+            <p class="text-gray-600 mt-1">Edit Role</p>
         </div>
     </div>
 
@@ -24,14 +24,14 @@
             <!-- Role Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                    Role Name <span class="text-red-500">*</span>
+                    Nama Role <span class="text-red-500">*</span>
                 </label>
                 <input type="text" 
                        id="name" 
                        name="name" 
                        value="{{ old('name', $role->name) }}"
                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @else border-gray-300 @enderror"
-                       placeholder="Enter role name"
+                       placeholder="Masukkan nama role"
                        required
                        {{ $role->name === 'super_admin' ? 'readonly' : '' }}>
                 @error('name')
@@ -40,7 +40,7 @@
                 @if($role->name === 'super_admin')
                     <p class="text-amber-600 text-sm mt-1">
                         <i class="fas fa-lock mr-1"></i>
-                        Super Admin role name cannot be changed
+                        Nama role Super Admin tidak dapat diubah
                     </p>
                 @endif
             </div>
@@ -50,7 +50,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-4">
                     Permissions
                     @if($role->name === 'super_admin')
-                        <span class="text-amber-600 text-sm">(Super Admin has all permissions)</span>
+                        <span class="text-amber-600 text-sm">(Super Admin memiliki semua permissions)</span>
                     @endif
                 </label>
                 
@@ -58,13 +58,13 @@
                     <!-- Select All Options -->
                     <div class="mb-4 p-4 bg-gray-50 rounded-lg">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-700">Quick Actions:</span>
+                            <span class="text-sm text-gray-700">Tindakan Cepat:</span>
                             <div class="space-x-2">
                                 <button type="button" onclick="selectAll()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Select All
+                                    Pilih Semua
                                 </button>
                                 <button type="button" onclick="selectNone()" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
-                                    Select None
+                                    Pilih Tidak Ada
                                 </button>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                     @else
                         <div class="text-center py-8 text-gray-500">
                             <i class="fas fa-key text-3xl mb-2"></i>
-                            <p>No permissions available</p>
+                            <p>Tidak ada izin yang tersedia</p>
                         </div>
                     @endif
                 @else
@@ -113,10 +113,10 @@
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
                         <div class="flex items-center mb-2">
                             <i class="fas fa-crown text-amber-600 mr-2"></i>
-                            <span class="font-medium text-amber-800">Super Administrator Privileges</span>
+                            <span class="font-medium text-amber-800">Hak Istimewa Super Administrator</span>
                         </div>
                         <p class="text-sm text-amber-700">
-                            This role automatically has all permissions in the system and cannot be modified.
+                            Role ini secara otomatis memiliki semua izin dalam sistem dan tidak dapat diubah.
                         </p>
                     </div>
                 @endif
@@ -129,10 +129,10 @@
             <!-- Actions -->
             <div class="flex items-center justify-between pt-6 border-t border-gray-200">
                 <a href="{{ route('roles.index') }}" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200">
-                    Cancel
+                    Batal
                 </a>
                 <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
-                    Update Role
+                    Perbarui Role
                 </button>
             </div>
         </form>

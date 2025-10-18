@@ -10,8 +10,8 @@
             <i class="fas fa-arrow-left text-lg"></i>
         </a>
         <div>
-            <h1 class="text-2xl font-semibold text-gray-900">Create New Role</h1>
-            <p class="text-gray-600 mt-1">Define a new role and assign permissions</p>
+            <h1 class="text-2xl font-semibold text-gray-900">Buat Role Baru</h1>
+            <p class="text-gray-600 mt-1">Tentukan role baru dan tetapkan izin</p>
         </div>
     </div>
 
@@ -23,19 +23,19 @@
             <!-- Role Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                    Role Name <span class="text-red-500">*</span>
+                    Nama Role <span class="text-red-500">*</span>
                 </label>
                 <input type="text" 
                        id="name" 
                        name="name" 
                        value="{{ old('name') }}"
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
-                       placeholder="Enter role name (e.g., manager, editor)"
+                       placeholder="Masukkan nama role (misalnya, manager, editor)"
                        required>
                 @error('name')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-sm mt-1">Use lowercase with underscores for multi-word names (e.g., content_manager)</p>
+                <p class="text-gray-500 text-sm mt-1">Gunakan huruf kecil dengan garis bawah untuk nama yang terdiri dari beberapa kata (misalnya, content_manager)</p>
             </div>
 
             <!-- Permissions -->
@@ -47,13 +47,13 @@
                 <!-- Select All Options -->
                 <div class="mb-4 p-4 bg-gray-50 rounded-lg">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Quick Actions:</span>
+                        <span class="text-sm text-gray-700">Tindakan Cepat:</span>
                         <div class="space-x-2">
                             <button type="button" onclick="selectAll()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                Select All
+                                Pilih Semua
                             </button>
                             <button type="button" onclick="selectNone()" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
-                                Select None
+                                Pilih Tidak Ada
                             </button>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                 @else
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-key text-3xl mb-2"></i>
-                        <p>No permissions available</p>
+                        <p>Tidak ada izin yang tersedia</p>
                     </div>
                 @endif
 
@@ -106,10 +106,10 @@
             <!-- Actions -->
             <div class="flex items-center justify-between pt-6 border-t border-gray-200">
                 <a href="{{ route('roles.index') }}" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200">
-                    Cancel
+                    Batal
                 </a>
                 <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
-                    Create Role
+                    Buat Role
                 </button>
             </div>
         </form>
