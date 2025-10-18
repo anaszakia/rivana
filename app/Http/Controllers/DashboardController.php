@@ -91,8 +91,25 @@ class DashboardController extends Controller
             'totalAuditLogs' => AuditLog::count(),
             'recentUsers' => User::latest()->take(5)->get(),
             'recentActivity' => AuditLog::with('user')->latest()->take(10)->get(),
-            'userGrowthData' => $this->getUserGrowthData(),
-            'loginStats' => $this->getLoginStats(),
+            
+            // Hidrologi Data
+            'totalHidrologiJobs' => \App\Models\HidrologiJobs::count(),
+            'completedJobs' => \App\Models\HidrologiJobs::where('status', 'completed')->count(),
+            'runningJobs' => \App\Models\HidrologiJobs::whereIn('status', ['pending', 'running', 'processing'])->count(),
+            'failedJobs' => \App\Models\HidrologiJobs::where('status', 'failed')->count(),
+            'totalFiles' => \App\Models\HidrologiFile::count(),
+            'todayJobs' => \App\Models\HidrologiJobs::whereDate('created_at', today())->count(),
+            'thisWeekJobs' => \App\Models\HidrologiJobs::whereBetween('created_at', [
+                Carbon::now()->startOfWeek(),
+                Carbon::now()->endOfWeek()
+            ])->count(),
+            'thisMonthJobs' => \App\Models\HidrologiJobs::whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->count(),
+            'recentJobs' => \App\Models\HidrologiJobs::with('user')->latest()->take(5)->get(),
+            
+            'hidrologiGrowthData' => $this->getHidrologiGrowthData(),
+            'jobStatusData' => $this->getJobStatusData(),
         ];
         
         return view('admin.dashboard', $data);
@@ -135,6 +152,54 @@ class DashboardController extends Controller
         return [
             'days' => $days,
             'loginCounts' => $loginCounts
+        ];
+    }
+    
+    private function getHidrologiGrowthData()
+    {
+        $months = [];
+        $jobCounts = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $months[] = $date->format('M Y');
+            $count = \App\Models\HidrologiJobs::whereYear('created_at', $date->year)
+                ->whereMonth('created_at', $date->month)
+                ->count();
+            $jobCounts[] = $count;
+        }
+        
+        return [
+            'months' => $months,
+            'jobCounts' => $jobCounts
+        ];
+    }
+    
+    private function getJobStatusData()
+    {
+        $days = [];
+        $completedCounts = [];
+        $failedCounts = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $days[] = $date->format('M d');
+            
+            $completed = \App\Models\HidrologiJobs::where('status', 'completed')
+                ->whereDate('created_at', $date)
+                ->count();
+            $completedCounts[] = $completed;
+            
+            $failed = \App\Models\HidrologiJobs::where('status', 'failed')
+                ->whereDate('created_at', $date)
+                ->count();
+            $failedCounts[] = $failed;
+        }
+        
+        return [
+            'days' => $days,
+            'completedCounts' => $completedCounts,
+            'failedCounts' => $failedCounts
         ];
     }
 }
