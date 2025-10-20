@@ -2,7 +2,7 @@
 <footer class="bg-white border-t border-gray-200 px-6 py-4">
     <div class="flex items-center justify-between">
         <div class="flex items-center text-sm text-gray-500">
-            <span>&copy; <?php echo date('Y'); ?> Ardhan Creative. All rights reserved.</span>
+            <span>&copy; <?php echo date('Y'); ?> RIVANA. All rights reserved.</span>
         </div>
         
         {{-- <div class="flex items-center space-x-4">
