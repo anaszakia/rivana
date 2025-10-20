@@ -174,6 +174,11 @@ Route::middleware(['auth', 'log.sensitive'])->group(function () {
             ->middleware('permission:delete hidrologi')
             ->name('destroy');
         
+        // Bulk delete jobs
+        Route::post('/bulk-delete', [HidrologiJobController::class, 'bulkDestroy'])
+            ->middleware('permission:delete hidrologi')
+            ->name('bulk-destroy');
+        
         // File routes
         Route::prefix('file')->name('file.')->group(function () {
             Route::get('/download/{id}', [HidrologiFileController::class, 'download'])

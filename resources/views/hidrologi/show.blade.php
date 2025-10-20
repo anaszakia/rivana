@@ -631,6 +631,357 @@
                         </div>
                     @endif
 
+                    <!-- ====================== ADDITIONAL DETAILED SECTIONS (Matching Python Output) ====================== -->
+                    
+                    <!-- BAGIAN 1: PEMBAGIAN & PRIORITAS AIR -->
+                    @if(isset($summary['hasil_analisis']['pasokan_air_per_sektor']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-blue-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-blue-50 p-3 rounded">
+                                <i class="fas fa-water text-blue-600 mr-2"></i>
+                                BAGIAN 1: PEMBAGIAN & PRIORITAS AIR
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                @foreach($summary['hasil_analisis']['pasokan_air_per_sektor'] as $sector => $data)
+                                    <div class="bg-gray-50 rounded p-3 hover:bg-gray-100 transition">
+                                        <div class="font-medium text-blue-900 mb-2 flex items-center">
+                                            <i class="fas fa-tint text-blue-600 mr-2"></i>
+                                            {{ $sector }}
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs pl-6">
+                                            <div><span class="text-gray-600">Kuota Legal:</span> <span class="font-bold">{{ $data['quota'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">Alokasi:</span> <span class="font-bold text-green-700">{{ $data['alokasi'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">Prioritas:</span> <span class="font-bold text-purple-700">{{ $data['prioritas'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">Pemenuhan:</span> <span class="font-bold text-blue-700">{{ $data['pemenuhan'] ?? 'N/A' }}</span></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 2: SUMBER-SUMBER AIR -->
+                    @if(isset($summary['hasil_analisis']['sumber_air']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-cyan-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-cyan-50 p-3 rounded">
+                                <i class="fas fa-stream text-cyan-600 mr-2"></i>
+                                BAGIAN 2: SUMBER-SUMBER AIR
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                @foreach($summary['hasil_analisis']['sumber_air'] as $source => $data)
+                                    <div class="bg-cyan-50 rounded p-3 hover:bg-cyan-100 transition">
+                                        <div class="font-medium text-cyan-900 mb-2 flex items-center">
+                                            <i class="fas fa-water text-cyan-600 mr-2"></i>
+                                            {{ $source }}
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs pl-6">
+                                            <div><span class="text-gray-600">Pasokan:</span> <span class="font-bold text-green-700">{{ $data['pasokan'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">Biaya:</span> <span class="font-bold text-red-700">{{ $data['biaya'] ?? 'N/A' }}</span></div>
+                                            <div class="col-span-2"><span class="text-gray-600">Kontribusi:</span> <span class="font-bold text-blue-700">{{ $data['kontribusi'] ?? 'N/A' }}</span></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 3: BIAYA & MANFAAT -->
+                    @if(isset($summary['hasil_analisis']['ekonomi']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
+                                <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
+                                BAGIAN 3: BIAYA & MANFAAT
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div class="bg-red-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Total Biaya</div>
+                                    <div class="font-bold text-2xl text-red-700">{{ $summary['hasil_analisis']['ekonomi']['total_biaya'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="bg-green-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Total Manfaat</div>
+                                    <div class="font-bold text-2xl text-green-700">{{ $summary['hasil_analisis']['ekonomi']['total_manfaat'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="bg-blue-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Net Benefit</div>
+                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['hasil_analisis']['ekonomi']['net_benefit'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="bg-purple-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Efisiensi</div>
+                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['hasil_analisis']['ekonomi']['efisiensi'] ?? 'N/A' }}</div>
+                                </div>
+                            </div>
+                            
+                            @if(isset($summary['hasil_analisis']['ekonomi']['breakdown']))
+                                <div class="mt-3 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2">Breakdown Biaya:</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        @foreach($summary['hasil_analisis']['ekonomi']['breakdown'] as $item => $nilai)
+                                            <div class="bg-gray-50 rounded p-2 text-xs">
+                                                <span class="text-gray-600">{{ $item }}:</span>
+                                                <span class="font-bold text-gray-800 ml-2">{{ $nilai }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN -->
+                    @if(isset($summary['hasil_analisis']['morfologi']) || isset($summary['hasil_analisis']['kesehatan_ekosistem']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-amber-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-amber-50 p-3 rounded">
+                                <i class="fas fa-mountain text-amber-600 mr-2"></i>
+                                BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN
+                            </h4>
+                            
+                            @if(isset($summary['hasil_analisis']['morfologi']))
+                                <div class="bg-gray-50 rounded p-3 mb-3">
+                                    <div class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <i class="fas fa-layer-group text-amber-600 mr-2"></i>
+                                        Morfologi Sungai
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs pl-6">
+                                        @foreach($summary['hasil_analisis']['morfologi'] as $param => $nilai)
+                                            <div><span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $param)) }}:</span> <span class="font-bold">{{ $nilai }}</span></div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']))
+                                <div class="bg-green-50 rounded p-3">
+                                    <div class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <i class="fas fa-leaf text-green-600 mr-2"></i>
+                                        Kesehatan Ekosistem
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs pl-6">
+                                        <div class="col-span-2 mb-2">
+                                            <span class="text-gray-600">Indeks Kesehatan:</span>
+                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</span>
+                                            <span class="text-xs text-gray-500 ml-2">({{ $summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A' }})</span>
+                                        </div>
+                                        @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish']))
+                                            <div><span class="text-gray-600">Habitat Ikan:</span> <span class="font-bold text-blue-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish'] }}</span></div>
+                                        @endif
+                                        @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']['habitat_vegetation']))
+                                            <div><span class="text-gray-600">Habitat Vegetasi:</span> <span class="font-bold text-green-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_vegetation'] }}</span></div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 5: RINGKASAN KONDISI SISTEM -->
+                    @if(isset($summary['statistik_data']['keandalan_sistem']))
+                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 mt-4 shadow-md border-2 border-indigo-200">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center bg-white bg-opacity-70 p-3 rounded-lg">
+                                <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
+                                📊 RINGKASAN KONDISI SISTEM
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
+                                    <div class="text-xs text-gray-600 mb-1">Keadaan Ketersediaan Air</div>
+                                    <div class="font-bold text-3xl text-green-700 mb-1">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-600">Status: <span class="font-semibold text-green-800">{{ $summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A' }}</span></div>
+                                </div>
+                                <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
+                                    <div class="text-xs text-gray-600 mb-1">Volume Waduk</div>
+                                    <div class="font-bold text-3xl text-cyan-700 mb-1">{{ $summary['statistik_data']['volume_waduk']['akhir_periode'] ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-600">Max: <span class="font-semibold">{{ $summary['statistik_data']['volume_waduk']['maksimum'] ?? 'N/A' }}</span></div>
+                                </div>
+                                <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow col-span-2">
+                                    <div class="text-xs text-gray-600 mb-1">Curah Hujan Rata-rata</div>
+                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['statistik_data']['curah_hujan']['rata_rata'] ?? 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- ⭐⭐⭐ NEW COMPREHENSIVE SECTIONS ⭐⭐⭐ -->
+
+                    <!-- BAGIAN 6: PREDIKSI HUJAN 30 HARI -->
+                    @if(isset($summary['prediksi_30_hari']))
+                        <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-sky-300">
+                            <h4 class="font-bold text-sky-900 text-lg mb-3 flex items-center">
+                                <i class="fas fa-cloud-sun-rain mr-2 text-sky-600"></i>
+                                <span>📅 Prediksi Hujan 30 Hari</span>
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @if(isset($summary['prediksi_30_hari']['hujan']))
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <h5 class="font-semibold text-sky-800 mb-2">Curah Hujan</h5>
+                                        <div class="space-y-1 text-sm">
+                                            @foreach($summary['prediksi_30_hari']['hujan'] as $key => $value)
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">{{ ucfirst($key) }}:</span>
+                                                    <span class="font-bold">{{ $value }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                                
+                                @if(isset($summary['prediksi_30_hari']['waduk']))
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <h5 class="font-semibold text-blue-800 mb-2">Waduk</h5>
+                                        <div class="space-y-1 text-sm">
+                                            @foreach($summary['prediksi_30_hari']['waduk'] as $key => $value)
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}:</span>
+                                                    <span class="font-bold">{{ $value }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                                
+                                @if(isset($summary['prediksi_30_hari']['keandalan']))
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <h5 class="font-semibold text-green-800 mb-2">Keandalan</h5>
+                                        <div class="space-y-1 text-sm">
+                                            @foreach($summary['prediksi_30_hari']['keandalan'] as $key => $value)
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}:</span>
+                                                    <span class="font-bold">{{ $value }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            @if(isset($summary['prediksi_30_hari']['rekomendasi_forecast']))
+                                <div class="bg-blue-100 rounded-lg p-3 mt-3 border-l-4 border-blue-500">
+                                    <p class="text-sm font-semibold text-blue-900">{!! nl2br(e($summary['prediksi_30_hari']['rekomendasi_forecast'])) !!}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 7: PEMENUHAN KEBUTUHAN AIR -->
+                    @if(isset($summary['pemenuhan_kebutuhan_air']))
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-4 mt-4 shadow-md border-2 border-emerald-300">
+                            <h4 class="font-bold text-emerald-900 text-lg mb-3 flex items-center">
+                                <i class="fas fa-tint mr-2 text-emerald-600"></i>
+                                <span>💧 Pemenuhan Kebutuhan Air</span>
+                            </h4>
+                            
+                            @if(isset($summary['pemenuhan_kebutuhan_air']['ringkasan']))
+                                <div class="bg-white rounded-lg p-4 mb-3 shadow-sm">
+                                    <h5 class="font-bold text-emerald-800 mb-2">Ringkasan</h5>
+                                    <div class="grid grid-cols-4 gap-2 text-sm">
+                                        @foreach($summary['pemenuhan_kebutuhan_air']['ringkasan'] as $key => $value)
+                                            <div class="text-center">
+                                                <p class="text-gray-600 text-xs">{{ ucwords(str_replace('_', ' ', $key)) }}</p>
+                                                <p class="font-bold">{{ $value }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            @if(isset($summary['pemenuhan_kebutuhan_air']['detail_sektor']))
+                                <div class="space-y-2">
+                                    @foreach($summary['pemenuhan_kebutuhan_air']['detail_sektor'] as $sektor => $data)
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h6 class="font-bold capitalize">{{ $sektor }}</h6>
+                                                <span class="px-2 py-1 rounded text-xs font-bold {{ $data['status'] === 'SURPLUS' ? 'bg-green-100 text-green-800' : ($data['status'] === 'DEFISIT' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                                    {{ $data['status'] }}
+                                                </span>
+                                            </div>
+                                            <div class="grid grid-cols-4 gap-2 text-xs">
+                                                @foreach($data as $key => $value)
+                                                    @if($key !== 'status')
+                                                        <div>
+                                                            <span class="text-gray-600">{{ ucfirst($key) }}:</span>
+                                                            <span class="font-bold">{{ $value }}</span>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 8: SARAN PENGELOLAAN -->
+                    @if(isset($summary['saran_pengelolaan']) && is_array($summary['saran_pengelolaan']))
+                        <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-cyan-300">
+                            <h4 class="font-bold text-cyan-900 text-lg mb-3 flex items-center">
+                                <i class="fas fa-tasks mr-2 text-cyan-600"></i>
+                                <span>📋 Saran Pengelolaan</span>
+                            </h4>
+                            
+                            <div class="space-y-2">
+                                @foreach($summary['saran_pengelolaan'] as $index => $saran)
+                                    @php
+                                        $isPriority = strpos($saran, '🔴') !== false || strpos($saran, '⚠️') !== false;
+                                        $bgClass = $isPriority ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400';
+                                    @endphp
+                                    <div class="bg-white rounded-lg p-3 border-l-4 {{ $bgClass }}">
+                                        <p class="text-sm"><strong>{{ $index + 1 }}.</strong> {!! nl2br(e($saran)) !!}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 9: SARAN PERBAIKAN KONDISI -->
+                    @if(isset($summary['saran_perbaikan_kondisi']) && is_array($summary['saran_perbaikan_kondisi']))
+                        <div class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-lg p-4 mt-4 shadow-md border-2 border-rose-300">
+                            <h4 class="font-bold text-rose-900 text-lg mb-3 flex items-center">
+                                <i class="fas fa-tools mr-2 text-rose-600"></i>
+                                <span>🔧 Saran Perbaikan & Action Plan</span>
+                            </h4>
+                            
+                            <div class="space-y-3">
+                                @foreach($summary['saran_perbaikan_kondisi'] as $index => $perbaikan)
+                                    @php
+                                        $prioritas = $perbaikan['prioritas'] ?? 'NORMAL';
+                                        $badgeClass = $prioritas === 'TINGGI' ? 'bg-red-500' : ($prioritas === 'SEDANG' ? 'bg-yellow-500' : 'bg-green-500');
+                                    @endphp
+                                    
+                                    <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                                        <div class="bg-gray-100 px-4 py-2 flex justify-between items-center">
+                                            <h5 class="font-bold">{{ $perbaikan['kategori'] ?? 'N/A' }}</h5>
+                                            <span class="px-2 py-1 {{ $badgeClass }} text-white text-xs rounded">{{ $prioritas }}</span>
+                                        </div>
+                                        <div class="p-4">
+                                            <p class="text-sm text-gray-700 mb-2"><strong>Masalah:</strong> {{ $perbaikan['masalah'] ?? 'N/A' }}</p>
+                                            
+                                            @if(isset($perbaikan['solusi']))
+                                                <div class="mb-2">
+                                                    <strong class="text-sm">Solusi:</strong>
+                                                    <ul class="list-disc list-inside text-sm text-gray-700 mt-1">
+                                                        @foreach($perbaikan['solusi'] as $solusi)
+                                                            <li>{{ $solusi }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                            
+                                            <div class="grid grid-cols-2 gap-2 pt-2 border-t text-xs">
+                                                <div>
+                                                    <span class="text-gray-600">Biaya:</span>
+                                                    <span class="font-bold">{{ $perbaikan['estimasi_biaya'] ?? 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-600">Timeline:</span>
+                                                    <span class="font-bold">{{ $perbaikan['timeline'] ?? 'N/A' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Error Display (jika ada) -->
                     @if(isset($summary['error']))
                         <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-4 rounded-r-lg">

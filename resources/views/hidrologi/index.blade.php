@@ -137,6 +137,14 @@
                     <p class="text-sm text-gray-500 mt-1">Pantau progress dan status setiap pekerjaan</p>
                 </div>
                 <div class="flex items-center space-x-2">
+                    @can('delete hidrologi')
+                        <button id="bulkDeleteBtn" onclick="bulkDelete()" 
+                                class="hidden items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg" 
+                                title="Hapus Terpilih">
+                            <i class="fas fa-trash-alt mr-2"></i>
+                            Hapus (<span id="selectedCount">0</span>)
+                        </button>
+                    @endcan
                     <button onclick="location.reload()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
                         <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
                     </button>
@@ -148,6 +156,13 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
                     <tr>
+                        @can('delete hidrologi')
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider w-12">
+                                <input type="checkbox" id="selectAll" 
+                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                                       onchange="toggleSelectAll(this)">
+                            </th>
+                        @endcan
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">ID Pekerjaan</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Lokasi</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Rentang Tanggal</th>
@@ -161,6 +176,14 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($jobs as $job)
                         <tr class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 group">
+                            @can('delete hidrologi')
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" 
+                                           class="job-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer" 
+                                           value="{{ $job->id }}"
+                                           onchange="updateBulkDeleteButton()">
+                                </td>
+                            @endcan
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-2">
                                     <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -265,7 +288,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-16 text-center">
+                            <td colspan="9" class="px-6 py-16 text-center">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-6 shadow-lg">
                                         <i class="fas fa-folder-open text-4xl text-blue-400"></i>
@@ -298,6 +321,121 @@
 
 @push('scripts')
 <script>
+// Toggle Select All Checkbox
+function toggleSelectAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.job-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+    });
+    updateBulkDeleteButton();
+}
+
+// Update Bulk Delete Button visibility and count
+function updateBulkDeleteButton() {
+    const checkedBoxes = document.querySelectorAll('.job-checkbox:checked');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const selectedCount = document.getElementById('selectedCount');
+    const selectAll = document.getElementById('selectAll');
+    
+    if (checkedBoxes.length > 0) {
+        bulkDeleteBtn.classList.remove('hidden');
+        bulkDeleteBtn.classList.add('flex');
+        selectedCount.textContent = checkedBoxes.length;
+    } else {
+        bulkDeleteBtn.classList.add('hidden');
+        bulkDeleteBtn.classList.remove('flex');
+    }
+    
+    // Update select all checkbox state
+    const allCheckboxes = document.querySelectorAll('.job-checkbox');
+    if (selectAll) {
+        selectAll.checked = checkedBoxes.length === allCheckboxes.length && allCheckboxes.length > 0;
+    }
+}
+
+// Bulk Delete Function
+function bulkDelete() {
+    const checkedBoxes = document.querySelectorAll('.job-checkbox:checked');
+    const jobIds = Array.from(checkedBoxes).map(cb => cb.value);
+    
+    if (jobIds.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak Ada Data Terpilih',
+            text: 'Pilih minimal satu pekerjaan untuk dihapus'
+        });
+        return;
+    }
+    
+    Swal.fire({
+        title: 'Hapus Data Terpilih?',
+        html: `Apakah Anda yakin ingin menghapus <strong>${jobIds.length}</strong> pekerjaan?<br><strong class='text-red-600'>Tindakan ini tidak dapat dibatalkan!</strong>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus Semua!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Menghapus Data...',
+                html: `Menghapus ${jobIds.length} pekerjaan, mohon tunggu...`,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('/hidrologi/bulk-delete', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    job_ids: jobIds
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        html: data.message || `${data.deleted_count || jobIds.length} pekerjaan berhasil dihapus.`,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal menghapus pekerjaan'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat menghapus pekerjaan: ' + error.message
+                });
+            });
+        }
+    });
+}
+
 function cancelJob(jobId) {
     Swal.fire({
         title: 'Batalkan Pekerjaan?',

@@ -508,6 +508,87 @@ class HidrologiJobController extends Controller
     }
 
     /**
+     * Bulk delete multiple jobs
+     */
+    public function bulkDestroy(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'job_ids' => 'required|array|min:1',
+                'job_ids.*' => 'required|integer|exists:hidrologi_jobs,id'
+            ]);
+
+            $jobIds = $validated['job_ids'];
+            $deletedCount = 0;
+            $failedCount = 0;
+            $errors = [];
+
+            DB::beginTransaction();
+            
+            foreach ($jobIds as $jobId) {
+                try {
+                    $job = HidrologiJobs::findOrFail($jobId);
+
+                    // Log sebelum delete
+                    HidrologiLog::create([
+                        'job_id' => $job->id,
+                        'job_uuid' => $job->job_id,
+                        'log_level' => 'warning',
+                        'event_type' => 'deleted',
+                        'message' => 'Job deleted by user (bulk delete)',
+                        'progress_at_event' => $job->progress,
+                        'status_at_event' => $job->status
+                    ]);
+
+                    // Soft delete
+                    $job->delete();
+                    $deletedCount++;
+                    
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $errors[] = "Job ID {$jobId}: {$e->getMessage()}";
+                    Log::error("Failed to delete job {$jobId}", [
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // Prepare response message
+            $message = "{$deletedCount} pekerjaan berhasil dihapus.";
+            if ($failedCount > 0) {
+                $message .= " {$failedCount} pekerjaan gagal dihapus.";
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'deleted_count' => $deletedCount,
+                'failed_count' => $failedCount,
+                'errors' => $errors
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid: ' . implode(', ', $e->errors()['job_ids'] ?? ['Unknown error'])
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Bulk delete error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Cancel job yang sedang processing
      */
     public function cancel($id)
