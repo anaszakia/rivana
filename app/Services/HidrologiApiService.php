@@ -14,13 +14,14 @@ class HidrologiApiService
 
     public function __construct()
     {
-        $this->apiUrl = config('services.hidrologi.api_url', 'http://localhost:8000');
-        $this->apiToken = config('services.hidrologi.api_key'); // Changed from api_token to api_key
-        $this->timeout = config('services.hidrologi.timeout', 300);
+        // Prioritas: services_hidrologi.php, fallback ke services.php
+        $this->apiUrl = config('services_hidrologi.hidrologi.api_url') ?? config('services.hidrologi.api_url', 'http://localhost:8000');
+        $this->apiToken = config('services_hidrologi.hidrologi.api_token') ?? config('services.hidrologi.api_key');
+        $this->timeout = config('services_hidrologi.hidrologi.timeout') ?? config('services.hidrologi.timeout', 300);
         
         // Validasi token
         if (empty($this->apiToken)) {
-            Log::warning('Hidrologi API Token not configured in .env file. Please set HIDROLOGI_API_KEY');
+            Log::warning('Hidrologi API Token not configured in .env file. Please set RIVANA_API_TOKEN or HIDROLOGI_API_KEY');
         }
     }
     

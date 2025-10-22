@@ -12,7 +12,7 @@ return [
 
     'hidrologi' => [
         // API Base URL
-        'api_url' => env('RIVANA_API_URL', 'http://localhost:8000'),
+        'api_url' => env('RIVANA_API_URL', 'https://itriverdna.my.id:8001'),
         
         // Bearer Token untuk Authentication
         'api_token' => env('RIVANA_API_TOKEN'),
