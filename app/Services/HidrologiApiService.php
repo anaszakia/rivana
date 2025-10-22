@@ -15,12 +15,12 @@ class HidrologiApiService
     public function __construct()
     {
         $this->apiUrl = config('services.hidrologi.api_url', 'http://localhost:8000');
-        $this->apiToken = config('services.hidrologi.api_token');
+        $this->apiToken = config('services.hidrologi.api_key'); // Changed from api_token to api_key
         $this->timeout = config('services.hidrologi.timeout', 300);
         
         // Validasi token
         if (empty($this->apiToken)) {
-            Log::warning('Hidrologi API Token not configured in .env');
+            Log::warning('Hidrologi API Token not configured in .env file. Please set HIDROLOGI_API_KEY');
         }
     }
     
