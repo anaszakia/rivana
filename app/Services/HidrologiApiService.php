@@ -9,12 +9,31 @@ use Exception;
 class HidrologiApiService
 {
     protected $apiUrl;
+    protected $apiToken;
     protected $timeout;
 
     public function __construct()
     {
         $this->apiUrl = config('services.hidrologi.api_url', 'http://localhost:8000');
+        $this->apiToken = config('services.hidrologi.api_token');
         $this->timeout = config('services.hidrologi.timeout', 300);
+        
+        // Validasi token
+        if (empty($this->apiToken)) {
+            Log::warning('Hidrologi API Token not configured in .env');
+        }
+    }
+    
+    /**
+     * Get headers dengan Bearer Token
+     */
+    protected function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . $this->apiToken,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ];
     }
 
     /**
@@ -42,10 +61,7 @@ class HidrologiApiService
             ]);
             
             $response = Http::timeout($this->timeout)
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
-                ])
+                ->withHeaders($this->getHeaders())
                 ->post("{$this->apiUrl}/generate", $payload);
 
             // Log response untuk debugging
@@ -94,6 +110,7 @@ class HidrologiApiService
     {
         try {
             $response = Http::timeout(10)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/status/{$jobId}");
 
             if ($response->successful()) {
@@ -124,6 +141,7 @@ class HidrologiApiService
     {
         try {
             $response = Http::timeout(10)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/result/{$jobId}");
 
             if ($response->successful()) {
@@ -155,6 +173,7 @@ class HidrologiApiService
         try {
             // Try to get all files first
             $response = Http::timeout(10)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/files/{$jobId}");
 
             if ($response->successful()) {
@@ -181,6 +200,7 @@ class HidrologiApiService
     {
         try {
             $response = Http::timeout(10)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/images/{$jobId}");
 
             if ($response->successful()) {
@@ -240,6 +260,7 @@ class HidrologiApiService
     {
         try {
             $response = Http::timeout(10)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/summary/{$jobId}");
 
             if ($response->successful()) {
@@ -271,6 +292,7 @@ class HidrologiApiService
     {
         try {
             $response = Http::timeout(15)
+                ->withHeaders($this->getHeaders())
                 ->get("{$this->apiUrl}/logs/{$jobId}");
 
             if ($response->successful()) {
