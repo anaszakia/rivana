@@ -33,12 +33,13 @@ class HidrologiFileController extends Controller
         ]);
 
         try {
-            // Create stream context with proper error handling
+            // Create stream context with Bearer token and proper error handling
             $context = stream_context_create([
                 'http' => [
                     'timeout' => 30,
                     'ignore_errors' => true,
-                    'follow_location' => 1
+                    'follow_location' => 1,
+                    'header' => "Authorization: Bearer " . config('services_hidrologi.hidrologi.api_token')
                 ]
             ]);
             
@@ -135,12 +136,13 @@ class HidrologiFileController extends Controller
         ]);
 
         try {
-            // Coba ambil konten dengan context options untuk error handling yang lebih baik
+            // Coba ambil konten dengan context options untuk error handling yang lebih baik + Bearer Token
             $context = stream_context_create([
                 'http' => [
                     'timeout' => 30,
                     'ignore_errors' => true,
-                    'follow_location' => 1
+                    'follow_location' => 1,
+                    'header' => "Authorization: Bearer " . config('services_hidrologi.hidrologi.api_token')
                 ]
             ]);
             
