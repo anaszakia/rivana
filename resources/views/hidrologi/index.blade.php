@@ -27,12 +27,10 @@
                         <span class="text-sm">Total {{ $jobs->total() }} pekerjaan tercatat dalam sistem</span>
                     </div>
                 </div>
-                @can('create hidrologi')
                     <a href="{{ route('hidrologi.create') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                         <i class="fas fa-plus-circle mr-2 text-lg"></i>
                         Analisis Baru
                     </a>
-                @endcan
             </div>
         </div>
     </div>
