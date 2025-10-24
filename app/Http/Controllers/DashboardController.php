@@ -11,28 +11,17 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $user = auth()->user();
-        
-        // Check user permissions to determine dashboard type
-        if ($user->can('access admin dashboard')) {
-            return $this->adminDashboard();
-        } elseif ($user->can('access user dashboard')) {
-            return $this->userDashboard();
-        } else {
-            // Fallback for users without specific dashboard permissions
-            return $this->basicDashboard();
-        }
+        // Always show admin dashboard without authentication
+        return $this->adminDashboard();
     }
     
     private function basicDashboard()
     {
-        $user = auth()->user();
-        
         $data = [
-            'user' => $user,
-            'accountCreated' => $user->created_at->diffForHumans(),
-            'userPermissions' => $user->getAllPermissions()->pluck('name')->toArray(),
-            'userRoles' => $user->getRoleNames()->toArray(),
+            'user' => null,
+            'accountCreated' => null,
+            'userPermissions' => [],
+            'userRoles' => [],
         ];
         
         return view('dashboard.basic', $data);
@@ -40,29 +29,19 @@ class DashboardController extends Controller
 
     public function userDashboard()
     {
-        $user = auth()->user();
-        
-        // Data untuk user dashboard
+        // Data untuk user dashboard without authentication
         $data = [
-            'user' => $user,
+            'user' => null,
             'totalUsers' => User::count(),
             'todayLogins' => AuditLog::where('action', 'Login')
                 ->whereDate('created_at', today())
                 ->count(),
-            'myLoginHistory' => AuditLog::where('user_id', $user->id)
-                ->where('action', 'Login')
-                ->latest()
-                ->take(5)
-                ->get(),
-            'recentActivity' => AuditLog::where('user_id', $user->id)
-                ->latest()
+            'myLoginHistory' => collect([]),
+            'recentActivity' => AuditLog::latest()
                 ->take(10)
                 ->get(),
-            'accountCreated' => $user->created_at->diffForHumans(),
-            'lastLogin' => AuditLog::where('user_id', $user->id)
-                ->where('action', 'Login')
-                ->latest()
-                ->first()?->created_at?->diffForHumans() ?? 'Belum pernah login',
+            'accountCreated' => null,
+            'lastLogin' => 'Sistem tanpa login',
         ];
         
         return view('user.dashboard', $data);

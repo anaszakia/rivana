@@ -1,45 +1,59 @@
-<!-- Toggle Button for Mobile -->
-<button id="sidebar-toggle" class="lg:hidden fixed top-20 left-4 z-50 p-2 bg-white text-gray-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
-    <i class="fas fa-bars text-sm"></i>
-</button>
+<!-- Sidebar Overlay for Mobile & Tablet -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden transition-opacity duration-300"></div>
 
-<!-- Sidebar Overlay for Mobile -->
-<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-30 z-20 lg:hidden hidden transition-all duration-300"></div>
+<!-- Mobile/Tablet Header Bar (Fixed Top) -->
+<div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-md z-30 flex items-center justify-between px-4">
+    <button id="sidebar-toggle" class="p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+    <div class="flex items-center space-x-3">
+        <img src="/images/logo2.jpg" alt="Logo" class="w-9 h-9 rounded-lg object-cover border border-gray-200 shadow-sm">
+        <span class="text-lg font-bold text-gray-800">RIVANA</span>
+    </div>
+    <div class="w-10"></div> <!-- Spacer for centering -->
+</div>
 
 <!-- Sidebar -->
-<div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col border-r border-gray-200">
-    <!-- Sidebar Header -->
-    <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+<div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 sm:w-80 md:w-72 bg-white shadow-2xl transform -translate-x-full transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:w-64 flex flex-col border-r border-gray-200 overflow-hidden lg:mt-0 mt-16">
+    <!-- Sidebar Header (Desktop Only) -->
+    <div class="hidden lg:flex items-center justify-between h-16 px-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
         <div class="flex items-center space-x-3">
-            <img src="/images/logo2.jpg" alt="Logo" class="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow">
-            <span class="text-lg font-semibold text-gray-800 sidebar-text">RIVANA</span>
+            <img src="/images/logo2.jpg" alt="Logo" class="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow-md">
+            <span class="text-lg font-bold text-gray-800 sidebar-text">RIVANA</span>
         </div>
-        <div class="flex items-center space-x-1">
-            <!-- Desktop Toggle Button - Langsung klik tanpa hover -->
-            <button id="desktop-toggle" class="hidden lg:flex p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 items-center justify-center">
+        <div class="flex items-center">
+            <!-- Desktop Toggle Button -->
+            <button id="desktop-toggle" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200">
                 <i class="fas fa-chevron-left text-sm transition-transform duration-200" id="toggle-icon"></i>
-            </button>
-            <!-- Mobile Close Button -->
-            <button id="sidebar-close" class="lg:hidden p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200">
-                <i class="fas fa-times text-sm"></i>
             </button>
         </div>
     </div>
     
+    <!-- Mobile/Tablet Header (Inside Sidebar) -->
+    <div class="lg:hidden flex items-center justify-between h-16 px-4 sm:px-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-cyan-50">
+        <div class="flex items-center space-x-3">
+            <img src="/images/logo2.jpg" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gray-200 shadow-md">
+            <span class="text-lg sm:text-xl font-bold text-gray-800">RIVANA</span>
+        </div>
+        <button id="sidebar-close" class="p-2 sm:p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200">
+            <i class="fas fa-times text-lg sm:text-xl"></i>
+        </button>
+    </div>
+    
     <!-- Navigation -->
-    <nav class="flex-1 px-4 py-4 overflow-y-auto">
-        <ul class="space-y-2">
+    <nav class="flex-1 px-3 sm:px-5 lg:px-4 py-4 sm:py-6 overflow-y-auto">
+        <ul class="space-y-2 sm:space-y-3">
             <!-- Dashboard - Available to all authenticated users -->
             <li>
                 <a href="{{ route('dashboard') }}" 
-                   class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
-                    <i class="fas fa-home w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
+                   class="flex items-center px-3 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group shadow-sm hover:shadow-md">
+                    <i class="fas fa-home w-5 h-5 sm:w-6 sm:h-6 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                     <span class="sidebar-text">Dashboard</span>
                 </a>
             </li>
             
-            <!-- Management Section - Only show if user has any management permissions -->
-            @if(auth()->user()->can('view users') || auth()->user()->can('view audit logs') || auth()->user()->can('view roles') || auth()->user()->can('view permissions'))
+            <!-- Management Section - Always show since no authentication -->
+            {{-- @if(true)
                 <li class="relative">
                     <button onclick="toggleDropdown()" class="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
                         <div class="flex items-center">
@@ -80,7 +94,7 @@
                         @endcan
                     </div>
                 </li>
-            @endif
+            @endif --}}
             
             <!-- Hidrologi - Available to users with view hidrologi permission -->
             @can('view hidrologi')
@@ -132,45 +146,12 @@
         </ul>
     </nav>
     
-    <!-- User Profile Section -->
-    <div class="border-t border-gray-200 p-4">
-        <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-all duration-200" onclick="toggleUserDropdown()">
-            <div class="relative">
-                @php
-                    $initial = auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : '?';
-                    $colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500'];
-                    $color = $colors[ord($initial) % count($colors)];
-                @endphp
-                <div class="w-10 h-10 {{ $color }} rounded-lg flex items-center justify-center text-white font-semibold shadow-sm">
-                    {{ $initial }}
-                </div> 
-                <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
-            </div>
-            <div class="flex-1 min-w-0 sidebar-text">
-                <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->name }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
-            </div>
-            <i class="fas fa-chevron-up text-xs text-gray-400 transition-all duration-200 sidebar-arrow" id="user-dropdown-arrow"></i>
-        </div>
-        
-        <!-- User Dropdown Menu -->
-        <div id="user-dropdown-content" class="hidden mt-2 py-1 bg-white border border-gray-200 rounded-lg shadow-md">
-            <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200">
-                <i class="fas fa-user-edit w-4 h-4 mr-3 text-gray-500"></i>
-                <span class="sidebar-text">Edit Profile</span>
-            </a>
-            <!-- Tombol/logout link -->
-            <a href="#"
-            id="btn-logout"
-            class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200">
-                <i class="fas fa-sign-out-alt w-4 h-4 mr-3 text-gray-500"></i>
-                <span class="sidebar-text">Keluar</span>
-            </a>
-
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                @csrf
-            </form>
-        </div>
+    <!-- Back to Welcome Button -->
+    <div class="border-t border-gray-200 p-4 sm:p-5 lg:p-4 mt-auto bg-gray-50">
+        <a href="{{ route('welcome') }}" class="flex items-center justify-center px-4 sm:px-5 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 group">
+            <i class="fas fa-home w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 group-hover:scale-110 transition-transform duration-200"></i>
+            <span class="sidebar-text">Kembali ke Beranda</span>
+        </a>
     </div>
 </div>
 
@@ -311,27 +292,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.getElementById('btn-logout').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        Swal.fire({
-            title: 'Konfirmasi Logout',
-            text: 'Apakah Anda yakin ingin keluar dari sistem?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Keluar',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logout-form').submit();
-            }
-        });
-    });
 </script>

@@ -109,15 +109,13 @@
             @endcan
         </div>
 
-        @if(!auth()->user()->can('edit profile') && !auth()->user()->can('view users') && !auth()->user()->can('view audit logs'))
-            <div class="text-center py-8">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-info-circle text-gray-400 text-2xl"></i>
-                </div>
-                <p class="text-gray-500">No actions available at the moment.</p>
-                <p class="text-sm text-gray-400 mt-1">Contact your administrator for more permissions.</p>
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-water text-blue-500 text-2xl"></i>
             </div>
-        @endif
+            <p class="text-gray-700">Selamat datang di sistem RIVANA!</p>
+            <p class="text-sm text-gray-500 mt-1">Platform analisis hidrologi berbasis Machine Learning.</p>
+        </div>
     </div>
 </div>
 @endsection

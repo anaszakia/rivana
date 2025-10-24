@@ -21,10 +21,10 @@
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-3xl md:text-4xl font-bold mb-2 animate-fade-in flex items-center">
                         <i class="fas fa-water mr-3 text-cyan-300"></i>
-                        River DNA - Sistem Analisis Hidrologi
+                        River DNA Analysis - Sistem Analisis Hidrologi
                     </h1>
                     <p class="text-cyan-100 text-lg animate-fade-in-delay">
-                        Selamat datang, <span class="font-semibold">{{ auth()->user()->name }}</span>! 💧
+                        Selamat datang di sistem RIVANA! 💧
                     </p>
                     <p class="text-cyan-200 text-sm mt-2">
                         Kelola dan pantau analisis data hidrologi dengan mudah

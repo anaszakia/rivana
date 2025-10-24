@@ -63,7 +63,7 @@ class HidrologiJobController extends Controller
             // 1. Buat record di database dengan status pending
             $job = HidrologiJobs::create([
                 'job_id' => 'pending', // Sementara, akan di-update setelah dapat dari API
-                'user_id' => Auth::id() ?? null,
+                'user_id' => 1, // Default user ID since no authentication
                 'longitude' => $validated['longitude'],
                 'latitude' => $validated['latitude'],
                 'start_date' => $validated['start_date'],
