@@ -311,28 +311,28 @@
                                     </div>
                                 @endif
 
-                                @if(isset($summary['statistik_data']['volume_waduk']))
+                                @if(isset($summary['statistik_data']['volume_kolam_retensi']))
                                     <div class="bg-cyan-50 rounded p-3">
                                         <p class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
-                                            Volume Waduk
+                                            Volume Kolam Retensi
                                         </p>
                                         <div class="grid grid-cols-2 gap-2 text-xs">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Rata-rata</div>
-                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_waduk']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_kolam_retensi']['rata_rata'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Maksimum</div>
-                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_waduk']['maksimum'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Minimum</div>
-                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_waduk']['minimum'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_kolam_retensi']['minimum'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Akhir Periode</div>
-                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_waduk']['akhir_periode'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? 'N/A' }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -786,9 +786,9 @@
                                     <div class="text-xs text-gray-600">Status: <span class="font-semibold text-green-800">{{ $summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A' }}</span></div>
                                 </div>
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
-                                    <div class="text-xs text-gray-600 mb-1">Volume Waduk</div>
-                                    <div class="font-bold text-3xl text-cyan-700 mb-1">{{ $summary['statistik_data']['volume_waduk']['akhir_periode'] ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-600">Max: <span class="font-semibold">{{ $summary['statistik_data']['volume_waduk']['maksimum'] ?? 'N/A' }}</span></div>
+                                    <div class="text-xs text-gray-600 mb-1">Volume Kolam Retensi</div>
+                                    <div class="font-bold text-3xl text-cyan-700 mb-1">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-600">Max: <span class="font-semibold">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? 'N/A' }}</span></div>
                                 </div>
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow col-span-2">
                                     <div class="text-xs text-gray-600 mb-1">Curah Hujan Rata-rata</div>
@@ -823,11 +823,11 @@
                                     </div>
                                 @endif
                                 
-                                @if(isset($summary['prediksi_30_hari']['waduk']))
+                                @if(isset($summary['prediksi_30_hari']['kolam_retensi']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-blue-800 mb-2">Waduk</h5>
+                                        <h5 class="font-semibold text-blue-800 mb-2">Kolam Retensi</h5>
                                         <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['waduk'] as $key => $value)
+                                            @foreach($summary['prediksi_30_hari']['kolam_retensi'] as $key => $value)
                                                 <div class="flex justify-between">
                                                     <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
@@ -2645,3 +2645,7 @@ function copyJSONData(fileId) {
 
 @endpush
 @endsection
+
+
+
+

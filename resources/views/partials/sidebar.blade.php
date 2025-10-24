@@ -97,14 +97,12 @@
             @endif --}}
             
             <!-- Hidrologi - Available to users with view hidrologi permission -->
-            @can('view hidrologi')
                 <li>
                     <a href="{{ route('hidrologi.index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group {{ request()->routeIs('hidrologi.*') ? 'bg-blue-50 text-blue-600' : '' }}">
                         <i class="fas fa-water w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500 {{ request()->routeIs('hidrologi.*') ? 'text-blue-500' : '' }}"></i>
                         <span class="sidebar-text">Hidrologi</span>
                     </a>
                 </li>
-            @endcan
             
             <!-- Reports - Only for super admin or users with specific permissions -->
             {{-- @hasrole('super_admin')
