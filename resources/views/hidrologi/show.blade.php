@@ -1143,11 +1143,9 @@
                                                 <i class="fas fa-eye mr-1"></i>View
                                             </button>
                                         @endif
-                                        @can('download hidrologi files')
                                             <a href="{{ route('hidrologi.file.download', $file->id) }}" class="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-200 text-sm">
                                                 <i class="fas fa-download mr-1"></i>Download
                                             </a>
-                                        @endcan
                                     </div>
                                 </div>
                                 
