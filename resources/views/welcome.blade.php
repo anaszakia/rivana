@@ -234,7 +234,7 @@
             <!-- Footer -->
             <div class="text-center pt-12 border-t border-cyan-400/20 animate-fadeUp" style="animation-delay: 0.6s;">
                 <p class="text-cyan-200/60 text-base">
-                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis Platform. All rights reserved.
+                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis. All rights reserved.
                 </p>
             </div>
 
