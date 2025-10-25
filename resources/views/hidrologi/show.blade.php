@@ -35,18 +35,18 @@
                         </div>
                     </div>
                     <div class="flex space-x-2">
-                        @can('edit hidrologi')
+                       
                             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
                                 <button onclick="cancelJob({{ $job->id }})" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                                     <i class="fas fa-stop-circle mr-2"></i>Batalkan
                                 </button>
                             @endif
-                        @endcan
-                        @can('delete hidrologi')
+                      
+                        
                             <button onclick="deleteJob({{ $job->id }})" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                                 <i class="fas fa-trash mr-2"></i>Hapus
                             </button>
-                        @endcan
+                        
                     </div>
                 </div>
             </div>
