@@ -135,14 +135,14 @@
                     <p class="text-sm text-gray-500 mt-1">Pantau progress dan status setiap pekerjaan</p>
                 </div>
                 <div class="flex items-center space-x-2">
-                    @can('delete hidrologi')
+                   
                         <button id="bulkDeleteBtn" onclick="bulkDelete()" 
                                 class="hidden items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg" 
                                 title="Hapus Terpilih">
                             <i class="fas fa-trash-alt mr-2"></i>
                             Hapus (<span id="selectedCount">0</span>)
                         </button>
-                    @endcan
+                    
                     <button onclick="location.reload()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
                         <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
                     </button>
@@ -154,13 +154,13 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
                     <tr>
-                        @can('delete hidrologi')
+                       
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider w-12">
                                 <input type="checkbox" id="selectAll" 
                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                                        onchange="toggleSelectAll(this)">
                             </th>
-                        @endcan
+                      
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">ID Pekerjaan</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Lokasi</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Rentang Tanggal</th>
@@ -174,14 +174,14 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($jobs as $job)
                         <tr class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 group">
-                            @can('delete hidrologi')
+                            
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <input type="checkbox" 
                                            class="job-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer" 
                                            value="{{ $job->id }}"
                                            onchange="updateBulkDeleteButton()">
                                 </td>
-                            @endcan
+                            
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-2">
                                     <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -263,7 +263,7 @@
                                         <i class="fas fa-eye mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
                                         <span class="text-xs font-semibold">Detail</span>
                                     </a>
-                                    @can('edit hidrologi')
+                                   
                                         @if(in_array($job->status, ['pending', 'submitted', 'processing']))
                                             <button onclick="cancelJob({{ $job->id }})" 
                                                     class="inline-flex items-center px-3 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-all duration-200 group/btn" 
@@ -272,15 +272,15 @@
                                                 <span class="text-xs font-semibold">Batal</span>
                                             </button>
                                         @endif
-                                    @endcan
-                                    @can('delete hidrologi')
+                                    
+                                    
                                         <button onclick="deleteJob({{ $job->id }})" 
                                                 class="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all duration-200 group/btn" 
                                                 title="Hapus">
                                             <i class="fas fa-trash mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
                                             <span class="text-xs font-semibold">Hapus</span>
                                         </button>
-                                    @endcan
+                                   
                                 </div>
                             </td>
                         </tr>
@@ -293,13 +293,13 @@
                                     </div>
                                     <h3 class="text-xl font-bold text-gray-700 mb-2">Belum Ada Pekerjaan Analisis</h3>
                                     <p class="text-gray-500 mb-6">Mulai analisis hidrologi pertama Anda sekarang</p>
-                                    @can('create hidrologi')
+                                   
                                         <a href="{{ route('hidrologi.create') }}" 
                                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                                             <i class="fas fa-plus-circle mr-2"></i>
                                             Buat Analisis Pertama
                                         </a>
-                                    @endcan
+                                   
                                 </div>
                             </td>
                         </tr>
