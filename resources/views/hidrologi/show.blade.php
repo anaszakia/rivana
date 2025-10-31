@@ -1072,6 +1072,177 @@
                 </div>
             @endif
 
+            <!-- 🌊 NEW: Interactive River Network Map Section -->
+            @php
+                $riverMapHtml = $job->files->firstWhere('file_name', 'peta_aliran_sungai_interaktif.html');
+                $riverMapPng = $job->files->firstWhere('file_name', 'peta_aliran_sungai.png');
+                $riverMapMetadata = $job->files->firstWhere('file_name', 'peta_aliran_sungai_metadata.json');
+            @endphp
+
+            @if($riverMapHtml || $riverMapPng)
+                <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 border-2 border-cyan-200 mb-6">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-water text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                                    🌊 Peta Aliran Sungai Interaktif
+                                    <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full">NEW</span>
+                                </h3>
+                                <p class="text-sm text-gray-600">Visualisasi jaringan sungai dengan data Google Earth Engine</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            @if($riverMapHtml)
+                                <button onclick="openMapFullscreen()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    <i class="fas fa-expand mr-2"></i>Fullscreen
+                                </button>
+                                <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    <i class="fas fa-download mr-2"></i>Download HTML
+                                </a>
+                            @endif
+                            @if($riverMapPng)
+                                <a href="/hidrologi/file/download/{{ $riverMapPng->id }}" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    <i class="fas fa-image mr-2"></i>Download PNG
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Map Container -->
+                    @if($riverMapHtml)
+                        <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4">
+                            <div id="mapLoadingOverlay" class="flex items-center justify-center py-12 bg-gray-50">
+                                <div class="text-center">
+                                    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
+                                    <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
+                                    <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
+                                </div>
+                            </div>
+                            <iframe 
+                                id="riverMapFrame"
+                                src="/hidrologi/file/download/{{ $riverMapHtml->id }}" 
+                                class="w-full hidden"
+                                style="height: 600px; border: none;"
+                                onload="hideMapLoading()"
+                                onerror="showMapError()">
+                            </iframe>
+                        </div>
+
+                        <!-- Map Info & Metadata -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Quick Info Cards -->
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-map-marker-alt text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 font-semibold">Lokasi Analisis</p>
+                                        <p class="text-sm font-bold text-gray-800">{{ $job->location_name ?? 'N/A' }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-600 bg-blue-50 rounded px-2 py-1">
+                                    <i class="fas fa-crosshairs mr-1"></i>
+                                    {{ number_format($job->latitude, 4) }}, {{ number_format($job->longitude, 4) }}
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-layer-group text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 font-semibold">Layer Peta</p>
+                                        <p class="text-sm font-bold text-gray-800">4 Data Sources</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-600 bg-green-50 rounded px-2 py-1">
+                                    <i class="fas fa-database mr-1"></i>
+                                    HydroSHEDS, JRC GSW, SRTM, OSM
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-expand-arrows-alt text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 font-semibold">Area Buffer</p>
+                                        <p class="text-sm font-bold text-gray-800">10 km radius</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-600 bg-purple-50 rounded px-2 py-1">
+                                    <i class="fas fa-ruler-combined mr-1"></i>
+                                    Area analisis jaringan sungai
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Detail (if available) -->
+                        @if($riverMapMetadata)
+                            <div class="mt-4 bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
+                                <button onclick="toggleRiverMetadata()" class="w-full flex items-center justify-between text-left">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-info-circle text-cyan-600"></i>
+                                        <span class="font-semibold text-gray-800">Detail Metadata Peta Sungai</span>
+                                    </div>
+                                    <i id="metadataChevron" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                                </button>
+                                <div id="riverMetadataContent" class="hidden mt-4 pt-4 border-t border-gray-200">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="bg-blue-50 rounded-lg p-3">
+                                            <p class="text-xs font-semibold text-blue-700 mb-2">📊 Data Sources</p>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>HydroSHEDS - Flow Accumulation</li>
+                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>JRC Global Surface Water</li>
+                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>SRTM DEM - Elevation</li>
+                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>OpenStreetMap - Basemap</li>
+                                            </ul>
+                                        </div>
+                                        <div class="bg-green-50 rounded-lg p-3">
+                                            <p class="text-xs font-semibold text-green-700 mb-2">🗺️ Map Features</p>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li><i class="fas fa-water text-blue-500 mr-2"></i>River network visualization</li>
+                                                <li><i class="fas fa-tint text-cyan-500 mr-2"></i>Water occurrence overlay</li>
+                                                <li><i class="fas fa-mountain text-amber-500 mr-2"></i>Topography (DEM)</li>
+                                                <li><i class="fas fa-layer-group text-purple-500 mr-2"></i>Interactive layer control</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
+                                        <p class="text-xs text-gray-600">
+                                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                                            <strong>Tips:</strong> Gunakan kontrol layer di pojok kanan atas peta untuk mengaktifkan/menonaktifkan layer. 
+                                            Zoom in/out untuk detail lebih lanjut. Klik marker untuk info lokasi analisis.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        <!-- Fallback: Show PNG if HTML not available -->
+                        @if($riverMapPng)
+                            <div class="bg-white rounded-xl shadow-inner p-4">
+                                <img src="/hidrologi/file/download/{{ $riverMapPng->id }}" 
+                                     alt="River Network Map" 
+                                     class="w-full rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                     onclick="openImageFullscreen('/hidrologi/file/download/{{ $riverMapPng->id }}', 'River Network Map')">
+                                <p class="text-center text-sm text-gray-500 mt-3">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Klik gambar untuk melihat fullscreen
+                                </p>
+                            </div>
+                        @endif
+                    @endif
+                </div>
+            @endif
+
             <!-- Generated Files -->
             @if($job->files->count() > 0)
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
@@ -2636,6 +2807,83 @@ function copyJSONData(fileId) {
                 showConfirmButton: false
             });
         });
+    }
+}
+
+// 🌊 River Map Functions
+function hideMapLoading() {
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    const mapFrame = document.getElementById('riverMapFrame');
+    
+    if (loadingOverlay && mapFrame) {
+        loadingOverlay.style.display = 'none';
+        mapFrame.classList.remove('hidden');
+        console.log('✓ River map loaded successfully');
+    }
+}
+
+function showMapError() {
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    
+    if (loadingOverlay) {
+        loadingOverlay.innerHTML = `
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                </div>
+                <p class="text-red-600 font-semibold mb-2">Gagal Memuat Peta</p>
+                <p class="text-sm text-gray-600 mb-4">Terjadi kesalahan saat memuat peta interaktif</p>
+                <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-redo mr-2"></i>Muat Ulang
+                </button>
+            </div>
+        `;
+    }
+}
+
+function openMapFullscreen() {
+    const mapFrame = document.getElementById('riverMapFrame');
+    
+    if (mapFrame && mapFrame.src) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                html: `
+                    <div style="width: 100%; height: 80vh;">
+                        <iframe 
+                            src="${mapFrame.src}" 
+                            style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+                            allow="fullscreen">
+                        </iframe>
+                    </div>
+                `,
+                width: '95%',
+                showCloseButton: true,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'p-0',
+                    htmlContainer: 'p-4'
+                },
+                background: '#f3f4f6'
+            });
+        } else {
+            // Fallback: open in new tab
+            window.open(mapFrame.src, '_blank', 'width=1200,height=800');
+        }
+    }
+}
+
+function toggleRiverMetadata() {
+    const content = document.getElementById('riverMetadataContent');
+    const chevron = document.getElementById('metadataChevron');
+    
+    if (content && chevron) {
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            content.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+        }
     }
 }
 

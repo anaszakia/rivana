@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview: River Map Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">🎨 Preview: River Map Section</h1>
+        <p class="text-gray-600 mb-8">Ini adalah preview dari section yang sudah ditambahkan ke show.blade.php</p>
+
+        <!-- 🌊 RIVER MAP SECTION -->
+        <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 border-2 border-cyan-200 mb-6">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-water text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 flex items-center flex-wrap">
+                            🌊 Peta Aliran Sungai Interaktif
+                            <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full">NEW</span>
+                        </h3>
+                        <p class="text-sm text-gray-600">Visualisasi jaringan sungai dengan data Google Earth Engine</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-expand mr-2"></i>Fullscreen
+                    </button>
+                    <a href="#" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-download mr-2"></i>Download HTML
+                    </a>
+                    <a href="#" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-image mr-2"></i>Download PNG
+                    </a>
+                </div>
+            </div>
+
+            <!-- Map Container (Demo) -->
+            <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4">
+                <div class="flex items-center justify-center py-24 bg-gradient-to-br from-blue-100 to-cyan-100">
+                    <div class="text-center">
+                        <i class="fas fa-map text-6xl text-cyan-600 mb-4"></i>
+                        <p class="text-gray-700 font-semibold text-lg">Interactive River Map</p>
+                        <p class="text-sm text-gray-500 mt-2">Iframe peta interaktif akan tampil di sini (600px height)</p>
+                        <p class="text-xs text-gray-400 mt-2">📍 Google Earth Engine + Folium + Leaflet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Info & Metadata -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Card 1: Lokasi -->
+                <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200 hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold">Lokasi Analisis</p>
+                            <p class="text-sm font-bold text-gray-800">Sungai Brantas</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-600 bg-blue-50 rounded px-2 py-1">
+                        <i class="fas fa-crosshairs mr-1"></i>
+                        -7.9758, 112.6305
+                    </div>
+                </div>
+
+                <!-- Card 2: Layer -->
+                <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200 hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-layer-group text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold">Layer Peta</p>
+                            <p class="text-sm font-bold text-gray-800">4 Data Sources</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-600 bg-green-50 rounded px-2 py-1">
+                        <i class="fas fa-database mr-1"></i>
+                        HydroSHEDS, JRC GSW, SRTM, OSM
+                    </div>
+                </div>
+
+                <!-- Card 3: Area Buffer -->
+                <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200 hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-expand-arrows-alt text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold">Area Buffer</p>
+                            <p class="text-sm font-bold text-gray-800">10 km radius</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-600 bg-purple-50 rounded px-2 py-1">
+                        <i class="fas fa-ruler-combined mr-1"></i>
+                        Area analisis jaringan sungai
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadata Detail (Collapsible Demo) -->
+            <div class="mt-4 bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
+                <button onclick="toggleDemo()" class="w-full flex items-center justify-between text-left hover:bg-gray-50 rounded p-2 -m-2 transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-info-circle text-cyan-600"></i>
+                        <span class="font-semibold text-gray-800">Detail Metadata Peta Sungai</span>
+                    </div>
+                    <i id="demoChevron" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                </button>
+                <div id="demoContent" class="hidden mt-4 pt-4 border-t border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Data Sources -->
+                        <div class="bg-blue-50 rounded-lg p-3">
+                            <p class="text-xs font-semibold text-blue-700 mb-2">📊 Data Sources</p>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>HydroSHEDS - Flow Accumulation</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>JRC Global Surface Water</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>SRTM DEM - Elevation</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>OpenStreetMap - Basemap</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Map Features -->
+                        <div class="bg-green-50 rounded-lg p-3">
+                            <p class="text-xs font-semibold text-green-700 mb-2">🗺️ Map Features</p>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li><i class="fas fa-water text-blue-500 mr-2"></i>River network visualization</li>
+                                <li><i class="fas fa-tint text-cyan-500 mr-2"></i>Water occurrence overlay</li>
+                                <li><i class="fas fa-mountain text-amber-500 mr-2"></i>Topography (DEM)</li>
+                                <li><i class="fas fa-layer-group text-purple-500 mr-2"></i>Interactive layer control</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Tips -->
+                    <div class="mt-4 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
+                        <p class="text-xs text-gray-600">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                            <strong>Tips:</strong> Gunakan kontrol layer di pojok kanan atas peta untuk mengaktifkan/menonaktifkan layer. 
+                            Zoom in/out untuk detail lebih lanjut. Klik marker untuk info lokasi analisis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-blue-800 mb-1">Informasi</h4>
+                    <p class="text-sm text-blue-700">
+                        Section ini akan otomatis muncul di halaman detail job jika file 
+                        <code class="bg-blue-100 px-2 py-0.5 rounded">peta_aliran_sungai_interaktif.html</code> atau 
+                        <code class="bg-blue-100 px-2 py-0.5 rounded">peta_aliran_sungai.png</code> tersedia.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature List -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                Fitur yang Tersedia
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-expand text-blue-500 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-gray-800">Fullscreen Mode</p>
+                        <p class="text-sm text-gray-600">Buka peta di modal popup besar</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-download text-green-500 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-gray-800">Download Files</p>
+                        <p class="text-sm text-gray-600">HTML (interaktif) & PNG (static)</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-layer-group text-purple-500 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-gray-800">Multiple Layers</p>
+                        <p class="text-sm text-gray-600">Toggle 4 data sources overlay</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-info-circle text-cyan-500 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-gray-800">Metadata Detail</p>
+                        <p class="text-sm text-gray-600">Info lengkap dataset & fitur peta</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDemo() {
+            const content = document.getElementById('demoContent');
+            const chevron = document.getElementById('demoChevron');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+</body>
+</html>
