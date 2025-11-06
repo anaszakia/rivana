@@ -3,48 +3,52 @@
 @section('title', 'Detail Pekerjaan - ' . $job->job_id)
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pt-20 lg:pt-6">
     <!-- Header dengan Gradient Modern -->
-    <div class="mb-8">
-        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 shadow-2xl">
+    <div class="mb-6 sm:mb-8">
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-lg sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl sm:shadow-2xl">
             <!-- Background Pattern -->
             <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32"></div>
-                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full -ml-24 -mb-24"></div>
+                <div class="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-white rounded-full -mr-16 sm:-mr-32 -mt-16 sm:-mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 sm:w-48 sm:h-48 bg-white rounded-full -ml-12 sm:-ml-24 -mb-12 sm:-mb-24"></div>
             </div>
             
             <div class="relative z-10">
                 <!-- Breadcrumb -->
-                <div class="flex items-center space-x-2 text-blue-200 mb-4">
+                <div class="flex items-center space-x-2 text-blue-200 mb-3 sm:mb-4 text-xs sm:text-sm">
                     <a href="{{ route('hidrologi.index') }}" class="hover:text-white transition-colors">
                         <i class="fas fa-water mr-1"></i>
-                        Hidrologi
+                        <span class="hidden sm:inline">Hidrologi</span>
                     </a>
                     <i class="fas fa-chevron-right text-xs"></i>
                     <span class="text-white font-semibold">Detail Pekerjaan</span>
                 </div>
                 
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+                    <div class="flex items-center space-x-3 sm:space-x-4">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white bg-opacity-20 rounded-xl sm:rounded-2xl flex items-center justify-center backdrop-blur-sm">
                             <i class="fas fa-file-alt text-3xl text-white"></i>
                         </div>
                         <div>
-                            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Detail Pekerjaan</h1>
-                            <p class="text-blue-100 text-lg">Job ID: <span class="font-mono bg-white bg-opacity-20 px-3 py-1 rounded-lg">{{ $job->job_id }}</span></p>
+                            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">Detail Pekerjaan</h1>
+                            <p class="text-blue-100 text-sm sm:text-base lg:text-lg">Job ID: <span class="font-mono bg-white bg-opacity-20 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-xs sm:text-sm">{{ $job->job_id }}</span></p>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                        
                             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                                <button onclick="cancelJob({{ $job->id }})" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <i class="fas fa-stop-circle mr-2"></i>Batalkan
+                                <button onclick="cancelJob({{ $job->id }})" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                                    <i class="fas fa-stop-circle mr-1 sm:mr-2"></i>
+                                    <span class="sm:hidden">Batal</span>
+                                    <span class="hidden sm:inline">Batalkan</span>
                                 </button>
                             @endif
                       
                         
-                            <button onclick="deleteJob({{ $job->id }})" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <i class="fas fa-trash mr-2"></i>Hapus
+                            <button onclick="deleteJob({{ $job->id }})" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                                <i class="fas fa-trash mr-1 sm:mr-2"></i>
+                                <span class="sm:hidden">Hapus</span>
+                                <span class="hidden sm:inline">Hapus</span>
                             </button>
                         
                     </div>
@@ -54,9 +58,9 @@
     </div>
 
     <!-- Status Card Modern -->
-    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-6">
+    <div class="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 border border-gray-100">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+            <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                 @php
                     $statusConfig = [
                         'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => 'Menunggu'],
@@ -69,27 +73,27 @@
                     ];
                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                 @endphp
-                <div class="relative">
-                    <div class="w-20 h-20 {{ $config['bg'] }} rounded-2xl flex items-center justify-center ring-4 {{ $config['ring'] }} shadow-lg">
-                        <i class="fas {{ $config['icon'] }} text-3xl {{ $config['text'] }}"></i>
+                <div class="relative self-start sm:self-center">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 {{ $config['bg'] }} rounded-xl sm:rounded-2xl flex items-center justify-center ring-2 sm:ring-4 {{ $config['ring'] }} shadow-md sm:shadow-lg">
+                        <i class="fas {{ $config['icon'] }} text-2xl sm:text-3xl {{ $config['text'] }}"></i>
                     </div>
-                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-gradient-to-br {{ $config['gradient'] }} rounded-full border-2 border-white"></div>
+                    <div class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-gradient-to-br {{ $config['gradient'] }} rounded-full border-2 border-white"></div>
                 </div>
-                <div>
-                    <h3 class="text-3xl font-bold {{ $config['text'] }} mb-1">{{ $config['label'] }}</h3>
-                    <p class="text-gray-600 text-sm">{{ $job->status_message ?? 'Memproses pekerjaan...' }}</p>
+                <div class="flex-1">
+                    <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold {{ $config['text'] }} mb-1">{{ $config['label'] }}</h3>
+                    <p class="text-gray-600 text-xs sm:text-sm">{{ $job->status_message ?? 'Memproses pekerjaan...' }}</p>
                 </div>
             </div>
             
             <!-- Progress Bar -->
             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                <div class="w-80">
-                    <div class="flex justify-between text-sm text-gray-600 mb-2 font-semibold">
+                <div class="w-full lg:w-80">
+                    <div class="flex justify-between text-xs sm:text-sm text-gray-600 mb-2 font-semibold">
                         <span>Progress</span>
                         <span id="progress-percent" class="text-blue-600">{{ $job->progress }}%</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-4 shadow-inner">
-                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-4 rounded-full transition-all duration-500 shadow-lg" style="width: {{ $job->progress }}%"></div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 sm:h-4 shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 sm:h-4 rounded-full transition-all duration-500 shadow-lg" style="width: {{ $job->progress }}%"></div>
                     </div>
                 </div>
             @endif
@@ -97,62 +101,62 @@
 
         <!-- Warning/Error Messages -->
         @if($job->warning_message)
-            <div class="mt-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500 rounded-xl shadow-sm">
+            <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500 rounded-lg sm:rounded-xl shadow-sm">
                 <div class="flex items-start">
-                    <div class="flex-shrink-0 w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-orange-600 text-lg"></i>
+                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-orange-600 text-sm sm:text-lg"></i>
                     </div>
-                    <div class="ml-4">
-                        <h4 class="font-bold text-orange-800 text-lg">Peringatan</h4>
-                        <p class="text-sm text-orange-700 mt-1">{{ $job->warning_message }}</p>
+                    <div class="ml-3 sm:ml-4">
+                        <h4 class="font-bold text-orange-800 text-base sm:text-lg">Peringatan</h4>
+                        <p class="text-xs sm:text-sm text-orange-700 mt-1">{{ $job->warning_message }}</p>
                     </div>
                 </div>
             </div>
         @endif
 
         @if($job->error_message)
-            <div class="mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 rounded-xl shadow-sm">
+            <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 rounded-lg sm:rounded-xl shadow-sm">
                 <div class="flex items-start">
-                    <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-times-circle text-red-600 text-lg"></i>
+                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-600 text-sm sm:text-lg"></i>
                     </div>
-                    <div class="ml-4">
-                        <h4 class="font-bold text-red-800 text-lg">Error</h4>
-                        <p class="text-sm text-red-700 mt-1">{{ $job->error_message }}</p>
+                    <div class="ml-3 sm:ml-4">
+                        <h4 class="font-bold text-red-800 text-base sm:text-lg">Error</h4>
+                        <p class="text-xs sm:text-sm text-red-700 mt-1">{{ $job->error_message }}</p>
                     </div>
                 </div>
             </div>
         @endif
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Job Information -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-4 sm:space-y-6">
             <!-- Location Info -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center space-x-3 mb-6">
-                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-map-marker-alt text-red-600 text-lg"></i>
+            <div class="bg-white rounded-lg sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-3 mb-4 sm:mb-6">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-lg sm:rounded-xl flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-red-600 text-sm sm:text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">Informasi Lokasi</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Informasi Lokasi</h3>
                 </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                        <p class="text-sm font-semibold text-blue-700 mb-2 flex items-center">
-                            <i class="fas fa-map-pin mr-2"></i>Nama Lokasi
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg sm:rounded-xl">
+                        <p class="text-xs sm:text-sm font-semibold text-blue-700 mb-2 flex items-center">
+                            <i class="fas fa-map-pin mr-1 sm:mr-2"></i>Nama Lokasi
                         </p>
-                        <p class="font-bold text-gray-800">{{ $job->location_name ?? 'Tidak Tersedia' }}</p>
+                        <p class="font-bold text-gray-800 text-sm sm:text-base">{{ $job->location_name ?? 'Tidak Tersedia' }}</p>
                     </div>
-                    <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-                        <p class="text-sm font-semibold text-green-700 mb-2 flex items-center">
-                            <i class="fas fa-globe mr-2"></i>Koordinat
+                    <div class="p-3 sm:p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg sm:rounded-xl">
+                        <p class="text-xs sm:text-sm font-semibold text-green-700 mb-2 flex items-center">
+                            <i class="fas fa-globe mr-1 sm:mr-2"></i>Koordinat
                         </p>
-                        <p class="font-bold text-gray-800">{{ $job->latitude }}, {{ $job->longitude }}</p>
+                        <p class="font-bold text-gray-800 text-xs sm:text-base break-all">{{ $job->latitude }}, {{ $job->longitude }}</p>
                     </div>
                     @if($job->location_description)
-                        <div class="col-span-2 p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                            <p class="text-sm font-semibold text-purple-700 mb-2 flex items-center">
-                                <i class="fas fa-file-alt mr-2"></i>Deskripsi
+                        <div class="col-span-1 sm:col-span-2 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg sm:rounded-xl">
+                            <p class="text-xs sm:text-sm font-semibold text-purple-700 mb-2 flex items-center">
+                                <i class="fas fa-file-alt mr-1 sm:mr-2"></i>Deskripsi
                             </p>
                             <p class="text-gray-800">{{ $job->location_description }}</p>
                         </div>
@@ -1428,6 +1432,39 @@
 
 @push('styles')
 <style>
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    
+    /* Ensure text doesn't overflow on small screens */
+    .break-words {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    /* Adjust font sizes for mobile */
+    .mobile-text-sm {
+        font-size: 0.75rem;
+    }
+    
+    .mobile-text-base {
+        font-size: 0.875rem;
+    }
+    
+    /* Better button layout on mobile */
+    .mobile-btn-stack > * {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile-btn-stack > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
 /* Custom styles for summary sections */
 .summary-card {
     transition: all 0.3s ease;
