@@ -1,0 +1,58 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Upload project ke server via SCP
+      - name: Deploy via SCP (upload ke server)
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          source: "."
+          target: "/usr/share/nginx/rivana.cloud/public_html/rivana"
+          strip_components: 1  # menghindari folder repository ter-nesting
+
+      # Jalankan perintah setelah upload
+      - name: Run post-deploy commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd /usr/share/nginx/rivana.cloud/public_html/rivana
+
+            # install dependencies
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            # set environment & key jika belum
+            if [ ! -f .env ]; then
+              cp .env.example .env
+            fi
+
+            php artisan key:generate --force
+            php artisan migrate --force
+
+            # permission
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+
+            # optimize laravel
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "✅ Deployment selesai!"
