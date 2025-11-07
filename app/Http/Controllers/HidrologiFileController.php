@@ -271,40 +271,46 @@ class HidrologiFileController extends Controller
                     abort(404, 'File HTML tidak ditemukan atau tidak dapat diakses');
                 }
                 
-                // Log first 500 chars to debug
-                \Log::info('HTML content preview', [
-                    'file_id' => $id,
-                    'content_length' => strlen($htmlContent),
-                    'first_500_chars' => substr($htmlContent, 0, 500)
-                ]);
+                // Get the base URL for the external API
+                $apiUrl = config('services.hidrologi.api_url');
+                $apiHost = parse_url($apiUrl, PHP_URL_HOST);
                 
-                // Inject base tag to resolve relative URLs correctly
-                // Add CSP meta tag to allow all necessary resources for map
-                $headInjection = '<head><base href="' . config('services.hidrologi.api_url') . '/">' . 
+                // Replace all references to external domain with local proxy
+                // This is crucial because rivana.cloud sends frame-ancestors: 'none' CSP header
+                $htmlContent = str_replace(
+                    ['https://' . $apiHost, 'http://' . $apiHost, '//' . $apiHost],
+                    [url('/'), url('/'), url('/')],
+                    $htmlContent
+                );
+                
+                // Inject permissive CSP and base tag for remaining relative URLs
+                $headInjection = '<head>' .
                     '<meta http-equiv="Content-Security-Policy" content="' .
                     "default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; " .
-                    "script-src * 'self' 'unsafe-inline' 'unsafe-eval'; " .
-                    "style-src * 'self' 'unsafe-inline'; " .
-                    "img-src * 'self' data: blob: https:; " .
-                    "font-src * 'self' data:; " .
-                    "connect-src * 'self'; " .
+                    "script-src * 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
+                    "style-src * 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
+                    "img-src * 'self' data: blob: https: http:; " .
+                    "font-src * 'self' data: https://fonts.gstatic.com; " .
+                    "connect-src * 'self' https://tile.openstreetmap.org https://*.tile.openstreetmap.org; " .
                     "frame-src * 'self';" .
-                    '">';
+                    '">' .
+                    '<base href="' . $apiUrl . '/">';
                 
                 // Replace <head> with <head> + injection
                 $htmlContent = preg_replace('/<head>/i', $headInjection, $htmlContent, 1);
                 
-                \Log::info('HTML after injection', [
+                \Log::info('HTML content served for iframe with URL rewriting', [
                     'file_id' => $id,
-                    'final_length' => strlen($htmlContent),
-                    'has_base_tag' => strpos($htmlContent, '<base href=') !== false
+                    'content_length' => strlen($htmlContent),
+                    'api_host' => $apiHost
                 ]);
                 
                 return response($htmlContent)
                     ->header('Content-Type', 'text/html; charset=UTF-8')
-                    ->header('Cache-Control', 'public, max-age=3600')
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                     ->header('Access-Control-Allow-Origin', '*')
                     ->header('X-Content-Type-Options', 'nosniff')
+                    ->header('Content-Security-Policy', "frame-ancestors 'self'")
                     ->withoutHeader('X-Frame-Options'); // Remove X-Frame-Options to allow iframe embedding
             }
             
