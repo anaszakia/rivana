@@ -19,17 +19,17 @@
                         <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                             <i class="fas fa-water text-2xl text-white"></i>
                         </div>
-                        <h1 class="text-3xl md:text-4xl font-bold text-white">Analisis Hidrologi</h1>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white">{{ __('messages.hydrology_analysis') }}</h1>
                     </div>
-                    <p class="text-blue-100 text-lg">Kelola dan pantau pekerjaan analisis hidrologi Anda dengan mudah</p>
+                    <p class="text-blue-100 text-lg">{{ __('messages.manage_monitor_hydrology_jobs') }}</p>
                     <div class="mt-3 flex items-center text-blue-200">
                         <i class="fas fa-info-circle mr-2"></i>
-                        <span class="text-sm">Total {{ $jobs->total() }} pekerjaan tercatat dalam sistem</span>
+                        <span class="text-sm">{{ __('messages.total_jobs_recorded', ['count' => $jobs->total()]) }}</span>
                     </div>
                 </div>
                     <a href="{{ route('hidrologi.create') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                         <i class="fas fa-plus-circle mr-2 text-lg"></i>
-                        Analisis Baru
+                        {{ __('messages.new_analysis') }}
                     </a>
             </div>
         </div>
@@ -43,11 +43,11 @@
                 <div class="absolute top-0 right-0 w-20 h-20 bg-blue-500 opacity-10 rounded-bl-full"></div>
                 <div class="flex items-center justify-between relative z-10">
                     <div class="flex-1">
-                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Total Pekerjaan</p>
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">{{ __('messages.total_jobs') }}</p>
                         <p class="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{{ $jobs->total() }}</p>
                         <div class="mt-2 flex items-center text-blue-600">
                             <i class="fas fa-chart-line text-xs mr-1"></i>
-                            <span class="text-xs font-medium">Semua status</span>
+                            <span class="text-xs font-medium">{{ __('messages.all_status') }}</span>
                         </div>
                     </div>
                     <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -64,11 +64,11 @@
                 <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-500 opacity-10 rounded-bl-full"></div>
                 <div class="flex items-center justify-between relative z-10">
                     <div class="flex-1">
-                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Sedang Diproses</p>
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">{{ __('messages.being_processed') }}</p>
                         <p class="text-3xl font-bold text-gray-900 group-hover:text-yellow-600 transition-colors">{{ $jobs->where('status', 'processing')->count() }}</p>
                         <div class="mt-2 flex items-center text-yellow-600">
                             <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse mr-2"></div>
-                            <span class="text-xs font-medium">Aktif sekarang</span>
+                            <span class="text-xs font-medium">{{ __('messages.active_now') }}</span>
                         </div>
                     </div>
                     <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -85,11 +85,11 @@
                 <div class="absolute top-0 right-0 w-20 h-20 bg-green-500 opacity-10 rounded-bl-full"></div>
                 <div class="flex items-center justify-between relative z-10">
                     <div class="flex-1">
-                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Selesai</p>
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">{{ __('messages.completed') }}</p>
                         <p class="text-3xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">{{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}</p>
                         <div class="mt-2 flex items-center text-green-600">
                             <i class="fas fa-check text-xs mr-1"></i>
-                            <span class="text-xs font-medium">Berhasil diproses</span>
+                            <span class="text-xs font-medium">{{ __('messages.successfully_processed') }}</span>
                         </div>
                     </div>
                     <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -106,11 +106,11 @@
                 <div class="absolute top-0 right-0 w-20 h-20 bg-red-500 opacity-10 rounded-bl-full"></div>
                 <div class="flex items-center justify-between relative z-10">
                     <div class="flex-1">
-                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">Gagal</p>
+                        <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide mb-2">{{ __('messages.failed') }}</p>
                         <p class="text-3xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">{{ $jobs->where('status', 'failed')->count() }}</p>
                         <div class="mt-2 flex items-center text-red-600">
                             {{-- <i class="fas fa-exclamation text-xs mr-1"></i> --}}
-                            <span class="text-xs font-medium">Perlu perhatian !</span>
+                            <span class="text-xs font-medium">{{ __('messages.needs_attention') }}</span>
                         </div>
                     </div>
                     <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -130,20 +130,20 @@
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 flex items-center">
                         <i class="fas fa-list-ul text-blue-600 mr-3"></i>
-                        Daftar Pekerjaan Analisis
+                        {{ __('messages.job_list') }}
                     </h3>
-                    <p class="text-sm text-gray-500 mt-1">Pantau progress dan status setiap pekerjaan</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ __('messages.monitor_progress_status') }}</p>
                 </div>
                 <div class="flex items-center space-x-2">
                    
                         <button id="bulkDeleteBtn" onclick="bulkDelete()" 
                                 class="hidden items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg" 
-                                title="Hapus Terpilih">
+                                title="{{ __('messages.delete_selected') }}">
                             <i class="fas fa-trash-alt mr-2"></i>
-                            Hapus (<span id="selectedCount">0</span>)
+                            {{ __('messages.delete_selected') }} (<span id="selectedCount">0</span>)
                         </button>
                     
-                    <button onclick="location.reload()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
+                    <button onclick="location.reload()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="{{ __('messages.refresh') }}">
                         <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
                     </button>
                 </div>
@@ -161,14 +161,14 @@
                                        onchange="toggleSelectAll(this)">
                             </th>
                       
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">ID Pekerjaan</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Lokasi</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Rentang Tanggal</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Progress</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">File</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Dibuat</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.job_id') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.location') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.date_range') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.status') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.progress') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.files') }}</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.created') }}</th>
+                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -194,7 +194,7 @@
                                 <div class="flex items-start space-x-2">
                                     <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ $job->location_name ?? 'Tidak Diketahui' }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $job->location_name ?? __('messages.unknown') }}</div>
                                         <div class="text-xs text-gray-500 flex items-center mt-1">
                                             <i class="fas fa-globe text-gray-400 mr-1"></i>
                                             {{ $job->latitude }}, {{ $job->longitude }}
@@ -207,20 +207,20 @@
                                     <i class="fas fa-calendar text-blue-500"></i>
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}</div>
-                                        <div class="text-xs text-gray-500">sampai {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
+                                        <div class="text-xs text-gray-500">{{ __('messages.to') }} {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
                                     $statusConfig = [
-                                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'label' => 'Menunggu'],
-                                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'label' => 'Dikirim'],
-                                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'label' => 'Diproses'],
-                                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'label' => 'Selesai'],
-                                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'label' => 'Selesai (Peringatan)'],
-                                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'label' => 'Gagal'],
-                                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'label' => 'Dibatalkan']
+                                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'label' => __('messages.waiting')],
+                                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'label' => __('messages.sent')],
+                                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'label' => __('messages.processed')],
+                                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'label' => __('messages.completed')],
+                                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'label' => __('messages.completed_with_warning')],
+                                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'label' => __('messages.failed')],
+                                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'label' => __('messages.cancelled')]
                                     ];
                                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                                 @endphp
@@ -246,7 +246,7 @@
                                         <span class="text-sm font-semibold text-blue-700">{{ $job->total_files }}</span>
                                     </div>
                                 @else
-                                    <span class="text-gray-400 text-sm">Tidak ada file</span>
+                                    <span class="text-gray-400 text-sm">{{ __('messages.no_files') }}</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -259,26 +259,26 @@
                                 <div class="flex items-center justify-end space-x-2">
                                     <a href="{{ route('hidrologi.show', $job->id) }}" 
                                        class="inline-flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all duration-200 group/btn" 
-                                       title="Lihat Detail">
+                                       title="{{ __('messages.detail') }}">
                                         <i class="fas fa-eye mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
-                                        <span class="text-xs font-semibold">Detail</span>
+                                        <span class="text-xs font-semibold">{{ __('messages.detail') }}</span>
                                     </a>
                                    
                                         @if(in_array($job->status, ['pending', 'submitted', 'processing']))
                                             <button onclick="cancelJob({{ $job->id }})" 
                                                     class="inline-flex items-center px-3 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-all duration-200 group/btn" 
-                                                    title="Batalkan">
+                                                    title="{{ __('messages.cancel_action') }}">
                                                 <i class="fas fa-stop-circle mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
-                                                <span class="text-xs font-semibold">Batal</span>
+                                                <span class="text-xs font-semibold">{{ __('messages.cancel_action') }}</span>
                                             </button>
                                         @endif
                                     
                                     
                                         <button onclick="deleteJob({{ $job->id }})" 
                                                 class="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all duration-200 group/btn" 
-                                                title="Hapus">
+                                                title="{{ __('messages.delete_action') }}">
                                             <i class="fas fa-trash mr-1.5 group-hover/btn:scale-110 transition-transform"></i>
-                                            <span class="text-xs font-semibold">Hapus</span>
+                                            <span class="text-xs font-semibold">{{ __('messages.delete_action') }}</span>
                                         </button>
                                    
                                 </div>
@@ -291,13 +291,13 @@
                                     <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-6 shadow-lg">
                                         <i class="fas fa-folder-open text-4xl text-blue-400"></i>
                                     </div>
-                                    <h3 class="text-xl font-bold text-gray-700 mb-2">Belum Ada Pekerjaan Analisis</h3>
-                                    <p class="text-gray-500 mb-6">Mulai analisis hidrologi pertama Anda sekarang</p>
+                                    <h3 class="text-xl font-bold text-gray-700 mb-2">{{ __('messages.no_analysis_jobs_yet') }}</h3>
+                                    <p class="text-gray-500 mb-6">{{ __('messages.start_first_analysis') }}</p>
                                    
                                         <a href="{{ route('hidrologi.create') }}" 
                                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                                             <i class="fas fa-plus-circle mr-2"></i>
-                                            Buat Analisis Pertama
+                                            {{ __('messages.create_first_analysis') }}
                                         </a>
                                    
                                 </div>

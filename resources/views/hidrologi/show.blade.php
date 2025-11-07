@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Pekerjaan - ' . $job->job_id)
+@section('title', __('messages.job_detail') . ' - ' . $job->job_id)
 
 @section('content')
 <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pt-20 lg:pt-6">
@@ -18,10 +18,10 @@
                 <div class="flex items-center space-x-2 text-blue-200 mb-3 sm:mb-4 text-xs sm:text-sm">
                     <a href="{{ route('hidrologi.index') }}" class="hover:text-white transition-colors">
                         <i class="fas fa-water mr-1"></i>
-                        <span class="hidden sm:inline">Hidrologi</span>
+                        <span class="hidden sm:inline">{{ __('messages.hydrology') }}</span>
                     </a>
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-white font-semibold">Detail Pekerjaan</span>
+                    <span class="text-white font-semibold">{{ __('messages.job_detail') }}</span>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
@@ -30,8 +30,8 @@
                             <i class="fas fa-file-alt text-3xl text-white"></i>
                         </div>
                         <div>
-                            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">Detail Pekerjaan</h1>
-                            <p class="text-blue-100 text-sm sm:text-base lg:text-lg">Job ID: <span class="font-mono bg-white bg-opacity-20 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-xs sm:text-sm">{{ $job->job_id }}</span></p>
+                            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">{{ __('messages.job_detail') }}</h1>
+                            <p class="text-blue-100 text-sm sm:text-base lg:text-lg">{{ __('messages.job_id') }}: <span class="font-mono bg-white bg-opacity-20 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-xs sm:text-sm">{{ $job->job_id }}</span></p>
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
@@ -39,16 +39,16 @@
                             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
                                 <button onclick="cancelJob({{ $job->id }})" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
                                     <i class="fas fa-stop-circle mr-1 sm:mr-2"></i>
-                                    <span class="sm:hidden">Batal</span>
-                                    <span class="hidden sm:inline">Batalkan</span>
+                                    <span class="sm:hidden">{{ __('messages.cancel') }}</span>
+                                    <span class="hidden sm:inline">{{ __('messages.cancel_job') }}</span>
                                 </button>
                             @endif
                       
                         
                             <button onclick="deleteJob({{ $job->id }})" class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
                                 <i class="fas fa-trash mr-1 sm:mr-2"></i>
-                                <span class="sm:hidden">Hapus</span>
-                                <span class="hidden sm:inline">Hapus</span>
+                                <span class="sm:hidden">{{ __('messages.delete') }}</span>
+                                <span class="hidden sm:inline">{{ __('messages.delete') }}</span>
                             </button>
                         
                     </div>
@@ -63,13 +63,13 @@
             <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                 @php
                     $statusConfig = [
-                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => 'Menunggu'],
-                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'ring' => 'ring-blue-300', 'gradient' => 'from-blue-400 to-blue-600', 'label' => 'Dikirim'],
-                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'ring' => 'ring-yellow-300', 'gradient' => 'from-yellow-400 to-yellow-600', 'label' => 'Diproses'],
-                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'ring' => 'ring-green-300', 'gradient' => 'from-green-400 to-green-600', 'label' => 'Selesai'],
-                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'ring' => 'ring-orange-300', 'gradient' => 'from-orange-400 to-orange-600', 'label' => 'Selesai (Peringatan)'],
-                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'ring' => 'ring-red-300', 'gradient' => 'from-red-400 to-red-600', 'label' => 'Gagal'],
-                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => 'Dibatalkan']
+                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => __('messages.waiting')],
+                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'ring' => 'ring-blue-300', 'gradient' => 'from-blue-400 to-blue-600', 'label' => __('messages.sent')],
+                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'ring' => 'ring-yellow-300', 'gradient' => 'from-yellow-400 to-yellow-600', 'label' => __('messages.processed')],
+                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'ring' => 'ring-green-300', 'gradient' => 'from-green-400 to-green-600', 'label' => __('messages.completed')],
+                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'ring' => 'ring-orange-300', 'gradient' => 'from-orange-400 to-orange-600', 'label' => __('messages.completed_with_warning')],
+                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'ring' => 'ring-red-300', 'gradient' => 'from-red-400 to-red-600', 'label' => __('messages.failed')],
+                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'ring' => 'ring-gray-300', 'gradient' => 'from-gray-400 to-gray-500', 'label' => __('messages.cancelled')]
                     ];
                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                 @endphp
@@ -81,7 +81,7 @@
                 </div>
                 <div class="flex-1">
                     <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold {{ $config['text'] }} mb-1">{{ $config['label'] }}</h3>
-                    <p class="text-gray-600 text-xs sm:text-sm">{{ $job->status_message ?? 'Memproses pekerjaan...' }}</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">{{ $job->status_message ?? __('messages.processing_job') }}</p>
                 </div>
             </div>
             
@@ -89,7 +89,7 @@
             @if(in_array($job->status, ['pending', 'submitted', 'processing']))
                 <div class="w-full lg:w-80">
                     <div class="flex justify-between text-xs sm:text-sm text-gray-600 mb-2 font-semibold">
-                        <span>Progress</span>
+                        <span>{{ __('messages.progress') }}</span>
                         <span id="progress-percent" class="text-blue-600">{{ $job->progress }}%</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-3 sm:h-4 shadow-inner">
@@ -107,7 +107,7 @@
                         <i class="fas fa-exclamation-triangle text-orange-600 text-sm sm:text-lg"></i>
                     </div>
                     <div class="ml-3 sm:ml-4">
-                        <h4 class="font-bold text-orange-800 text-base sm:text-lg">Peringatan</h4>
+                        <h4 class="font-bold text-orange-800 text-base sm:text-lg">{{ __('messages.warning') }}</h4>
                         <p class="text-xs sm:text-sm text-orange-700 mt-1">{{ $job->warning_message }}</p>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                         <i class="fas fa-times-circle text-red-600 text-sm sm:text-lg"></i>
                     </div>
                     <div class="ml-3 sm:ml-4">
-                        <h4 class="font-bold text-red-800 text-base sm:text-lg">Error</h4>
+                        <h4 class="font-bold text-red-800 text-base sm:text-lg">{{ __('messages.error') }}</h4>
                         <p class="text-xs sm:text-sm text-red-700 mt-1">{{ $job->error_message }}</p>
                     </div>
                 </div>
@@ -138,25 +138,25 @@
                     <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-lg sm:rounded-xl flex items-center justify-center">
                         <i class="fas fa-map-marker-alt text-red-600 text-sm sm:text-lg"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Informasi Lokasi</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">{{ __('messages.location_info') }}</h3>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div class="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg sm:rounded-xl">
                         <p class="text-xs sm:text-sm font-semibold text-blue-700 mb-2 flex items-center">
-                            <i class="fas fa-map-pin mr-1 sm:mr-2"></i>Nama Lokasi
+                            <i class="fas fa-map-pin mr-1 sm:mr-2"></i>{{ __('messages.location_name') }}
                         </p>
-                        <p class="font-bold text-gray-800 text-sm sm:text-base">{{ $job->location_name ?? 'Tidak Tersedia' }}</p>
+                        <p class="font-bold text-gray-800 text-sm sm:text-base">{{ $job->location_name ?? __('messages.not_available') }}</p>
                     </div>
                     <div class="p-3 sm:p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg sm:rounded-xl">
                         <p class="text-xs sm:text-sm font-semibold text-green-700 mb-2 flex items-center">
-                            <i class="fas fa-globe mr-1 sm:mr-2"></i>Koordinat
+                            <i class="fas fa-globe mr-1 sm:mr-2"></i>{{ __('messages.coordinates') }}
                         </p>
                         <p class="font-bold text-gray-800 text-xs sm:text-base break-all">{{ $job->latitude }}, {{ $job->longitude }}</p>
                     </div>
                     @if($job->location_description)
                         <div class="col-span-1 sm:col-span-2 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg sm:rounded-xl">
                             <p class="text-xs sm:text-sm font-semibold text-purple-700 mb-2 flex items-center">
-                                <i class="fas fa-file-alt mr-1 sm:mr-2"></i>Deskripsi
+                                <i class="fas fa-file-alt mr-1 sm:mr-2"></i>{{ __('messages.description') }}
                             </p>
                             <p class="text-gray-800">{{ $job->location_description }}</p>
                         </div>
@@ -170,27 +170,27 @@
                     <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
                         <i class="fas fa-calendar-alt text-purple-600 text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">Periode Analisis</h3>
+                    <h3 class="text-xl font-bold text-gray-800">{{ __('messages.analysis_period') }}</h3>
                 </div>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
                         <p class="text-sm font-semibold text-green-700 mb-2 flex items-center">
-                            <i class="fas fa-calendar-check mr-2"></i>Tanggal Mulai
+                            <i class="fas fa-calendar-check mr-2"></i>{{ __('messages.start_date') }}
                         </p>
                         <p class="font-bold text-gray-800">{{ \Carbon\Carbon::parse($job->start_date)->format('d F Y') }}</p>
                     </div>
                     <div class="p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
                         <p class="text-sm font-semibold text-red-700 mb-2 flex items-center">
-                            <i class="fas fa-calendar-times mr-2"></i>Tanggal Selesai
+                            <i class="fas fa-calendar-times mr-2"></i>{{ __('messages.end_date') }}
                         </p>
                         <p class="font-bold text-gray-800">{{ \Carbon\Carbon::parse($job->end_date)->format('d F Y') }}</p>
                     </div>
                     <div class="col-span-2 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
                         <p class="text-sm font-semibold text-blue-700 mb-2 flex items-center">
-                            <i class="fas fa-hourglass-half mr-2"></i>Durasi
+                            <i class="fas fa-hourglass-half mr-2"></i>{{ __('messages.duration') }}
                         </p>
                         <p class="font-bold text-gray-800">
-                            {{ \Carbon\Carbon::parse($job->start_date)->diffInDays(\Carbon\Carbon::parse($job->end_date)) + 1 }} hari
+                            {{ \Carbon\Carbon::parse($job->start_date)->diffInDays(\Carbon\Carbon::parse($job->end_date)) + 1 }} {{ __('messages.days') }}
                         </p>
                     </div>
                 </div>

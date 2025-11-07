@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Buat Analisis Baru')
+@section('title', __('messages.create_new_analysis'))
 
 @push('styles')
 <!-- Leaflet CSS -->
@@ -56,10 +56,10 @@
                 <div class="flex items-center space-x-2 text-blue-200 mb-4">
                     <a href="{{ route('hidrologi.index') }}" class="hover:text-white transition-colors">
                         <i class="fas fa-water mr-1"></i>
-                        Hidrologi
+                        {{ __('messages.hydrology') }}
                     </a>
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-white font-semibold">Buat Analisis Baru</span>
+                    <span class="text-white font-semibold">{{ __('messages.create_new_analysis') }}</span>
                 </div>
                 
                 <div class="flex items-center space-x-4">
@@ -67,8 +67,8 @@
                         <i class="fas fa-plus-circle text-3xl text-white"></i>
                     </div>
                     <div>
-                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Buat Analisis Hidrologi Baru</h1>
-                        <p class="text-blue-100 text-lg">Kirimkan pekerjaan baru untuk analisis data hidrologi</p>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{{ __('messages.create_new_hydrology_analysis') }}</h1>
+                        <p class="text-blue-100 text-lg">{{ __('messages.submit_new_job_for_analysis') }}</p>
                     </div>
                 </div>
             </div>
@@ -89,8 +89,8 @@
                                 <i class="fas fa-map-marker-alt text-blue-600 text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-800">Informasi Lokasi</h3>
-                                <p class="text-sm text-gray-500">Pilih lokasi pada peta atau masukkan koordinat</p>
+                                <h3 class="text-xl font-bold text-gray-800">{{ __('messages.location_information') }}</h3>
+                                <p class="text-sm text-gray-500">{{ __('messages.select_location_on_map_or_enter_coordinates') }}</p>
                             </div>
                         </div>
 
@@ -98,13 +98,13 @@
                         <div class="mb-6">
                             <label class="block text-sm font-semibold text-gray-700 mb-3">
                                 <i class="fas fa-map text-blue-600 mr-2"></i>
-                                Pilih Lokasi pada Peta
+                                {{ __('messages.select_location_on_map') }}
                             </label>
                             <div id="map" class="border-4 border-blue-100"></div>
                             <div class="mt-3 p-3 bg-blue-50 rounded-lg">
                                 <p class="text-sm text-blue-800">
                                     <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                                    <strong>Tips:</strong> Klik pada peta untuk memilih lokasi, atau masukkan koordinat secara manual di bawah. Anda juga bisa menarik marker untuk menyesuaikan posisi.
+                                    {!! __('messages.map_tips') !!}
                                 </p>
                             </div>
                         </div>
@@ -114,14 +114,14 @@
                             <div>
                                 <label for="longitude" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-globe text-blue-500 mr-1"></i>
-                                    Longitude <span class="text-red-500">*</span>
+                                    {{ __('messages.longitude') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" step="0.000001" name="longitude" id="longitude" 
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                    placeholder="Contoh: 106.845599" required min="-180" max="180">
+                                    placeholder="{{ __('messages.example') }}: 106.845599" required min="-180" max="180">
                                 <p class="mt-2 text-xs text-gray-500 flex items-center">
                                     <i class="fas fa-arrow-right text-gray-400 mr-1"></i>
-                                    Rentang: -180 hingga 180
+                                    {{ __('messages.range') }}: -180 {{ __('messages.to_lowercase') }} 180
                                 </p>
                             </div>
 
@@ -129,14 +129,14 @@
                             <div>
                                 <label for="latitude" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-globe text-green-500 mr-1"></i>
-                                    Latitude <span class="text-red-500">*</span>
+                                    {{ __('messages.latitude') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" step="0.000001" name="latitude" id="latitude"
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                    placeholder="Contoh: -6.208763" required min="-90" max="90">
+                                    placeholder="{{ __('messages.example') }}: -6.208763" required min="-90" max="90">
                                 <p class="mt-2 text-xs text-gray-500 flex items-center">
                                     <i class="fas fa-arrow-right text-gray-400 mr-1"></i>
-                                    Rentang: -90 hingga 90
+                                    {{ __('messages.range') }}: -90 {{ __('messages.to_lowercase') }} 90
                                 </p>
                             </div>
                         </div>
@@ -145,17 +145,17 @@
                         <div class="mt-6">
                             <label for="location_name" class="block text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-map-pin text-red-500 mr-1"></i>
-                                Nama Lokasi
+                                {{ __('messages.location_name') }}
                                 <span id="location-loading" class="hidden text-blue-500 text-xs ml-2">
-                                    <i class="fas fa-spinner fa-spin"></i> Mengambil nama lokasi...
+                                    <i class="fas fa-spinner fa-spin"></i> {{ __('messages.fetching_location_name') }}
                                 </span>
                             </label>
                             <input type="text" name="location_name" id="location_name"
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50"
-                                placeholder="Otomatis terisi dari koordinat atau masukkan manual" readonly>
+                                placeholder="{{ __('messages.auto_filled_from_coordinates') }}" readonly>
                             <p class="mt-2 text-xs text-gray-500 flex items-center">
                                 <i class="fas fa-magic text-blue-400 mr-1"></i>
-                                Terisi otomatis ketika Anda memilih lokasi pada peta
+                                {{ __('messages.auto_filled_when_select_location') }}
                             </p>
                         </div>
 
@@ -163,14 +163,14 @@
                         <div class="mt-6">
                             <label for="location_description" class="block text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-file-alt text-purple-500 mr-1"></i>
-                                Deskripsi Lokasi
+                                {{ __('messages.location_description') }}
                             </label>
                             <textarea name="location_description" id="location_description" rows="4"
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50"
-                                placeholder="Deskripsi detail tentang lokasi akan terisi otomatis dari peta" readonly></textarea>
+                                placeholder="{{ __('messages.location_description_placeholder') }}" readonly></textarea>
                             <p class="mt-2 text-xs text-gray-500 flex items-center">
                                 <i class="fas fa-info-circle text-blue-400 mr-1"></i>
-                                Deskripsi alamat lengkap terisi otomatis dari titik yang dipilih
+                                {{ __('messages.full_address_auto_filled') }}
                             </p>
                         </div>
                     </div>
@@ -182,8 +182,8 @@
                                 <i class="fas fa-calendar-alt text-purple-600 text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-800">Periode Analisis</h3>
-                                <p class="text-sm text-gray-500">Tentukan rentang waktu untuk analisis data</p>
+                                <h3 class="text-xl font-bold text-gray-800">{{ __('messages.analysis_period') }}</h3>
+                                <p class="text-sm text-gray-500">{{ __('messages.determine_time_range_for_analysis') }}</p>
                             </div>
                         </div>
 
@@ -192,7 +192,7 @@
                             <div>
                                 <label for="start_date" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-calendar-check text-green-500 mr-1"></i>
-                                    Tanggal Mulai <span class="text-red-500">*</span>
+                                    {{ __('messages.start_date') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="start_date" id="start_date"
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
@@ -203,7 +203,7 @@
                             <div>
                                 <label for="end_date" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-calendar-times text-red-500 mr-1"></i>
-                                    Tanggal Selesai <span class="text-red-500">*</span>
+                                    {{ __('messages.end_date') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="end_date" id="end_date"
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
@@ -213,7 +213,7 @@
                         <div class="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
                             <p class="text-sm text-yellow-800 flex items-start">
                                 <i class="fas fa-exclamation-triangle text-yellow-600 mr-2 mt-0.5"></i>
-                                <span><strong>Penting:</strong> Tanggal selesai harus hari ini atau sebelumnya. Pastikan rentang tanggal sesuai dengan kebutuhan analisis Anda.</span>
+                                <span>{!! __('messages.date_validation_important') !!}</span>
                             </p>
                         </div>
                     </div>
@@ -223,12 +223,12 @@
                         <a href="{{ route('hidrologi.index') }}" 
                            class="inline-flex items-center px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-all duration-200 transform hover:scale-105">
                             <i class="fas fa-arrow-left mr-2"></i>
-                            Kembali
+                            {{ __('messages.back') }}
                         </a>
                         <button type="submit" id="submitBtn"
                             class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
                             <i class="fas fa-paper-plane mr-2"></i>
-                            Buat Analisa
+                            {{ __('messages.create_analysis') }}
                         </button>
                     </div>
                 </form>
@@ -243,24 +243,24 @@
                     <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-info-circle text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-blue-900">Cara Kerja</h3>
+                    <h3 class="text-xl font-bold text-blue-900">{{ __('messages.how_it_works') }}</h3>
                 </div>
                 <ol class="space-y-4 text-sm text-blue-900">
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">1</span>
-                        <span class="pt-1"><strong>Pilih Lokasi:</strong> Masukkan koordinat geografis dan rentang tanggal untuk analisis Anda</span>
+                        <span class="pt-1">{!! __('messages.step_select_location') !!}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">2</span>
-                        <span class="pt-1"><strong>Kirim Pekerjaan:</strong> Sistem akan mengirim ke API Python untuk diproses</span>
+                        <span class="pt-1">{!! __('messages.step_submit_job') !!}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">3</span>
-                        <span class="pt-1"><strong>Pantau Progress:</strong> Lihat kemajuan analisis secara real-time</span>
+                        <span class="pt-1">{!! __('messages.step_monitor_progress') !!}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">4</span>
-                        <span class="pt-1"><strong>Unduh Hasil:</strong> Download file hasil analisis yang telah selesai</span>
+                        <span class="pt-1">{!! __('messages.step_download_results') !!}</span>
                     </li>
                 </ol>
             </div>
@@ -271,20 +271,20 @@
                     <div class="w-10 h-10 bg-yellow-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-exclamation-triangle text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-yellow-900">Catatan Penting</h3>
+                    <h3 class="text-xl font-bold text-yellow-900">{{ __('messages.important_notes') }}</h3>
                 </div>
                 <ul class="space-y-3 text-sm text-yellow-900">
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <i class="fas fa-clock text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span><strong>Waktu Proses:</strong> Bergantung pada rentang tanggal dan ketersediaan data</span>
+                        <span>{!! __('messages.processing_time') !!}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <i class="fas fa-bell text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span><strong>Notifikasi:</strong> Anda akan diberitahu ketika analisis selesai</span>
+                        <span>{!! __('messages.notification') !!}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <i class="fas fa-save text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span><strong>Penyimpanan:</strong> File tersimpan selama 30 hari setelah dibuat</span>
+                        <span>{!! __('messages.storage') !!}</span>
                     </li>
                 </ul>
             </div>
@@ -295,16 +295,16 @@
                     <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-lightbulb text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-green-900">Tips</h3>
+                    <h3 class="text-xl font-bold text-green-900">{{ __('messages.tips') }}</h3>
                 </div>
                 <ul class="space-y-3 text-sm text-green-900">
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <i class="fas fa-map text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>Gunakan fitur pencarian pada peta untuk menemukan lokasi dengan cepat</span>
+                        <span>{{ __('messages.use_search_feature') }}</span>
                     </li>
                     <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
                         <i class="fas fa-calendar text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>Pilih rentang tanggal yang sesuai untuk hasil analisis yang optimal</span>
+                        <span>{{ __('messages.choose_appropriate_date_range') }}</span>
                     </li>
                 </ul>
             </div>
