@@ -1,8 +1,8 @@
 <!-- Language Switcher Component -->
-<div class="relative" x-data="{ open: false }">
+<div class="relative" x-data="{ open: false }" @click.away="open = false">
     <button 
         @click="open = !open" 
-        @click.away="open = false"
+        type="button"
         class="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition-all duration-200 shadow-md hover:shadow-lg"
         title="Change Language"
     >
@@ -21,14 +21,14 @@
     <!-- Dropdown Menu -->
     <div 
         x-show="open"
+        x-cloak
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 transform scale-95"
         x-transition:enter-end="opacity-100 transform scale-100"
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 transform scale-100"
         x-transition:leave-end="opacity-0 transform scale-95"
-        class="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 overflow-hidden"
-        style="display: none;"
+        class="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-[60] overflow-hidden"
     >
         <div class="px-3 sm:px-4 py-2 border-b border-gray-100">
             <p class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide">Select Language</p>

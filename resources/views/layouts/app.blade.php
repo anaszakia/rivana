@@ -90,15 +90,21 @@
         
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Bar with Language Switcher -->
-            <div class="bg-white border-b border-gray-200 px-4 sm:px-6 py-2 sm:py-3">
-                <div class="flex justify-end items-center">
+            <!-- Top Bar with Language Switcher - Desktop Only -->
+            <div class="hidden lg:flex bg-white border-b border-gray-200 px-4 sm:px-6 py-2 sm:py-3 shadow-sm">
+                <div class="flex justify-between sm:justify-end items-center gap-3 w-full">
+                    <!-- Page Title (optional - can be removed) -->
+                    <div class="flex items-center sm:hidden">
+                        <h1 class="text-sm font-semibold text-gray-700">@yield('page-title', 'Dashboard')</h1>
+                    </div>
+                    
+                    <!-- Language Switcher -->
                     @include('partials.language-switcher')
                 </div>
             </div>
             
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:mt-0 mt-16">
                 @yield('content')
             </main>
             

@@ -10,7 +10,10 @@
         <img src="/images/logo2.jpg" alt="Logo" class="w-9 h-9 rounded-lg object-cover border border-gray-200 shadow-sm">
         <span class="text-lg font-bold text-gray-800">RIVANA</span>
     </div>
-    <div class="w-10"></div> <!-- Spacer for centering -->
+    <!-- Language Switcher for Mobile -->
+    <div class="flex items-center">
+        @include('partials.language-switcher')
+    </div>
 </div>
 
 <!-- Sidebar -->
