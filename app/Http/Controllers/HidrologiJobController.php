@@ -421,6 +421,8 @@ class HidrologiJobController extends Controller
             'json' => 'application/json',
             'txt' => 'text/plain',
             'pdf' => 'application/pdf',
+            'html' => 'text/html',
+            'htm' => 'text/html',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'xls' => 'application/vnd.ms-excel',
         ];

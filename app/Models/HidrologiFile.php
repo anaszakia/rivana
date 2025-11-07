@@ -66,6 +66,15 @@ class HidrologiFile extends Model
     }
 
     /**
+     * Check if file is HTML
+     */
+    public function isHtml()
+    {
+        return in_array($this->file_type, ['html', 'htm']) || 
+               str_starts_with($this->mime_type ?? '', 'text/html');
+    }
+
+    /**
      * Scope untuk filter by file type
      */
     public function scopeOfType($query, $type)

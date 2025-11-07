@@ -1078,13 +1078,13 @@
 
             <!-- 🌊 NEW: Interactive River Network Map Section -->
             @php
-                // Cari file peta aliran sungai
-                $riverMapHtml = $job->files->firstWhere('file_name', 'peta_aliran_sungai_interaktif.html');
-                $riverMapPng = $job->files->firstWhere('file_name', 'peta_aliran_sungai.png');
-                $riverMapMetadata = $job->files->firstWhere('file_name', 'peta_aliran_sungai_metadata.json');
+                // Cari file peta aliran sungai - gunakan 'filename' bukan 'file_name'
+                $riverMapHtml = $job->files->firstWhere('filename', 'peta_aliran_sungai_interaktif.html');
+                $riverMapPng = $job->files->firstWhere('filename', 'peta_aliran_sungai.png');
+                $riverMapMetadata = $job->files->firstWhere('filename', 'peta_aliran_sungai_metadata.json');
                 
                 // Debug: Tampilkan info file yang ditemukan
-                // dd($riverMapHtml, $riverMapPng, $riverMapMetadata); // Uncomment untuk debug
+                // dd($riverMapHtml, $riverMapPng, $riverMapMetadata, $job->files->pluck('filename')->toArray()); // Uncomment untuk debug
             @endphp
 
             @if($riverMapHtml || $riverMapPng)
@@ -1135,13 +1135,14 @@
                             <!-- Map iframe -->
                             <iframe 
                                 id="riverMapFrame"
-                                src="{{ route('hidrologi.file.download', $riverMapHtml->id) }}" 
+                                src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
                                 class="w-full"
                                 style="height: 600px; border: none; min-height: 600px;"
                                 onload="hideMapLoading()"
                                 onerror="showMapError()"
-                                sandbox="allow-scripts allow-same-origin allow-popups"
-                                loading="lazy">
+                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                                loading="lazy"
+                                title="Peta Aliran Sungai Interaktif">
                             </iframe>
                         </div>
                         

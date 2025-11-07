@@ -109,6 +109,8 @@ class HidrologiFileController extends Controller
             'json' => 'application/json',
             'txt' => 'text/plain',
             'pdf' => 'application/pdf',
+            'html' => 'text/html',
+            'htm' => 'text/html',
         ];
         
         return $mimeTypes[$fileType] ?? 'application/octet-stream';
@@ -241,6 +243,39 @@ class HidrologiFileController extends Controller
                     ->header('Content-Type', 'application/json; charset=UTF-8')
                     ->header('Cache-Control', 'public, max-age=3600')
                     ->header('Access-Control-Allow-Origin', '*');
+            }
+            
+            // Untuk HTML - fetch dan return sebagai HTML (untuk peta interaktif)
+            if ($file->file_type === 'html') {
+                // Coba preview URL dulu
+                $htmlContent = @file_get_contents($previewUrl, false, $context);
+                
+                // Jika gagal, coba download URL
+                if ($htmlContent === false) {
+                    \Log::warning('HTML preview URL failed, trying download URL', [
+                        'file_id' => $id,
+                        'preview_url' => $previewUrl
+                    ]);
+                    $htmlContent = @file_get_contents($downloadUrl, false, $context);
+                }
+                
+                if ($htmlContent === false) {
+                    $error = error_get_last();
+                    \Log::error('HTML file not found or not accessible from both URLs', [
+                        'file_id' => $id,
+                        'file_name' => $file->filename,
+                        'preview_url' => $previewUrl,
+                        'download_url' => $downloadUrl,
+                        'error' => $error['message'] ?? 'Unknown error'
+                    ]);
+                    abort(404, 'File HTML tidak ditemukan atau tidak dapat diakses');
+                }
+                
+                return response($htmlContent)
+                    ->header('Content-Type', 'text/html; charset=UTF-8')
+                    ->header('Cache-Control', 'public, max-age=3600')
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('X-Frame-Options', 'SAMEORIGIN'); // Allow iframe from same origin
             }
             
             // Untuk file lain, redirect ke download
