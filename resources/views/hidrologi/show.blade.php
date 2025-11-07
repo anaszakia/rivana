@@ -1139,8 +1139,9 @@
                             style="height: 600px; border: none; min-height: 600px;"
                             onload="hideMapLoading()"
                             onerror="showMapError()"
-                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                            loading="lazy"
+                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-modals allow-top-navigation-by-user-activation"
+                            loading="eager"
+                            allow="geolocation"
                             title="Peta Aliran Sungai Interaktif">
                         </iframe>
                     </div>
@@ -2928,6 +2929,12 @@ function hideMapLoading() {
     const loadingOverlay = document.getElementById('mapLoadingOverlay');
     const mapFrame = document.getElementById('riverMapFrame');
     
+    console.log('🗺️ hideMapLoading called', {
+        loadingOverlay: !!loadingOverlay,
+        mapFrame: !!mapFrame,
+        frameSrc: mapFrame ? mapFrame.src : 'N/A'
+    });
+    
     if (loadingOverlay && mapFrame) {
         // Fade out loading overlay
         loadingOverlay.style.transition = 'opacity 0.5s ease';
@@ -2954,6 +2961,26 @@ function hideMapLoading() {
         }
     }
 }
+
+// Add event listener to check iframe loading
+document.addEventListener('DOMContentLoaded', function() {
+    const mapFrame = document.getElementById('riverMapFrame');
+    if (mapFrame) {
+        console.log('🗺️ River map iframe detected', {
+            src: mapFrame.src,
+            id: mapFrame.id
+        });
+        
+        // Additional error logging
+        mapFrame.addEventListener('load', function() {
+            console.log('✅ Iframe load event fired');
+        });
+        
+        mapFrame.addEventListener('error', function(e) {
+            console.error('❌ Iframe error event fired', e);
+        });
+    }
+});
 
 function showMapError() {
     const loadingOverlay = document.getElementById('mapLoadingOverlay');

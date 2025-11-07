@@ -275,7 +275,8 @@ class HidrologiFileController extends Controller
                     ->header('Content-Type', 'text/html; charset=UTF-8')
                     ->header('Cache-Control', 'public, max-age=3600')
                     ->header('Access-Control-Allow-Origin', '*')
-                    ->header('X-Frame-Options', 'SAMEORIGIN'); // Allow iframe from same origin
+                    ->header('X-Content-Type-Options', 'nosniff')
+                    ->withoutHeader('X-Frame-Options'); // Remove X-Frame-Options to allow iframe embedding
             }
             
             // Untuk file lain, redirect ke download

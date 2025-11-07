@@ -15,8 +15,12 @@ class SecurityHeaders
     {
         $response = $next($request);
 
-        // Prevent clickjacking
-        $response->headers->set('X-Frame-Options', 'DENY');
+        // Allow iframe for file preview (especially HTML maps)
+        // Don't set X-Frame-Options for file preview routes
+        if (!$request->is('hidrologi/file/preview/*')) {
+            // Prevent clickjacking for all other routes
+            $response->headers->set('X-Frame-Options', 'DENY');
+        }
         
         // Prevent MIME type sniffing
         $response->headers->set('X-Content-Type-Options', 'nosniff');
@@ -28,15 +32,28 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         
         // Content Security Policy
-        $response->headers->set('Content-Security-Policy', 
-            "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
-            "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
-            "img-src 'self' data: https:; " .
-            "font-src 'self' https://cdnjs.cloudflare.com; " .
-            "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com; " .
-            "frame-ancestors 'none';"
-        );
+        // Allow frame-ancestors for file preview routes (for iframe embedding)
+        if ($request->is('hidrologi/file/preview/*')) {
+            $response->headers->set('Content-Security-Policy', 
+                "default-src 'self'; " .
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://*.openstreetmap.org https://*.tile.openstreetmap.org; " .
+                "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://*.openstreetmap.org; " .
+                "img-src 'self' data: https: blob:; " .
+                "font-src 'self' https://cdnjs.cloudflare.com; " .
+                "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com https://*.openstreetmap.org https://*.tile.openstreetmap.org; " .
+                "frame-ancestors 'self';" // Allow same-origin iframe
+            );
+        } else {
+            $response->headers->set('Content-Security-Policy', 
+                "default-src 'self'; " .
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
+                "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
+                "img-src 'self' data: https:; " .
+                "font-src 'self' https://cdnjs.cloudflare.com; " .
+                "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com; " .
+                "frame-ancestors 'none';"
+            );
+        }
 
         return $response;
     }
