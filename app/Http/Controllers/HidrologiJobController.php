@@ -267,10 +267,22 @@ class HidrologiJobController extends Controller
     {
         $job = HidrologiJobs::with('files')->findOrFail($id);
 
-        // Jika belum ada files di database tapi status completed, fetch dari API
-        if (in_array($job->status, ['completed', 'completed_with_warning']) && $job->files->isEmpty()) {
+        // 🔄 ALWAYS re-fetch files untuk memastikan file baru (seperti HTML peta) ikut masuk
+        if (in_array($job->status, ['completed', 'completed_with_warning'])) {
+            Log::info('Show job - fetching latest files', [
+                'job_id' => $job->id,
+                'job_uuid' => $job->job_id,
+                'current_files_count' => $job->files->count()
+            ]);
+            
             $this->fetchAndStoreFiles($job);
-            $job->load('files');
+            $job->load('files'); // Reload files relation
+            
+            Log::info('Show job - files after fetch', [
+                'job_id' => $job->id,
+                'files_count' => $job->files->count(),
+                'files' => $job->files->pluck('filename')->toArray()
+            ]);
         }
 
         // Ambil text summary dari API (prioritas: summary terstruktur, fallback ke logs lengkap)
@@ -449,11 +461,35 @@ class HidrologiJobController extends Controller
     protected function getDisplayName($filename)
     {
         $names = [
+            // WEAP/RIVANA Dashboard files
             'WEAP_Dashboard.png' => 'Dashboard Utama WEAP',
             'WEAP_Enhanced_Dashboard.png' => 'Dashboard Lengkap',
             'WEAP_Water_Balance_Dashboard.png' => 'Dashboard Keseimbangan Air',
             'WEAP_Morphometry_Summary.png' => 'Ringkasan Morfometri',
-            'WEAP_Morphology_Ecology_Dashboard.png' => 'Dashboard Morfologi & Ekologi'
+            'WEAP_Morphology_Ecology_Dashboard.png' => 'Dashboard Morfologi & Ekologi',
+            'RIVANA_Dashboard.png' => 'Dashboard Utama RIVANA',
+            'RIVANA_Enhanced_Dashboard.png' => 'Dashboard Lengkap RIVANA',
+            'RIVANA_Water_Balance_Dashboard.png' => 'Dashboard Keseimbangan Air',
+            'RIVANA_Morphometry_Summary.png' => 'Ringkasan Morfometri',
+            'RIVANA_Morphology_Ecology_Dashboard.png' => 'Dashboard Morfologi & Ekologi',
+            'RIVANA_Baseline_Comparison.png' => 'Perbandingan ML vs Traditional',
+            
+            // River Network Map files - 🌊 PRIORITY
+            'peta_aliran_sungai_interaktif.html' => '🗺️ Peta Aliran Sungai Interaktif',
+            'peta_aliran_sungai.png' => '📷 Peta Aliran Sungai (Gambar)',
+            'peta_aliran_sungai_metadata.json' => '📊 Metadata Peta Aliran Sungai',
+            
+            // CSV files
+            'RIVANA_Hasil_Complete.csv' => 'Data Lengkap Hasil Simulasi',
+            'RIVANA_Monthly_WaterBalance.csv' => 'Keseimbangan Air Bulanan',
+            'RIVANA_Prediksi_30Hari.csv' => 'Prediksi 30 Hari ke Depan',
+            'RIVANA_Data_GEE_Raw.csv' => 'Data Satelit Mentah (GEE)',
+            
+            // JSON files
+            'RIVANA_WaterBalance_Validation.json' => 'Validasi Keseimbangan Air',
+            'RIVANA_Model_Validation_Complete.json' => 'Validasi Model Lengkap',
+            'baseline_comparison.json' => 'Perbandingan Baseline',
+            'model_validation_report.json' => 'Laporan Validasi Model'
         ];
 
         return $names[$filename] ?? $filename;
@@ -465,11 +501,37 @@ class HidrologiJobController extends Controller
     protected function getFileDescription($filename)
     {
         $descriptions = [
+            // WEAP files
             'WEAP_Dashboard.png' => 'Dashboard utama menampilkan status waduk, supply-demand, dan rekomendasi operasi',
             'WEAP_Enhanced_Dashboard.png' => 'Dashboard lengkap dengan analisis biaya-manfaat, kualitas air, dan efisiensi',
             'WEAP_Water_Balance_Dashboard.png' => 'Analisis keseimbangan air masuk dan keluar di wilayah',
             'WEAP_Morphometry_Summary.png' => 'Ringkasan parameter morfometri DAS',
-            'WEAP_Morphology_Ecology_Dashboard.png' => 'Analisis kondisi sungai, sedimen, dan kesehatan ekosistem'
+            'WEAP_Morphology_Ecology_Dashboard.png' => 'Analisis kondisi sungai, sedimen, dan kesehatan ekosistem',
+            
+            // RIVANA files
+            'RIVANA_Dashboard.png' => 'Dashboard utama menampilkan hasil analisis hidrologi dengan Machine Learning',
+            'RIVANA_Enhanced_Dashboard.png' => 'Dashboard lengkap dengan prediksi, analisis risiko, dan rekomendasi',
+            'RIVANA_Water_Balance_Dashboard.png' => 'Visualisasi keseimbangan air: input vs output, komponen hidrologi',
+            'RIVANA_Morphometry_Summary.png' => 'Parameter morfometri DAS: luas, bentuk, kemiringan, drainase',
+            'RIVANA_Morphology_Ecology_Dashboard.png' => 'Kondisi geomorfologi sungai dan kesehatan ekosistem akuatik',
+            'RIVANA_Baseline_Comparison.png' => 'Perbandingan akurasi model Machine Learning vs metode tradisional',
+            
+            // River Network Map files - 🌊 DETAILED DESCRIPTIONS
+            'peta_aliran_sungai_interaktif.html' => 'Peta interaktif dengan zoom, layer toggle, dan informasi aliran sungai. Dapat dibuka di browser untuk eksplorasi detail.',
+            'peta_aliran_sungai.png' => 'Visualisasi statis jaringan aliran sungai dengan akumulasi aliran dan topografi. Cocok untuk laporan dan presentasi.',
+            'peta_aliran_sungai_metadata.json' => 'Metadata lengkap peta: koordinat, karakteristik aliran, statistik air, sumber data satelit.',
+            
+            // CSV files
+            'RIVANA_Hasil_Complete.csv' => 'Data time series lengkap: curah hujan, temperature, ET, debit, level waduk, supply-demand',
+            'RIVANA_Monthly_WaterBalance.csv' => 'Ringkasan bulanan: presipitasi, evapotranspirasi, infiltrasi, runoff, storage',
+            'RIVANA_Prediksi_30Hari.csv' => 'Forecast curah hujan dan level waduk 30 hari ke depan dari model ML',
+            'RIVANA_Data_GEE_Raw.csv' => 'Data mentah dari Google Earth Engine: rainfall, temperature, soil moisture, NDVI, LST',
+            
+            // JSON files
+            'RIVANA_WaterBalance_Validation.json' => 'Validasi keseimbangan air dengan error maksimal 5%',
+            'RIVANA_Model_Validation_Complete.json' => 'Metrik validasi model: NSE, R², PBIAS, RMSE untuk semua parameter',
+            'baseline_comparison.json' => 'Hasil perbandingan performa ML vs metode tradisional (NRECA, SCS-CN)',
+            'model_validation_report.json' => 'Laporan validasi lengkap dengan interpretasi dan rekomendasi'
         ];
 
         return $descriptions[$filename] ?? null;
