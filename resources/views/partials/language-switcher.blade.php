@@ -3,18 +3,18 @@
     <button 
         @click="open = !open" 
         @click.away="open = false"
-        class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition-all duration-200 shadow-md hover:shadow-lg"
+        class="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition-all duration-200 shadow-md hover:shadow-lg"
         title="Change Language"
     >
-        <i class="fas fa-language text-lg"></i>
-        <span class="text-sm font-medium">
+        <i class="fas fa-language text-sm sm:text-lg"></i>
+        <span class="text-xs sm:text-sm font-medium">
             @if(app()->getLocale() === 'en')
                 EN 🇬🇧
             @else
                 ID 🇮🇩
             @endif
         </span>
-        <i class="fas fa-chevron-down text-xs transition-transform duration-200" 
+        <i class="fas fa-chevron-down text-[10px] sm:text-xs transition-transform duration-200" 
            :class="{ 'rotate-180': open }"></i>
     </button>
     
@@ -27,11 +27,11 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 transform scale-100"
         x-transition:leave-end="opacity-0 transform scale-95"
-        class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 overflow-hidden"
+        class="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 overflow-hidden"
         style="display: none;"
     >
-        <div class="px-4 py-2 border-b border-gray-100">
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Select Language</p>
+        <div class="px-3 sm:px-4 py-2 border-b border-gray-100">
+            <p class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide">Select Language</p>
         </div>
         
         <!-- Indonesian -->
@@ -40,15 +40,15 @@
             <input type="hidden" name="locale" value="id">
             <button 
                 type="submit" 
-                class="w-full text-left px-4 py-3 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-3 {{ app()->getLocale() === 'id' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
+                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'id' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
             >
-                <span class="text-2xl">🇮🇩</span>
+                <span class="text-xl sm:text-2xl">🇮🇩</span>
                 <div class="flex-1">
                     <div class="font-medium">Bahasa Indonesia</div>
-                    <div class="text-xs text-gray-500">Indonesian</div>
+                    <div class="text-[10px] sm:text-xs text-gray-500">Indonesian</div>
                 </div>
                 @if(app()->getLocale() === 'id')
-                    <i class="fas fa-check-circle text-blue-600"></i>
+                    <i class="fas fa-check-circle text-blue-600 text-sm sm:text-base"></i>
                 @endif
             </button>
         </form>
@@ -59,15 +59,15 @@
             <input type="hidden" name="locale" value="en">
             <button 
                 type="submit" 
-                class="w-full text-left px-4 py-3 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-3 {{ app()->getLocale() === 'en' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
+                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'en' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
             >
-                <span class="text-2xl">🇬🇧</span>
+                <span class="text-xl sm:text-2xl">🇬🇧</span>
                 <div class="flex-1">
                     <div class="font-medium">English</div>
-                    <div class="text-xs text-gray-500">English</div>
+                    <div class="text-[10px] sm:text-xs text-gray-500">English</div>
                 </div>
                 @if(app()->getLocale() === 'en')
-                    <i class="fas fa-check-circle text-blue-600"></i>
+                    <i class="fas fa-check-circle text-blue-600 text-sm sm:text-base"></i>
                 @endif
             </button>
         </form>
