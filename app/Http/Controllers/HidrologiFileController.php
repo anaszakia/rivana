@@ -271,6 +271,13 @@ class HidrologiFileController extends Controller
                     abort(404, 'File HTML tidak ditemukan atau tidak dapat diakses');
                 }
                 
+                // Log first 500 chars to debug
+                \Log::info('HTML content preview', [
+                    'file_id' => $id,
+                    'content_length' => strlen($htmlContent),
+                    'first_500_chars' => substr($htmlContent, 0, 500)
+                ]);
+                
                 // Inject base tag to resolve relative URLs correctly
                 // Add CSP meta tag to allow all necessary resources for map
                 $headInjection = '<head><base href="' . config('services.hidrologi.api_url') . '/">' . 
@@ -287,9 +294,10 @@ class HidrologiFileController extends Controller
                 // Replace <head> with <head> + injection
                 $htmlContent = preg_replace('/<head>/i', $headInjection, $htmlContent, 1);
                 
-                \Log::info('HTML content served for iframe', [
+                \Log::info('HTML after injection', [
                     'file_id' => $id,
-                    'content_length' => strlen($htmlContent)
+                    'final_length' => strlen($htmlContent),
+                    'has_base_tag' => strpos($htmlContent, '<base href=') !== false
                 ]);
                 
                 return response($htmlContent)
