@@ -1078,9 +1078,13 @@
 
             <!-- 🌊 NEW: Interactive River Network Map Section -->
             @php
+                // Cari file peta aliran sungai
                 $riverMapHtml = $job->files->firstWhere('file_name', 'peta_aliran_sungai_interaktif.html');
                 $riverMapPng = $job->files->firstWhere('file_name', 'peta_aliran_sungai.png');
                 $riverMapMetadata = $job->files->firstWhere('file_name', 'peta_aliran_sungai_metadata.json');
+                
+                // Debug: Tampilkan info file yang ditemukan
+                // dd($riverMapHtml, $riverMapPng, $riverMapMetadata); // Uncomment untuk debug
             @endphp
 
             @if($riverMapHtml || $riverMapPng)
@@ -1094,7 +1098,7 @@
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-800 flex items-center">
                                     🌊 Peta Aliran Sungai Interaktif
-                                    <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full">NEW</span>
+                                    <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full animate-pulse">NEW</span>
                                 </h3>
                                 <p class="text-sm text-gray-600">Visualisasi jaringan sungai dengan data Google Earth Engine</p>
                             </div>
@@ -1118,22 +1122,44 @@
 
                     <!-- Map Container -->
                     @if($riverMapHtml)
-                        <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4">
-                            <div id="mapLoadingOverlay" class="flex items-center justify-center py-12 bg-gray-50">
+                        <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
+                            <!-- Loading Overlay -->
+                            <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
                                 <div class="text-center">
                                     <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
                                     <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
                                     <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
                                 </div>
                             </div>
+                            
+                            <!-- Map iframe -->
                             <iframe 
                                 id="riverMapFrame"
-                                src="/hidrologi/file/download/{{ $riverMapHtml->id }}" 
-                                class="w-full hidden"
-                                style="height: 600px; border: none;"
+                                src="{{ route('hidrologi.file.download', $riverMapHtml->id) }}" 
+                                class="w-full"
+                                style="height: 600px; border: none; min-height: 600px;"
                                 onload="hideMapLoading()"
-                                onerror="showMapError()">
+                                onerror="showMapError()"
+                                sandbox="allow-scripts allow-same-origin allow-popups"
+                                loading="lazy">
                             </iframe>
+                        </div>
+                        
+                        <!-- Map Controls -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button onclick="refreshMap()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-semibold rounded-lg transition-all">
+                                <i class="fas fa-sync-alt mr-2"></i>Refresh Peta
+                            </button>
+                            <button onclick="zoomIn()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
+                                <i class="fas fa-search-plus mr-2"></i>Zoom In
+                            </button>
+                            <button onclick="zoomOut()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
+                                <i class="fas fa-search-minus mr-2"></i>Zoom Out
+                            </button>
+                            <div class="ml-auto flex items-center space-x-2 text-sm text-gray-600">
+                                <i class="fas fa-info-circle text-cyan-600"></i>
+                                <span>Gunakan mouse untuk zoom & pan peta</span>
+                            </div>
                         </div>
 
                         <!-- Map Info & Metadata -->
@@ -1432,8 +1458,46 @@
 
 @push('styles')
 <style>
+/* River Map Styles */
+#riverMapFrame {
+    transition: opacity 0.5s ease;
+}
+
+#mapLoadingOverlay {
+    transition: opacity 0.5s ease, display 0s 0.5s;
+}
+
+.map-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.map-container iframe {
+    display: block;
+    width: 100%;
+}
+
+/* Map Controls */
+.map-controls button {
+    transition: all 0.2s ease;
+}
+
+.map-controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.map-controls button:active {
+    transform: translateY(0);
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
+    #riverMapFrame {
+        height: 400px !important;
+        min-height: 400px !important;
+    }
+    
     .container {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
@@ -2853,9 +2917,29 @@ function hideMapLoading() {
     const mapFrame = document.getElementById('riverMapFrame');
     
     if (loadingOverlay && mapFrame) {
-        loadingOverlay.style.display = 'none';
+        // Fade out loading overlay
+        loadingOverlay.style.transition = 'opacity 0.5s ease';
+        loadingOverlay.style.opacity = '0';
+        
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 500);
+        
         mapFrame.classList.remove('hidden');
-        console.log('✓ River map loaded successfully');
+        console.log('✅ River map loaded successfully');
+        
+        // Show success notification
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Peta Berhasil Dimuat',
+                text: 'Peta aliran sungai siap ditampilkan',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
     }
 }
 
@@ -2870,11 +2954,66 @@ function showMapError() {
                 </div>
                 <p class="text-red-600 font-semibold mb-2">Gagal Memuat Peta</p>
                 <p class="text-sm text-gray-600 mb-4">Terjadi kesalahan saat memuat peta interaktif</p>
-                <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-redo mr-2"></i>Muat Ulang
+                <button onclick="refreshMap()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-redo mr-2"></i>Muat Ulang Peta
                 </button>
             </div>
         `;
+        
+        console.error('❌ Failed to load river map');
+    }
+}
+
+function refreshMap() {
+    const mapFrame = document.getElementById('riverMapFrame');
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    
+    if (mapFrame && loadingOverlay) {
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.opacity = '1';
+        loadingOverlay.innerHTML = `
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
+                <p class="text-gray-600 font-semibold">Memuat ulang peta...</p>
+            </div>
+        `;
+        
+        // Reload iframe
+        mapFrame.src = mapFrame.src;
+        console.log('🔄 Refreshing map...');
+    }
+}
+
+function zoomIn() {
+    // Note: Zoom control requires communication with iframe content
+    // This is a placeholder for future implementation
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Zoom In',
+            text: 'Gunakan kontrol zoom di pojok kiri peta atau scroll mouse',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    }
+}
+
+function zoomOut() {
+    // Note: Zoom control requires communication with iframe content
+    // This is a placeholder for future implementation
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Zoom Out',
+            text: 'Gunakan kontrol zoom di pojok kiri peta atau scroll mouse',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000
+        });
     }
 }
 
@@ -2885,26 +3024,47 @@ function openMapFullscreen() {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 html: `
-                    <div style="width: 100%; height: 80vh;">
+                    <div style="width: 100%; height: 85vh; position: relative;">
                         <iframe 
                             src="${mapFrame.src}" 
                             style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+                            sandbox="allow-scripts allow-same-origin allow-popups"
                             allow="fullscreen">
                         </iframe>
                     </div>
                 `,
                 width: '95%',
+                padding: '10px',
                 showCloseButton: true,
                 showConfirmButton: false,
                 customClass: {
-                    popup: 'p-0',
-                    htmlContainer: 'p-4'
+                    popup: 'rounded-2xl',
+                    htmlContainer: 'p-2'
                 },
-                background: '#f3f4f6'
+                background: '#f9fafb',
+                didOpen: () => {
+                    // Add download button in modal
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Download Peta';
+                    downloadBtn.className = 'absolute top-4 right-16 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-lg z-50';
+                    downloadBtn.onclick = () => window.open(mapFrame.src, '_blank');
+                    document.querySelector('.swal2-popup').appendChild(downloadBtn);
+                }
             });
         } else {
             // Fallback: open in new tab
             window.open(mapFrame.src, '_blank', 'width=1200,height=800');
+        }
+    } else {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Peta Tidak Tersedia',
+                text: 'Peta belum dimuat atau terjadi kesalahan',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            alert('Peta tidak tersedia');
         }
     }
 }
