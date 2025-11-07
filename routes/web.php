@@ -9,11 +9,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HidrologiJobController;
 use App\Http\Controllers\HidrologiFileController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\LanguageController;
 
 
 // Welcome route - replace login
 Route::get('/welcome', [WelcomeController::class, 'welcome'])
      ->name('welcome');
+
+// Language switcher route
+Route::post('/language/switch', [LanguageController::class, 'switch'])
+     ->name('language.switch');
 
 // Public routes - No authentication needed
 Route::group([], function () {

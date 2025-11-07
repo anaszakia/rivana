@@ -7,6 +7,7 @@
     <link rel="icon" type="image/jpeg" href="/images/logo2.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -29,6 +30,9 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 min-h-screen overflow-x-hidden">
+    
+    <!-- Language Switcher - Fixed Top Right -->
+    @include('partials.language-switcher-welcome')
     
     <!-- Animated Water-themed Background -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
@@ -78,10 +82,10 @@
                     
                     <div class="space-y-3">
                         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                            River DNA Analysis
+                            {{ __('messages.river_dna_analysis') }}
                         </h2>
                         <p class="text-lg sm:text-xl lg:text-2xl text-cyan-200/90 max-w-4xl mx-auto leading-relaxed px-4">
-                            Platform Analisis Hidrologi Berbasis Machine Learning & Google Earth Engine untuk Solusi Pengelolaan Sungai yang Cerdas dan Berkelanjutan
+                            {{ __('messages.rivana_description') }}
                         </p>
                     </div>
                 </div>
@@ -93,7 +97,7 @@
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div class="relative flex items-center gap-3">
                             <i class="fas fa-water text-2xl group-hover:scale-110 transition-transform"></i>
-                            <span>Mulai Analisis</span>
+                            <span>{{ __('messages.start_analysis') }}</span>
                             <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </a>
@@ -102,7 +106,7 @@
                        class="group px-12 py-5 bg-white/10 backdrop-blur-xl text-white font-bold text-xl rounded-2xl border-2 border-cyan-400/50 hover:bg-white/20 hover:border-cyan-300 transition-all duration-300">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-info-circle group-hover:rotate-12 transition-transform"></i>
-                            <span>Pelajari Lebih Lanjut</span>
+                            <span>{{ __('messages.learn_more') }}</span>
                         </div>
                     </a>
                 </div>
@@ -155,10 +159,10 @@
             <div id="features" class="space-y-12 animate-fadeUp" style="animation-delay: 0.4s;">
                 <div class="text-center space-y-4">
                     <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">
-                        Fitur Unggulan
+                        {{ __('messages.key_features') }}
                     </h2>
                     <p class="text-xl text-cyan-200/80 max-w-2xl mx-auto">
-                        Teknologi terdepan untuk analisis hidrologi yang komprehensif
+                        {{ __('messages.latest_technology') }}
                     </p>
                 </div>
 
@@ -168,9 +172,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-cyan-500/50">
                             <i class="fas fa-water text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Analisis Hidrologi</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.hydrological_analysis') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Analisis mendalam karakteristik sungai dengan machine learning terkini untuk prediksi yang akurat
+                            {{ __('messages.hydrological_analysis_desc') }}
                         </p>
                     </div>
 
@@ -179,9 +183,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-blue-500/50">
                             <i class="fas fa-globe-asia text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Google Earth Engine</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.google_earth_engine') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Integrasi penuh dengan GEE untuk analisis geospasial dan citra satelit berkualitas tinggi
+                            {{ __('messages.google_earth_engine_desc') }}
                         </p>
                     </div>
 
@@ -190,9 +194,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-teal-500/50">
                             <i class="fas fa-chart-area text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Visualisasi Interaktif</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.interactive_visualization') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Dashboard interaktif dengan visualisasi data real-time untuk interpretasi yang mudah
+                            {{ __('messages.interactive_visualization_desc') }}
                         </p>
                     </div>
 
@@ -201,9 +205,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-sky-500/50">
                             <i class="fas fa-cloud-upload-alt text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Upload & Proses</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.upload_process') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Upload data dengan mudah dan proses otomatis menggunakan algoritma canggih
+                            {{ __('messages.upload_process_desc') }}
                         </p>
                     </div>
 
@@ -212,9 +216,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-indigo-500/50">
                             <i class="fas fa-file-export text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Export Report</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.export_report') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Export hasil analisis dalam berbagai format untuk dokumentasi profesional
+                            {{ __('messages.export_report_desc') }}
                         </p>
                     </div>
 
@@ -223,9 +227,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-emerald-500/50">
                             <i class="fas fa-shield-alt text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Secure & Reliable</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.secure_reliable') }}</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            Keamanan data terjamin dengan enkripsi dan sistem backup otomatis yang handal
+                            {{ __('messages.secure_reliable_desc') }}
                         </p>
                     </div>
                 </div>
@@ -234,7 +238,7 @@
             <!-- Footer -->
             <div class="text-center pt-12 border-t border-cyan-400/20 animate-fadeUp" style="animation-delay: 0.6s;">
                 <p class="text-cyan-200/60 text-base">
-                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis. All rights reserved.
+                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis. {{ __('messages.all_rights_reserved') }}.
                 </p>
             </div>
 

@@ -21,13 +21,13 @@
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-3xl md:text-4xl font-bold mb-2 animate-fade-in flex items-center">
                         <i class="fas fa-water mr-3 text-cyan-300"></i>
-                        River DNA Analysis - Sistem Analisis Hidrologi
+                        {{ __('messages.river_dna_analysis') }} - {{ __('messages.hidrologi') }} {{ __('messages.analysis_status') }}
                     </h1>
                     <p class="text-cyan-100 text-lg animate-fade-in-delay">
-                        Selamat datang di sistem RIVANA! 💧
+                        {{ __('messages.welcome_to_rivana') }}
                     </p>
                     <p class="text-cyan-200 text-sm mt-2">
-                        Kelola dan pantau analisis data hidrologi dengan mudah
+                        {{ __('messages.manage_monitor_hydrology') }}
                     </p>
                     <div class="mt-4 flex items-center text-cyan-200">
                         <i class="fas fa-calendar-alt mr-2"></i>
@@ -52,7 +52,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Analisis</p>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.total_analysis') }}</p>
                         <div class="ml-2 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-cyan-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalHidrologiJobs }}; let increment = target / 50; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 20); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalHidrologiJobs) }}</p>
@@ -61,7 +61,7 @@
                             <i class="fas fa-arrow-up text-cyan-600 text-xs mr-1"></i>
                             <span class="text-sm text-cyan-600 font-semibold">+{{ $todayJobs }}</span>
                         </div>
-                        <span class="text-sm text-gray-500 ml-2">hari ini</span>
+                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.today') }}</span>
                     </div>
                 </div>
                 <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -75,7 +75,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Berhasil</p>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.successful') }}</p>
                         <div class="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $completedJobs }}; let increment = target / 30; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 30); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($completedJobs) }}</p>
@@ -84,7 +84,7 @@
                             <i class="fas fa-times text-red-600 text-xs mr-1"></i>
                             <span class="text-sm text-red-600 font-semibold">{{ number_format($failedJobs) }}</span>
                         </div>
-                        <span class="text-sm text-gray-500 ml-2">gagal</span>
+                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.failed') }}</span>
                     </div>
                 </div>
                 <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -98,7 +98,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Sedang Berjalan</p>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.running') }}</p>
                         <div class="ml-2 w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $runningJobs }}; let increment = target / 25; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 40); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($runningJobs) }}</p>
@@ -107,7 +107,7 @@
                             <i class="fas fa-chart-line text-amber-600 text-xs mr-1"></i>
                             <span class="text-sm text-amber-600 font-semibold">{{ $thisWeekJobs }}</span>
                         </div>
-                        <span class="text-sm text-gray-500 ml-2">minggu ini</span>
+                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.this_week') }}</span>
                     </div>
                 </div>
                 <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -121,7 +121,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total File</p>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.total_files') }}</p>
                         <div class="ml-2 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalFiles }}; let increment = target / 40; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 25); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalFiles) }}</p>
@@ -130,7 +130,7 @@
                             <i class="fas fa-calendar text-purple-600 text-xs mr-1"></i>
                             <span class="text-sm text-purple-600 font-semibold">{{ $thisMonthJobs }}</span>
                         </div>
-                        <span class="text-sm text-gray-500 ml-2">bulan ini</span>
+                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.this_month') }}</span>
                     </div>
                 </div>
                 <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -148,12 +148,12 @@
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 flex items-center">
                         <i class="fas fa-chart-line text-cyan-600 mr-3"></i>
-                        Pertumbuhan Analisis Hidrologi
+                        {{ __('messages.hydrology_growth') }}
                     </h3>
-                    <p class="text-sm text-gray-500 mt-1">Tren analisis hidrologi yang dijalankan</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ __('messages.hydrology_growth_desc') }}</p>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-xs font-semibold">7 Bulan Terakhir</span>
+                    <span class="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-xs font-semibold">{{ __('messages.last_7_months') }}</span>
                     <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh Chart">
                         <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
                     </button>
@@ -170,12 +170,12 @@
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 flex items-center">
                         <i class="fas fa-chart-bar text-green-600 mr-3"></i>
-                        Status Analisis
+                        {{ __('messages.analysis_status') }}
                     </h3>
-                    <p class="text-sm text-gray-500 mt-1">Perbandingan analisis berhasil vs gagal</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ __('messages.analysis_status_desc') }}</p>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-semibold">7 Hari Terakhir</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-semibold">{{ __('messages.last_7_days') }}</span>
                     <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh Chart">
                         <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
                     </button>
@@ -195,12 +195,12 @@
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 flex items-center">
                             <i class="fas fa-water text-cyan-600 mr-3"></i>
-                            Analisis Terbaru
+                            {{ __('messages.latest_analysis') }}
                         </h3>
-                        <p class="text-sm text-gray-500 mt-1">Analisis hidrologi yang baru dijalankan</p>
+                        <p class="text-sm text-gray-500 mt-1">{{ __('messages.latest_analysis_desc') }}</p>
                     </div>
                     <a href="{{ route('hidrologi.index') }}" class="inline-flex items-center px-4 py-2 bg-cyan-600 text-white text-sm font-semibold rounded-lg hover:bg-cyan-700 transition-colors shadow-md hover:shadow-lg">
-                        <span>Lihat Semua</span>
+                        <span>{{ __('messages.view_all') }}</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
@@ -278,8 +278,8 @@
                         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-water text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-500 font-medium">Belum ada analisis</p>
-                        <p class="text-gray-400 text-sm mt-1">Analisis baru akan muncul di sini</p>
+                        <p class="text-gray-500 font-medium">{{ __('messages.no_analysis_yet') }}</p>
+                        <p class="text-gray-400 text-sm mt-1">{{ __('messages.new_analysis_will_appear') }}</p>
                     </div>
                     @endforelse
                 </div>
@@ -293,12 +293,12 @@
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 flex items-center">
                             <i class="fas fa-history text-purple-600 mr-3"></i>
-                            Aktivitas Terbaru
+                            {{ __('messages.recent_activity') }}
                         </h3>
-                        <p class="text-sm text-gray-500 mt-1">Log aktivitas sistem terkini</p>
+                        <p class="text-sm text-gray-500 mt-1">{{ __('messages.recent_activity_desc') }}</p>
                     </div>
                     <a href="{{ route('audit.index') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg">
-                        <span>Lihat Semua</span>
+                        <span>{{ __('messages.view_all') }}</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
@@ -351,8 +351,8 @@
                         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-history text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-500 font-medium">Belum ada aktivitas</p>
-                        <p class="text-gray-400 text-sm mt-1">Aktivitas akan muncul di sini</p>
+                        <p class="text-gray-500 font-medium">{{ __('messages.no_activity_yet') }}</p>
+                        <p class="text-gray-400 text-sm mt-1">{{ __('messages.activity_will_appear') }}</p>
                     </div>
                     @endforelse
                 </div>

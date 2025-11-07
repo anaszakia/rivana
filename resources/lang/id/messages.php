@@ -1,0 +1,185 @@
+<?php
+
+return [
+    // Navigation
+    'dashboard' => 'Dasbor',
+    'hidrologi' => 'Hidrologi',
+    'audit_logs' => 'Log Audit',
+    'users' => 'Pengguna',
+    'settings' => 'Pengaturan',
+        'logout' => 'Keluar',
+    'back_to_home' => 'Kembali ke Beranda',
+    
+    // Dashboard
+    'river_dna_analysis' => 'Analisis DNA Sungai',
+    'welcome_to_rivana' => 'Selamat datang di sistem RIVANA! 💧',
+    'manage_monitor_hydrology' => 'Kelola dan pantau analisis data hidrologi dengan mudah',
+    'total_analysis' => 'Total Analisis',
+    'successful' => 'Berhasil',
+    'running' => 'Sedang Berjalan',
+    'total_files' => 'Total File',
+    'today' => 'hari ini',
+    'failed' => 'gagal',
+    'this_week' => 'minggu ini',
+    'this_month' => 'bulan ini',
+    'hydrology_growth' => 'Pertumbuhan Analisis Hidrologi',
+    'hydrology_growth_desc' => 'Tren analisis hidrologi yang dijalankan',
+    'last_7_months' => '7 Bulan Terakhir',
+    'analysis_status' => 'Status Analisis',
+    'analysis_status_desc' => 'Perbandingan analisis berhasil vs gagal',
+    'last_7_days' => '7 Hari Terakhir',
+    'latest_analysis' => 'Analisis Terbaru',
+    'latest_analysis_desc' => 'Analisis hidrologi yang baru dijalankan',
+    'view_all' => 'Lihat Semua',
+    'recent_activity' => 'Aktivitas Terbaru',
+    'recent_activity_desc' => 'Log aktivitas sistem terkini',
+    'no_analysis_yet' => 'Belum ada analisis',
+    'new_analysis_will_appear' => 'Analisis baru akan muncul di sini',
+    'no_activity_yet' => 'Belum ada aktivitas',
+    'activity_will_appear' => 'Aktivitas akan muncul di sini',
+    
+    // Create Hydrology Analysis
+    'create_new_analysis' => 'Buat Analisis Hidrologi Baru',
+    'submit_new_job' => 'Kirimkan pekerjaan baru untuk analisis data hidrologi',
+    'location_information' => 'Informasi Lokasi',
+    'location_info_desc' => 'Pilih lokasi pada peta atau masukkan koordinat',
+    'select_location_on_map' => 'Pilih Lokasi pada Peta',
+    'map_tips' => '<strong>Tips:</strong> Klik pada peta untuk memilih lokasi, atau masukkan koordinat secara manual di bawah. Anda juga bisa menarik marker untuk menyesuaikan posisi.',
+    'longitude' => 'Longitude',
+    'latitude' => 'Latitude',
+    'range' => 'Rentang',
+    'to' => 'hingga',
+    'location_name' => 'Nama Lokasi',
+    'fetching_location' => 'Mengambil nama lokasi...',
+    'auto_filled' => 'Otomatis terisi dari koordinat atau masukkan manual',
+    'auto_filled_desc' => 'Terisi otomatis ketika Anda memilih lokasi pada peta',
+    'location_description' => 'Deskripsi Lokasi',
+    'description_auto_filled' => 'Deskripsi detail tentang lokasi akan terisi otomatis dari peta',
+    'full_address_filled' => 'Deskripsi alamat lengkap terisi otomatis dari titik yang dipilih',
+    'analysis_period' => 'Periode Analisis',
+    'period_desc' => 'Tentukan rentang waktu untuk analisis data',
+    'start_date' => 'Tanggal Mulai',
+    'end_date' => 'Tanggal Selesai',
+    'important_date_note' => '<strong>Penting:</strong> Tanggal selesai harus hari ini atau sebelumnya. Pastikan rentang tanggal sesuai dengan kebutuhan analisis Anda.',
+    'back' => 'Kembali',
+    'create_analysis' => 'Buat Analisa',
+    
+    // How It Works
+    'how_it_works' => 'Cara Kerja',
+    'step_1' => 'Pilih Lokasi',
+    'step_1_desc' => 'Masukkan koordinat geografis dan rentang tanggal untuk analisis Anda',
+    'step_2' => 'Kirim Pekerjaan',
+    'step_2_desc' => 'Sistem akan mengirim ke API Python untuk diproses',
+    'step_3' => 'Pantau Progress',
+    'step_3_desc' => 'Lihat kemajuan analisis secara real-time',
+    'step_4' => 'Unduh Hasil',
+    'step_4_desc' => 'Download file hasil analisis yang telah selesai',
+    
+    // Important Notes
+    'important_notes' => 'Catatan Penting',
+    'processing_time' => 'Waktu Proses',
+    'processing_time_desc' => 'Bergantung pada rentang tanggal dan ketersediaan data',
+    'notification' => 'Notifikasi',
+    'notification_desc' => 'Anda akan diberitahu ketika analisis selesai',
+    'storage' => 'Penyimpanan',
+    'storage_desc' => 'File tersimpan selama 30 hari setelah dibuat',
+    
+    // Tips
+    'tips' => 'Tips',
+    'tip_search_map' => 'Gunakan fitur pencarian pada peta untuk menemukan lokasi dengan cepat',
+    'tip_date_range' => 'Pilih rentang tanggal yang sesuai untuk hasil analisis yang optimal',
+    
+    
+    
+    // Job Management
+    'job_list' => 'Daftar Pekerjaan',
+    'create_job' => 'Buat Pekerjaan',
+    'job_detail' => 'Detail Pekerjaan',
+    'job_status' => 'Status Pekerjaan',
+    
+    // Status
+    'pending' => 'Menunggu',
+    'submitted' => 'Dikirim',
+    'processing' => 'Diproses',
+    'completed' => 'Selesai',
+    'failed' => 'Gagal',
+    'cancelled' => 'Dibatalkan',
+    
+    // Actions
+    'view' => 'Lihat',
+    'download' => 'Unduh',
+    'delete' => 'Hapus',
+    'cancel' => 'Batal',
+    'edit' => 'Ubah',
+    'save' => 'Simpan',
+    'create' => 'Buat',
+    'back' => 'Kembali',
+    
+    // Hidrologi Page
+    'location_info' => 'Informasi Lokasi',
+    'location_name' => 'Nama Lokasi',
+    'coordinates' => 'Koordinat',
+    'description' => 'Deskripsi',
+    'analysis_period' => 'Periode Analisis',
+    'start_date' => 'Tanggal Mulai',
+    'end_date' => 'Tanggal Selesai',
+    'duration' => 'Durasi',
+    'days' => 'hari',
+    
+    // Analysis Results
+    'analysis_summary' => 'Ringkasan Analisis',
+    'structured_summary' => 'Ringkasan Terstruktur',
+    'complete_analysis_output' => 'Output Analisis Lengkap',
+    'generated_files' => 'File yang Dihasilkan',
+    'file_type' => 'Tipe File',
+    'file_size' => 'Ukuran File',
+    
+    // Timeline
+    'timeline' => 'Timeline',
+    'created' => 'Dibuat',
+    'started' => 'Mulai Diproses',
+    'completed_at' => 'Selesai',
+    
+    // Statistics
+    'statistics' => 'Statistik',
+    'png_files' => 'File PNG',
+    'csv_files' => 'File CSV',
+    'json_files' => 'File JSON',
+    'total_files' => 'Total File',
+    
+    // Messages
+    'confirm_delete' => 'Apakah Anda yakin ingin menghapus item ini?',
+    'confirm_cancel' => 'Apakah Anda yakin ingin membatalkan pekerjaan ini?',
+    'delete_success' => 'Berhasil dihapus!',
+    'cancel_success' => 'Berhasil dibatalkan!',
+    'operation_failed' => 'Operasi gagal!',
+    
+    // Buttons
+    'refresh' => 'Segarkan',
+    'fullscreen' => 'Layar Penuh',
+    'zoom_in' => 'Perbesar',
+    'zoom_out' => 'Perkecil',
+    'show' => 'Tampilkan',
+    'hide' => 'Sembunyikan',
+    
+    // Warning/Error
+    'warning' => 'Peringatan',
+    'error' => 'Error',
+    'no_data_available' => 'Tidak ada data tersedia',
+    
+    // River Map
+    'interactive_river_map' => 'Peta Aliran Sungai Interaktif',
+    'river_network_visualization' => 'Visualisasi jaringan sungai dengan data Google Earth Engine',
+    'map_not_available' => 'Peta Interaktif Belum Tersedia',
+    'map_not_generated' => 'File peta aliran sungai interaktif (HTML) belum di-generate atau belum selesai diproses.',
+    'use_mouse_zoom' => 'Gunakan mouse untuk zoom & pan peta',
+    'layer_map' => 'Layer Peta',
+    'data_sources' => 'Sumber Data',
+    'buffer_area' => 'Area Buffer',
+    'area_analysis' => 'Area analisis jaringan sungai',
+    
+    // Language Switcher
+    'language' => 'Bahasa',
+    'english' => 'Inggris',
+    'indonesian' => 'Indonesia',
+];

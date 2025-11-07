@@ -90,8 +90,12 @@
         
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            {{-- <!-- Header -->
-            @include('partials.header') --}}
+            <!-- Top Bar with Language Switcher -->
+            <div class="bg-white border-b border-gray-200 px-6 py-3">
+                <div class="flex justify-end items-center">
+                    @include('partials.language-switcher')
+                </div>
+            </div>
             
             <!-- Main Content Area -->
             <main class="flex-1 overflow-y-auto p-6">
