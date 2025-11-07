@@ -69,7 +69,7 @@
                     <div class="inline-block">
                         <h1 class="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter">
                             <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-600 drop-shadow-2xl">
-                                RIVANA auto deploy
+                                RIVANA
                             </span>
                         </h1>
                         <!-- Animated underline -->
