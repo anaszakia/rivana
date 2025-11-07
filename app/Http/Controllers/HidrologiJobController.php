@@ -378,8 +378,20 @@ class HidrologiJobController extends Controller
                 $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $fileType = strtolower($fileExtension);
                 
+                // Ensure file_type is not empty, default to 'unknown'
+                if (empty($fileType)) {
+                    $fileType = 'unknown';
+                    \Log::warning('File type empty for file: ' . $file['name']);
+                }
+                
                 // Get MIME type
                 $mimeType = $this->getMimeTypeFromExtension($fileType);
+                
+                \Log::info('Storing file', [
+                    'filename' => $file['name'],
+                    'file_type' => $fileType,
+                    'mime_type' => $mimeType
+                ]);
                 
                 HidrologiFile::updateOrCreate(
                     [
