@@ -1087,7 +1087,7 @@
                 // dd($riverMapHtml, $riverMapPng, $riverMapMetadata, $job->files->pluck('filename')->toArray()); // Uncomment untuk debug
             @endphp
 
-            @if($riverMapHtml || $riverMapPng)
+            @if($riverMapHtml)
                 <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 border-2 border-cyan-200 mb-6">
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-6">
@@ -1121,49 +1121,48 @@
                     </div>
 
                     <!-- Map Container -->
-                    @if($riverMapHtml)
-                        <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
-                            <!-- Loading Overlay -->
-                            <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
-                                <div class="text-center">
-                                    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
-                                    <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
-                                    <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
-                                </div>
+                    <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
+                        <!-- Loading Overlay -->
+                        <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
+                                <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
+                                <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
                             </div>
-                            
-                            <!-- Map iframe -->
-                            <iframe 
-                                id="riverMapFrame"
-                                src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                class="w-full"
-                                style="height: 600px; border: none; min-height: 600px;"
-                                onload="hideMapLoading()"
-                                onerror="showMapError()"
-                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                                loading="lazy"
-                                title="Peta Aliran Sungai Interaktif">
-                            </iframe>
                         </div>
                         
-                        <!-- Map Controls -->
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <button onclick="refreshMap()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-semibold rounded-lg transition-all">
-                                <i class="fas fa-sync-alt mr-2"></i>Refresh Peta
-                            </button>
-                            <button onclick="zoomIn()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
-                                <i class="fas fa-search-plus mr-2"></i>Zoom In
-                            </button>
-                            <button onclick="zoomOut()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
-                                <i class="fas fa-search-minus mr-2"></i>Zoom Out
-                            </button>
-                            <div class="ml-auto flex items-center space-x-2 text-sm text-gray-600">
-                                <i class="fas fa-info-circle text-cyan-600"></i>
-                                <span>Gunakan mouse untuk zoom & pan peta</span>
-                            </div>
+                        <!-- Map iframe -->
+                        <iframe 
+                            id="riverMapFrame"
+                            src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                            class="w-full"
+                            style="height: 600px; border: none; min-height: 600px;"
+                            onload="hideMapLoading()"
+                            onerror="showMapError()"
+                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                            loading="lazy"
+                            title="Peta Aliran Sungai Interaktif">
+                        </iframe>
+                    </div>
+                    
+                    <!-- Map Controls -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button onclick="refreshMap()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-semibold rounded-lg transition-all">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Peta
+                        </button>
+                        <button onclick="zoomIn()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
+                            <i class="fas fa-search-plus mr-2"></i>Zoom In
+                        </button>
+                        <button onclick="zoomOut()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
+                            <i class="fas fa-search-minus mr-2"></i>Zoom Out
+                        </button>
+                        <div class="ml-auto flex items-center space-x-2 text-sm text-gray-600">
+                            <i class="fas fa-info-circle text-cyan-600"></i>
+                            <span>Gunakan mouse untuk zoom & pan peta</span>
                         </div>
+                    </div>
 
-                        <!-- Map Info & Metadata -->
+                    <!-- Map Info & Metadata -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Quick Info Cards -->
                             <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
@@ -1256,21 +1255,33 @@
                                 </div>
                             </div>
                         @endif
-                    @else
-                        <!-- Fallback: Show PNG if HTML not available -->
-                        @if($riverMapPng)
-                            <div class="bg-white rounded-xl shadow-inner p-4">
-                                <img src="/hidrologi/file/download/{{ $riverMapPng->id }}" 
-                                     alt="River Network Map" 
-                                     class="w-full rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                     onclick="openImageFullscreen('/hidrologi/file/download/{{ $riverMapPng->id }}', 'River Network Map')">
-                                <p class="text-center text-sm text-gray-500 mt-3">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Klik gambar untuk melihat fullscreen
-                                </p>
-                            </div>
-                        @endif
+                </div>
+            @else
+                <!-- Fallback message if HTML map not available -->
+                <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-6 text-center">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marked-alt text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">Peta Interaktif Belum Tersedia</h3>
+                    <p class="text-yellow-700 text-sm mb-4">
+                        File peta aliran sungai interaktif (HTML) belum di-generate atau belum selesai diproses.
+                    </p>
+                    @if($riverMapPng)
+                        <p class="text-yellow-600 text-xs mb-3">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            File PNG peta tersedia di bagian "File yang Dihasilkan" di bawah.
+                        </p>
                     @endif
+                    <div class="flex justify-center gap-2">
+                        <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
+                        </button>
+                        @if(in_array($job->status, ['pending', 'submitted', 'processing']))
+                            <span class="px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-lg">
+                                <i class="fas fa-clock mr-2"></i>Sedang Diproses...
+                            </span>
+                        @endif
+                    </div>
                 </div>
             @endif
 
