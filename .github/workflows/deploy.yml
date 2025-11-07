@@ -13,16 +13,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Upload project ke server via SCP
+      # Setup Node.js untuk build assets (jika ada Vite/NPM)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      # Build frontend assets (jika menggunakan Vite)
+      - name: Install NPM dependencies and build
+        run: |
+          npm ci
+          npm run build
+
+      # Upload project ke server via SCP (exclude files yang tidak perlu)
       - name: Deploy via SCP (upload ke server)
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
-          source: "."
+          port: 22
+          source: ".,!node_modules,!.git,!.github,!vendor,!storage/logs/*,!storage/framework/cache/*,!storage/framework/sessions/*,!storage/framework/views/*,!.env,!.env.example"
           target: "/usr/share/nginx/rivana.cloud/public_html/rivana"
-          strip_components: 1  # menghindari folder repository ter-nesting
+          strip_components: 0
+          overwrite: true
+          rm: false
 
       # Jalankan perintah setelah upload
       - name: Run post-deploy commands
@@ -31,28 +46,43 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
+          port: 22
           script: |
             cd /usr/share/nginx/rivana.cloud/public_html/rivana
 
-            # install dependencies
-            composer install --no-interaction --prefer-dist --optimize-autoloader
-
-            # set environment & key jika belum
-            if [ ! -f .env ]; then
+            # Backup .env jika sudah ada (jangan overwrite)
+            if [ -f .env ]; then
+              echo "✅ .env sudah ada, tidak akan diubah"
+            else
+              echo "⚠️  .env belum ada, copy dari .env.example"
               cp .env.example .env
+              php artisan key:generate --force
             fi
 
-            php artisan key:generate --force
+            # Install composer dependencies
+            echo "📦 Installing Composer dependencies..."
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-progress
+
+            # Run migrations (jika ada perubahan database)
+            echo "🗄️  Running migrations..."
             php artisan migrate --force
 
-            # permission
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
+            # Set permissions (tanpa sudo jika user sudah owner)
+            echo "🔐 Setting permissions..."
+            chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || chown -R $USER:$USER storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
 
-            # optimize laravel
+            # Clear dan cache Laravel
+            echo "🚀 Optimizing Laravel..."
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            
+            # Restart queue workers jika ada
+            if [ -f artisan ]; then
+              php artisan queue:restart 2>/dev/null || echo "⚠️  No queue workers to restart"
+            fi
 
             echo "✅ Deployment selesai!"
+            echo "📅 Deployed at: $(date)"
