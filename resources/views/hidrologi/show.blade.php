@@ -202,10 +202,10 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-blue-900 flex items-center">
                             <i class="fas fa-chart-line text-blue-600 mr-2"></i>
-                            {{ $summary['title'] ?? '📊 RINGKASAN HASIL ANALISIS HIDROLOGI' }}
+                            {{ $summary['title'] ?? '📊 ' . strtoupper(__('messages.analysis_summary')) }}
                         </h3>
                         <span class="text-xs text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
-                            <i class="fas fa-layer-group mr-1"></i>Structured Summary
+                            <i class="fas fa-layer-group mr-1"></i>{{ __('messages.structured_summary') }}
                         </span>
                     </div>
 
@@ -214,32 +214,32 @@
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                                Informasi Job
+                                {{ __('messages.job_info') }}
                             </h4>
                             <div class="grid grid-cols-2 gap-3 text-sm">
                                 <div>
-                                    <span class="text-gray-600">Job ID:</span>
-                                    <span class="font-mono text-gray-800 ml-2 text-xs">{{ $summary['job_info']['job_id'] ?? 'N/A' }}</span>
+                                    <span class="text-gray-600">{{ __('messages.job_id') }}:</span>
+                                    <span class="font-mono text-gray-800 ml-2 text-xs">{{ $summary['job_info']['job_id'] ?? __('messages.n_a') }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-gray-600">Status:</span>
-                                    <span class="font-semibold text-green-600 ml-2">{{ ucfirst($summary['job_info']['status'] ?? 'N/A') }}</span>
+                                    <span class="text-gray-600">{{ __('messages.status') }}:</span>
+                                    <span class="font-semibold text-green-600 ml-2">{{ ucfirst($summary['job_info']['status'] ?? __('messages.n_a')) }}</span>
                                 </div>
                                 @if(isset($summary['job_info']['created_at']))
                                     <div>
-                                        <span class="text-gray-600">Created:</span>
+                                        <span class="text-gray-600">{{ __('messages.created') }}:</span>
                                         <span class="text-gray-800 ml-2 text-xs">{{ $summary['job_info']['created_at'] }}</span>
                                     </div>
                                 @endif
                                 @if(isset($summary['job_info']['completed_at']))
                                     <div>
-                                        <span class="text-gray-600">Completed:</span>
+                                        <span class="text-gray-600">{{ __('messages.completed_at') }}:</span>
                                         <span class="text-gray-800 ml-2 text-xs">{{ $summary['job_info']['completed_at'] }}</span>
                                     </div>
                                 @endif
                                 @if(isset($summary['job_info']['files_generated']))
                                     <div class="col-span-2 pt-2 border-t">
-                                        <span class="text-gray-600 block mb-2">Files Generated:</span>
+                                        <span class="text-gray-600 block mb-2">{{ __('messages.files_generated') }}:</span>
                                         <div class="flex space-x-4">
                                             <span class="text-blue-600"><i class="fas fa-image mr-1"></i>{{ $summary['job_info']['files_generated']['png'] ?? 0 }} PNG</span>
                                             <span class="text-green-600"><i class="fas fa-file-csv mr-1"></i>{{ $summary['job_info']['files_generated']['csv'] ?? 0 }} CSV</span>
@@ -256,20 +256,20 @@
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-cog text-purple-500 mr-2"></i>
-                                Parameter Input
+                                {{ __('messages.input_parameters') }}
                             </h4>
                             <div class="grid grid-cols-2 gap-3 text-sm">
                                 <div>
-                                    <span class="text-gray-600">Longitude:</span>
-                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['longitude'] ?? 'N/A' }}</span>
+                                    <span class="text-gray-600">{{ __('messages.longitude') }}:</span>
+                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['longitude'] ?? __('messages.n_a') }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-gray-600">Latitude:</span>
-                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['latitude'] ?? 'N/A' }}</span>
+                                    <span class="text-gray-600">{{ __('messages.latitude') }}:</span>
+                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['latitude'] ?? __('messages.n_a') }}</span>
                                 </div>
                                 <div class="col-span-2">
-                                    <span class="text-gray-600">Periode:</span>
-                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['periode_analisis'] ?? 'N/A' }}</span>
+                                    <span class="text-gray-600">{{ __('messages.period') }}:</span>
+                                    <span class="font-medium text-gray-800 ml-2">{{ $summary['input_parameters']['periode_analisis'] ?? __('messages.n_a') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -280,36 +280,36 @@
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-chart-bar text-green-500 mr-2"></i>
-                                Statistik Data
+                                {{ __('messages.data_statistics') }}
                             </h4>
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between items-center pb-2 border-b">
-                                    <span class="text-gray-600 font-medium">Total Hari Analisis:</span>
-                                    <span class="font-bold text-blue-700 text-lg">{{ $summary['statistik_data']['total_hari'] ?? 'N/A' }} hari</span>
+                                    <span class="text-gray-600 font-medium">{{ __('messages.total_analysis_days') }}:</span>
+                                    <span class="font-bold text-blue-700 text-lg">{{ $summary['statistik_data']['total_hari'] ?? __('messages.n_a') }} {{ __('messages.days') }}</span>
                                 </div>
                                 
                                 @if(isset($summary['statistik_data']['curah_hujan']))
                                     <div class="bg-blue-50 rounded p-3">
                                         <p class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-cloud-rain text-blue-600 mr-2"></i>
-                                            Curah Hujan
+                                            {{ __('messages.rainfall') }}
                                         </p>
                                         <div class="grid grid-cols-2 gap-2 text-xs">
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Rata-rata</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['statistik_data']['curah_hujan']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.average') }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['statistik_data']['curah_hujan']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Maksimum</div>
-                                                <div class="font-bold text-red-600">{{ $summary['statistik_data']['curah_hujan']['maksimum'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.maximum') }}</div>
+                                                <div class="font-bold text-red-600">{{ $summary['statistik_data']['curah_hujan']['maksimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Minimum</div>
-                                                <div class="font-bold text-green-600">{{ $summary['statistik_data']['curah_hujan']['minimum'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.minimum') }}</div>
+                                                <div class="font-bold text-green-600">{{ $summary['statistik_data']['curah_hujan']['minimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Total</div>
-                                                <div class="font-bold text-purple-600">{{ $summary['statistik_data']['curah_hujan']['total'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.total') }}</div>
+                                                <div class="font-bold text-purple-600">{{ $summary['statistik_data']['curah_hujan']['total'] ?? __('messages.n_a') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -319,24 +319,24 @@
                                     <div class="bg-cyan-50 rounded p-3">
                                         <p class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
-                                            Volume Kolam Retensi
+                                            {{ __('messages.retention_pond_volume') }}
                                         </p>
                                         <div class="grid grid-cols-2 gap-2 text-xs">
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Rata-rata</div>
-                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_kolam_retensi']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.average') }}</div>
+                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_kolam_retensi']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Maksimum</div>
-                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.maximum') }}</div>
+                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Minimum</div>
-                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_kolam_retensi']['minimum'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.minimum') }}</div>
+                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_kolam_retensi']['minimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">Akhir Periode</div>
-                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.end_of_period') }}</div>
+                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? __('messages.n_a') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -346,12 +346,12 @@
                                     <div class="bg-green-50 rounded p-3">
                                         <p class="font-medium text-green-900 mb-2 flex items-center">
                                             <i class="fas fa-shield-alt text-green-600 mr-2"></i>
-                                            Keandalan Sistem
+                                            {{ __('messages.system_reliability') }}
                                         </p>
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <div class="text-gray-600 text-xs">Rata-rata</div>
-                                                <div class="font-bold text-2xl text-green-700">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600 text-xs">{{ __('messages.average') }}</div>
+                                                <div class="font-bold text-2xl text-green-700">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="text-right">
                                                 <span class="px-4 py-2 rounded-full text-sm font-bold {{ 
