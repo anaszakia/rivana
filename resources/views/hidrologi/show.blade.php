@@ -202,7 +202,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-blue-900 flex items-center">
                             <i class="fas fa-chart-line text-blue-600 mr-2"></i>
-                            {{ $summary['title'] ?? '📊 ' . strtoupper(__('messages.analysis_summary')) }}
+                            📊 {{ strtoupper(__('messages.analysis_summary')) }}
                         </h3>
                         <span class="text-xs text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
                             <i class="fas fa-layer-group mr-1"></i>{{ __('messages.structured_summary') }}
@@ -735,14 +735,14 @@
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-amber-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-amber-50 p-3 rounded">
                                 <i class="fas fa-mountain text-amber-600 mr-2"></i>
-                                BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN
+                                {{ strtoupper(__('messages.river_environment')) }}
                             </h4>
                             
                             @if(isset($summary['hasil_analisis']['morfologi']))
                                 <div class="bg-gray-50 rounded p-3 mb-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-layer-group text-amber-600 mr-2"></i>
-                                        Morfologi Sungai
+                                        {{ __('messages.river_morphology') }}
                                     </div>
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
                                         @foreach($summary['hasil_analisis']['morfologi'] as $param => $nilai)
@@ -781,7 +781,7 @@
                         <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 mt-4 shadow-md border-2 border-indigo-200">
                             <h4 class="font-bold text-gray-800 mb-3 flex items-center bg-white bg-opacity-70 p-3 rounded-lg">
                                 <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
-                                📊 RINGKASAN KONDISI SISTEM
+                                📊 {{ strtoupper(__('messages.system_conditions_summary')) }}
                             </h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
@@ -874,7 +874,7 @@
                             
                             @if(isset($summary['pemenuhan_kebutuhan_air']['ringkasan']))
                                 <div class="bg-white rounded-lg p-4 mb-3 shadow-sm">
-                                    <h5 class="font-bold text-emerald-800 mb-2">Ringkasan</h5>
+                                    <h5 class="font-bold text-emerald-800 mb-2">{{ __('messages.summary') }}</h5>
                                     <div class="grid grid-cols-4 gap-2 text-sm">
                                         @foreach($summary['pemenuhan_kebutuhan_air']['ringkasan'] as $key => $value)
                                             <div class="text-center">
@@ -1097,10 +1097,10 @@
                             </div>
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-800 flex items-center">
-                                    🌊 Peta Aliran Sungai Interaktif
+                                    🌊 {{ __('messages.interactive_river_map') }}
                                     <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full animate-pulse">NEW</span>
                                 </h3>
-                                <p class="text-sm text-gray-600">Visualisasi jaringan sungai dengan data Google Earth Engine</p>
+                                <p class="text-sm text-gray-600">{{ __('messages.river_network_visualization') }}</p>
                             </div>
                         </div>
                         <div class="flex space-x-2">
@@ -2529,7 +2529,7 @@ function viewCSV(fileId, fileName) {
         previewContent.innerHTML = `
             <div class="flex items-center justify-center py-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-                <span class="ml-3 text-gray-600">Memuat data CSV...</span>
+                <span class="ml-3 text-gray-600">{{ __('messages.loading_csv_data') }}</span>
             </div>
         `;
         previewContainer.classList.remove('hidden');
