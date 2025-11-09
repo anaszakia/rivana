@@ -223,7 +223,7 @@
                                 </div>
                                 <div>
                                     <span class="text-gray-600">{{ __('messages.status') }}:</span>
-                                    <span class="font-semibold text-green-600 ml-2">{{ ucfirst($summary['job_info']['status'] ?? __('messages.n_a')) }}</span>
+                                    <span class="font-semibold text-green-600 ml-2">{{ ucfirst(trans_api($summary['job_info']['status'] ?? __('messages.n_a'), 'status_umum')) }}</span>
                                 </div>
                                 @if(isset($summary['job_info']['created_at']))
                                     <div>
@@ -359,7 +359,7 @@
                                                     (strpos($summary['statistik_data']['keandalan_sistem']['status'] ?? '', 'Baik') !== false ? 'bg-blue-200 text-blue-900' : 
                                                     'bg-yellow-200 text-yellow-900') 
                                                 }}">
-                                                    {{ $summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A' }}
+                                                    {{ trans_api($summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A', 'status_keandalan') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -402,7 +402,7 @@
                                                     (strpos($summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? '', 'Seimbang') !== false ? 'bg-blue-200 text-blue-900' : 
                                                     'bg-red-200 text-red-900') 
                                                 }}">
-                                                    {{ $summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? 'N/A' }}
+                                                    {{ trans_api($summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? 'N/A', 'status_pasokan') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -431,7 +431,7 @@
                                                 (strpos($summary['hasil_analisis']['risiko']['kategori_risiko'] ?? '', 'Sedang') !== false ? 'bg-yellow-200 text-yellow-900' : 
                                                 'bg-red-200 text-red-900') 
                                             }}">
-                                                {{ $summary['hasil_analisis']['risiko']['kategori_risiko'] ?? 'N/A' }}
+                                                {{ trans_api($summary['hasil_analisis']['risiko']['kategori_risiko'] ?? 'N/A', 'kategori_risiko') }}
                                             </span>
                                         </div>
                                     </div>
@@ -447,7 +447,7 @@
                                             <div class="bg-white rounded p-2 col-span-2">
                                                 <div class="text-gray-600">WQI (Water Quality Index)</div>
                                                 <div class="font-bold text-2xl text-cyan-700">{{ $summary['hasil_analisis']['kualitas_air']['WQI_rata_rata'] ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['hasil_analisis']['kualitas_air']['status'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['hasil_analisis']['kualitas_air']['status'] ?? 'N/A', 'status_wqi') }}</div>
                                             </div>
                                             <div class="space-y-2">
                                                 <div class="bg-white rounded p-2">
@@ -477,7 +477,7 @@
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Health Index</div>
                                                 <div class="font-bold text-green-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">Habitat Ikan (HSI)</div>
@@ -532,7 +532,7 @@
                                         (strpos($summary['water_balance']['status'] ?? '', 'Cukup') !== false ? 'bg-yellow-200 text-yellow-900' : 
                                         'bg-red-200 text-red-900')) 
                                     }}">
-                                        {{ $summary['water_balance']['status'] ?? 'N/A' }}
+                                        {{ trans_api($summary['water_balance']['status'] ?? 'N/A', 'status_balance') }}
                                     </span>
                                 </div>
                             </div>
@@ -762,7 +762,7 @@
                                         <div class="col-span-2 mb-2">
                                             <span class="text-gray-600">Indeks Kesehatan:</span>
                                             <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</span>
-                                            <span class="text-xs text-gray-500 ml-2">({{ $summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A' }})</span>
+                                            <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
                                         </div>
                                         @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish']))
                                             <div><span class="text-gray-600">Habitat Ikan:</span> <span class="font-bold text-blue-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish'] }}</span></div>
@@ -787,7 +787,7 @@
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
                                     <div class="text-xs text-gray-600 mb-1">Keadaan Ketersediaan Air</div>
                                     <div class="font-bold text-3xl text-green-700 mb-1">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-600">Status: <span class="font-semibold text-green-800">{{ $summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A' }}</span></div>
+                                    <div class="text-xs text-gray-600">Status: <span class="font-semibold text-green-800">{{ trans_api($summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A', 'status_keandalan') }}</span></div>
                                 </div>
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
                                     <div class="text-xs text-gray-600 mb-1">Volume Kolam Retensi</div>

@@ -1,0 +1,113 @@
+<?php
+
+/**
+ * API Value Translation Mapping
+ * 
+ * Maps Indonesian values from Python API to translation keys
+ * This allows flexible bilingual support without modifying the Python backend
+ */
+
+return [
+    
+    // Status Pasokan Air
+    'status_pasokan' => [
+        'Surplus' => 'api.water_supply.surplus',
+        'Defisit' => 'api.water_supply.deficit',
+        'Seimbang' => 'api.water_supply.balanced',
+    ],
+    
+    // Kategori Risiko
+    'kategori_risiko' => [
+        'Rendah' => 'api.risk_category.low',
+        'Sedang' => 'api.risk_category.medium',
+        'Tinggi' => 'api.risk_category.high',
+        'Sangat Tinggi' => 'api.risk_category.very_high',
+    ],
+    
+    // Status Keandalan Sistem
+    'status_keandalan' => [
+        'Sangat Baik' => 'api.reliability_status.excellent',
+        'Baik' => 'api.reliability_status.good',
+        'Cukup' => 'api.reliability_status.fair',
+        'Kurang' => 'api.reliability_status.poor',
+        'Buruk' => 'api.reliability_status.bad',
+    ],
+    
+    // Status Water Quality Index (WQI)
+    'status_wqi' => [
+        'Sangat Baik' => 'api.wqi_status.excellent',
+        'Baik' => 'api.wqi_status.good',
+        'Sedang' => 'api.wqi_status.moderate',
+        'Buruk' => 'api.wqi_status.poor',
+        'Sangat Buruk' => 'api.wqi_status.very_poor',
+    ],
+    
+    // Status Ekosistem
+    'status_ekosistem' => [
+        'Sehat' => 'api.ecosystem_status.healthy',
+        'Baik' => 'api.ecosystem_status.good',
+        'Tertekan' => 'api.ecosystem_status.stressed',
+        'Kritis' => 'api.ecosystem_status.critical',
+    ],
+    
+    // Status Water Balance
+    'status_balance' => [
+        'Seimbang dengan baik' => 'api.balance_status.well_balanced',
+        'Seimbang' => 'api.balance_status.balanced',
+        'Perlu perhatian' => 'api.balance_status.needs_attention',
+        'Tidak seimbang' => 'api.balance_status.unbalanced',
+    ],
+    
+    // Kondisi Hari (Success/Overflow)
+    'kondisi_hari' => [
+        'Berhasil' => 'api.day_condition.success',
+        'Overflow' => 'api.day_condition.overflow',
+        'Gagal' => 'api.day_condition.failed',
+    ],
+    
+    // Status Umum
+    'status_umum' => [
+        'Aktif' => 'api.general_status.active',
+        'Nonaktif' => 'api.general_status.inactive',
+        'Normal' => 'api.general_status.normal',
+        'Peringatan' => 'api.general_status.warning',
+        'Bahaya' => 'api.general_status.danger',
+        'Aman' => 'api.general_status.safe',
+    ],
+    
+    // Prioritas Sektor
+    'prioritas_sektor' => [
+        'Sangat Tinggi' => 'api.priority.very_high',
+        'Tinggi' => 'api.priority.high',
+        'Sedang' => 'api.priority.medium',
+        'Rendah' => 'api.priority.low',
+        'Sangat Rendah' => 'api.priority.very_low',
+    ],
+    
+    // Tipe Risiko
+    'tipe_risiko' => [
+        'Banjir' => 'api.risk_type.flood',
+        'Kekeringan' => 'api.risk_type.drought',
+        'Erosi' => 'api.risk_type.erosion',
+        'Sedimentasi' => 'api.risk_type.sedimentation',
+        'Pencemaran' => 'api.risk_type.pollution',
+    ],
+    
+    // Kondisi Tanah
+    'kondisi_tanah' => [
+        'Kering' => 'api.soil_condition.dry',
+        'Lembab' => 'api.soil_condition.moist',
+        'Basah' => 'api.soil_condition.wet',
+        'Jenuh' => 'api.soil_condition.saturated',
+    ],
+    
+    // Kualitas Air Parameter
+    'kualitas_parameter' => [
+        'Baik Sekali' => 'api.quality_parameter.excellent',
+        'Baik' => 'api.quality_parameter.good',
+        'Cukup' => 'api.quality_parameter.fair',
+        'Kurang' => 'api.quality_parameter.poor',
+        'Buruk' => 'api.quality_parameter.bad',
+    ],
+    
+];

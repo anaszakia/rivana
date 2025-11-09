@@ -280,6 +280,87 @@ return [
     'data' => 'Data',
     'map' => 'Map',
     
+    // API Values Translation
+    'api' => [
+        'water_supply' => [
+            'surplus' => 'Surplus',
+            'deficit' => 'Deficit',
+            'balanced' => 'Balanced',
+        ],
+        'risk_category' => [
+            'low' => 'Low',
+            'medium' => 'Medium',
+            'high' => 'High',
+            'very_high' => 'Very High',
+        ],
+        'reliability_status' => [
+            'excellent' => 'Excellent',
+            'good' => 'Good',
+            'fair' => 'Fair',
+            'poor' => 'Poor',
+            'bad' => 'Bad',
+        ],
+        'wqi_status' => [
+            'excellent' => 'Excellent',
+            'good' => 'Good',
+            'moderate' => 'Moderate',
+            'poor' => 'Poor',
+            'very_poor' => 'Very Poor',
+        ],
+        'ecosystem_status' => [
+            'healthy' => 'Healthy',
+            'good' => 'Good',
+            'stressed' => 'Stressed',
+            'critical' => 'Critical',
+        ],
+        'balance_status' => [
+            'well_balanced' => 'Well Balanced',
+            'balanced' => 'Balanced',
+            'needs_attention' => 'Needs Attention',
+            'unbalanced' => 'Unbalanced',
+        ],
+        'day_condition' => [
+            'success' => 'Success',
+            'overflow' => 'Overflow',
+            'failed' => 'Failed',
+        ],
+        'general_status' => [
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+            'normal' => 'Normal',
+            'warning' => 'Warning',
+            'danger' => 'Danger',
+            'safe' => 'Safe',
+        ],
+        'priority' => [
+            'very_high' => 'Very High',
+            'high' => 'High',
+            'medium' => 'Medium',
+            'low' => 'Low',
+            'very_low' => 'Very Low',
+        ],
+        'risk_type' => [
+            'flood' => 'Flood',
+            'drought' => 'Drought',
+            'erosion' => 'Erosion',
+            'sedimentation' => 'Sedimentation',
+            'pollution' => 'Pollution',
+        ],
+        'soil_condition' => [
+            'dry' => 'Dry',
+            'moist' => 'Moist',
+            'wet' => 'Wet',
+            'saturated' => 'Saturated',
+        ],
+        'quality_parameter' => [
+            'excellent' => 'Excellent',
+            'good' => 'Good',
+            'fair' => 'Fair',
+            'poor' => 'Poor',
+            'bad' => 'Bad',
+        ],
+    ],
+    
     'location_info' => 'Location Information',
     'location_name' => 'Location Name',
     'coordinates' => 'Coordinates',

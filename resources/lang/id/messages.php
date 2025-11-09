@@ -256,6 +256,87 @@ return [
     'data' => 'Data',
     'map' => 'Peta',
     
+    // API Values Translation
+    'api' => [
+        'water_supply' => [
+            'surplus' => 'Surplus',
+            'deficit' => 'Defisit',
+            'balanced' => 'Seimbang',
+        ],
+        'risk_category' => [
+            'low' => 'Rendah',
+            'medium' => 'Sedang',
+            'high' => 'Tinggi',
+            'very_high' => 'Sangat Tinggi',
+        ],
+        'reliability_status' => [
+            'excellent' => 'Sangat Baik',
+            'good' => 'Baik',
+            'fair' => 'Cukup',
+            'poor' => 'Kurang',
+            'bad' => 'Buruk',
+        ],
+        'wqi_status' => [
+            'excellent' => 'Sangat Baik',
+            'good' => 'Baik',
+            'moderate' => 'Sedang',
+            'poor' => 'Buruk',
+            'very_poor' => 'Sangat Buruk',
+        ],
+        'ecosystem_status' => [
+            'healthy' => 'Sehat',
+            'good' => 'Baik',
+            'stressed' => 'Tertekan',
+            'critical' => 'Kritis',
+        ],
+        'balance_status' => [
+            'well_balanced' => 'Seimbang dengan baik',
+            'balanced' => 'Seimbang',
+            'needs_attention' => 'Perlu perhatian',
+            'unbalanced' => 'Tidak seimbang',
+        ],
+        'day_condition' => [
+            'success' => 'Berhasil',
+            'overflow' => 'Overflow',
+            'failed' => 'Gagal',
+        ],
+        'general_status' => [
+            'active' => 'Aktif',
+            'inactive' => 'Nonaktif',
+            'normal' => 'Normal',
+            'warning' => 'Peringatan',
+            'danger' => 'Bahaya',
+            'safe' => 'Aman',
+        ],
+        'priority' => [
+            'very_high' => 'Sangat Tinggi',
+            'high' => 'Tinggi',
+            'medium' => 'Sedang',
+            'low' => 'Rendah',
+            'very_low' => 'Sangat Rendah',
+        ],
+        'risk_type' => [
+            'flood' => 'Banjir',
+            'drought' => 'Kekeringan',
+            'erosion' => 'Erosi',
+            'sedimentation' => 'Sedimentasi',
+            'pollution' => 'Pencemaran',
+        ],
+        'soil_condition' => [
+            'dry' => 'Kering',
+            'moist' => 'Lembab',
+            'wet' => 'Basah',
+            'saturated' => 'Jenuh',
+        ],
+        'quality_parameter' => [
+            'excellent' => 'Baik Sekali',
+            'good' => 'Baik',
+            'fair' => 'Cukup',
+            'poor' => 'Kurang',
+            'bad' => 'Buruk',
+        ],
+    ],
+    
     'location_info' => 'Informasi Lokasi',
     'location_name' => 'Nama Lokasi',
     'coordinates' => 'Koordinat',
