@@ -546,4 +546,16 @@ return [
     'language' => 'Bahasa',
     'english' => 'Inggris',
     'indonesian' => 'Indonesia',
+    
+    // Priority standalone
+    'tinggi' => 'Tinggi',
+    'sedang' => 'Sedang',
+    'rendah' => 'Rendah',
+    'normal' => 'Normal',
+    
+    // Recommendation texts
+    'critical_retention_pond' => 'Kolam Retensi kritis',
+    'implement_water_rationing_immediately' => 'Terapkan rationing air segera',
+    'system_reliability' => 'Keandalan sistem',
+    'reduce_leakage' => 'kurangi kebocoran',
 ];

@@ -154,9 +154,22 @@ return [
     // Prioritas
     'priority' => [
         'TINGGI' => 'high_priority',
+        'Tinggi' => 'high_priority',
         'SEDANG' => 'medium_priority',
+        'Sedang' => 'medium_priority',
         'RENDAH' => 'low_priority',
+        'Rendah' => 'low_priority',
         'NORMAL' => 'normal_priority',
+        'Normal' => 'normal_priority',
+    ],
+    
+    // Rekomendasi text patterns (for API recommendation texts)
+    'recommendation_texts' => [
+        'Kolam Retensi kritis' => 'critical_retention_pond',
+        'Terapkan rationing air segera' => 'implement_water_rationing_immediately',
+        'Keandalan sistem' => 'system_reliability',
+        'Audit infrastruktur' => 'audit_infrastructure',
+        'kurangi kebocoran' => 'reduce_leakage',
     ],
     
 ];

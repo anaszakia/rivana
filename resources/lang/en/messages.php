@@ -570,4 +570,16 @@ return [
     'language' => 'Language',
     'english' => 'English',
     'indonesian' => 'Indonesian',
+    
+    // Priority standalone
+    'tinggi' => 'High',
+    'sedang' => 'Medium',
+    'rendah' => 'Low',
+    'normal' => 'Normal',
+    
+    // Recommendation texts
+    'critical_retention_pond' => 'Critical retention pond',
+    'implement_water_rationing_immediately' => 'Implement water rationing immediately',
+    'system_reliability' => 'System reliability',
+    'reduce_leakage' => 'reduce leakage',
 ];

@@ -625,7 +625,7 @@
                                                 @else
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                 @endif
-                                                {{ $prioritas }}
+                                                {{ trans_api($prioritas, 'priority') }}
                                             </span>
                                         </div>
                                         <p class="text-sm text-gray-700 leading-relaxed pl-8">{{ $rekomendasi['rekomendasi'] ?? 'N/A' }}</p>
