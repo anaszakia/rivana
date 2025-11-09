@@ -642,20 +642,20 @@
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-blue-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-blue-50 p-3 rounded">
                                 <i class="fas fa-water text-blue-600 mr-2"></i>
-                                BAGIAN 1: PEMBAGIAN & PRIORITAS AIR
+                                {{ strtoupper(__('messages.water_distribution_priority')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
                                 @foreach($summary['hasil_analisis']['pasokan_air_per_sektor'] as $sector => $data)
                                     <div class="bg-gray-50 rounded p-3 hover:bg-gray-100 transition">
                                         <div class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-tint text-blue-600 mr-2"></i>
-                                            {{ $sector }}
+                                            {{ trans_api($sector, 'sector') }}
                                         </div>
                                         <div class="grid grid-cols-2 gap-2 text-xs pl-6">
-                                            <div><span class="text-gray-600">Kuota Legal:</span> <span class="font-bold">{{ $data['quota'] ?? 'N/A' }}</span></div>
-                                            <div><span class="text-gray-600">Alokasi:</span> <span class="font-bold text-green-700">{{ $data['alokasi'] ?? 'N/A' }}</span></div>
-                                            <div><span class="text-gray-600">Prioritas:</span> <span class="font-bold text-purple-700">{{ $data['prioritas'] ?? 'N/A' }}</span></div>
-                                            <div><span class="text-gray-600">Pemenuhan:</span> <span class="font-bold text-blue-700">{{ $data['pemenuhan'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.legal_quota') }}:</span> <span class="font-bold">{{ $data['quota'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.allocation') }}:</span> <span class="font-bold text-green-700">{{ $data['alokasi'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.priority') }}:</span> <span class="font-bold text-purple-700">{{ $data['prioritas'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.fulfillment') }}:</span> <span class="font-bold text-blue-700">{{ $data['pemenuhan'] ?? 'N/A' }}</span></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -668,19 +668,19 @@
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-cyan-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-cyan-50 p-3 rounded">
                                 <i class="fas fa-stream text-cyan-600 mr-2"></i>
-                                BAGIAN 2: SUMBER-SUMBER AIR
+                                {{ strtoupper(__('messages.water_sources')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
                                 @foreach($summary['hasil_analisis']['sumber_air'] as $source => $data)
                                     <div class="bg-cyan-50 rounded p-3 hover:bg-cyan-100 transition">
                                         <div class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
-                                            {{ $source }}
+                                            {{ trans_api($source, 'source') }}
                                         </div>
                                         <div class="grid grid-cols-2 gap-2 text-xs pl-6">
-                                            <div><span class="text-gray-600">Pasokan:</span> <span class="font-bold text-green-700">{{ $data['pasokan'] ?? 'N/A' }}</span></div>
-                                            <div><span class="text-gray-600">Biaya:</span> <span class="font-bold text-red-700">{{ $data['biaya'] ?? 'N/A' }}</span></div>
-                                            <div class="col-span-2"><span class="text-gray-600">Kontribusi:</span> <span class="font-bold text-blue-700">{{ $data['kontribusi'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.supply') }}:</span> <span class="font-bold text-green-700">{{ $data['pasokan'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.cost') }}:</span> <span class="font-bold text-red-700">{{ $data['biaya'] ?? 'N/A' }}</span></div>
+                                            <div class="col-span-2"><span class="text-gray-600">{{ __('messages.contribution') }}:</span> <span class="font-bold text-blue-700">{{ $data['kontribusi'] ?? 'N/A' }}</span></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -693,30 +693,30 @@
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
                                 <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
-                                BAGIAN 3: BIAYA & MANFAAT
+                                {{ strtoupper(__('messages.cost_benefit')) }}
                             </h4>
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div class="bg-red-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Total Biaya</div>
+                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.cost') }}</div>
                                     <div class="font-bold text-2xl text-red-700">{{ $summary['hasil_analisis']['ekonomi']['total_biaya'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-green-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Total Manfaat</div>
+                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.benefit') }}</div>
                                     <div class="font-bold text-2xl text-green-700">{{ $summary['hasil_analisis']['ekonomi']['total_manfaat'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-blue-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Net Benefit</div>
+                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.net_benefit') }}</div>
                                     <div class="font-bold text-2xl text-blue-700">{{ $summary['hasil_analisis']['ekonomi']['net_benefit'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-purple-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Efisiensi</div>
+                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.efficiency') }}</div>
                                     <div class="font-bold text-2xl text-purple-700">{{ $summary['hasil_analisis']['ekonomi']['efisiensi'] ?? 'N/A' }}</div>
                                 </div>
                             </div>
                             
                             @if(isset($summary['hasil_analisis']['ekonomi']['breakdown']))
                                 <div class="mt-3 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">Breakdown Biaya:</div>
+                                    <div class="text-xs font-medium text-gray-700 mb-2">{{ __('messages.breakdown') }} {{ __('messages.cost') }}:</div>
                                     <div class="grid grid-cols-2 gap-2">
                                         @foreach($summary['hasil_analisis']['ekonomi']['breakdown'] as $item => $nilai)
                                             <div class="bg-gray-50 rounded p-2 text-xs">
@@ -809,17 +809,17 @@
                         <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-sky-300">
                             <h4 class="font-bold text-sky-900 text-lg mb-3 flex items-center">
                                 <i class="fas fa-cloud-sun-rain mr-2 text-sky-600"></i>
-                                <span>📅 Prediksi Hujan 30 Hari</span>
+                                <span>📅 {{ __('messages.forecast_30_days') }}</span>
                             </h4>
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @if(isset($summary['prediksi_30_hari']['hujan']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-sky-800 mb-2">Curah Hujan</h5>
+                                        <h5 class="font-semibold text-sky-800 mb-2">{{ __('messages.rainfall_forecast') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['hujan'] as $key => $value)
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ ucfirst($key) }}:</span>
+                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
@@ -829,11 +829,11 @@
                                 
                                 @if(isset($summary['prediksi_30_hari']['kolam_retensi']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-blue-800 mb-2">Kolam Retensi</h5>
+                                        <h5 class="font-semibold text-blue-800 mb-2">{{ __('messages.retention_pond') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['kolam_retensi'] as $key => $value)
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}:</span>
+                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
@@ -843,11 +843,11 @@
                                 
                                 @if(isset($summary['prediksi_30_hari']['keandalan']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-green-800 mb-2">Keandalan</h5>
+                                        <h5 class="font-semibold text-green-800 mb-2">{{ __('messages.reliability') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['keandalan'] as $key => $value)
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}:</span>
+                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
@@ -869,7 +869,7 @@
                         <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-4 mt-4 shadow-md border-2 border-emerald-300">
                             <h4 class="font-bold text-emerald-900 text-lg mb-3 flex items-center">
                                 <i class="fas fa-tint mr-2 text-emerald-600"></i>
-                                <span>💧 Pemenuhan Kebutuhan Air</span>
+                                <span>💧 {{ __('messages.water_demand_fulfillment') }}</span>
                             </h4>
                             
                             @if(isset($summary['pemenuhan_kebutuhan_air']['ringkasan']))
@@ -918,7 +918,7 @@
                         <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-cyan-300">
                             <h4 class="font-bold text-cyan-900 text-lg mb-3 flex items-center">
                                 <i class="fas fa-tasks mr-2 text-cyan-600"></i>
-                                <span>📋 Saran Pengelolaan</span>
+                                <span>📋 {{ __('messages.management_suggestions') }}</span>
                             </h4>
                             
                             <div class="space-y-2">
@@ -940,7 +940,7 @@
                         <div class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-lg p-4 mt-4 shadow-md border-2 border-rose-300">
                             <h4 class="font-bold text-rose-900 text-lg mb-3 flex items-center">
                                 <i class="fas fa-tools mr-2 text-rose-600"></i>
-                                <span>🔧 Saran Perbaikan & Action Plan</span>
+                                <span>🔧 {{ __('messages.improvement_suggestions') }}</span>
                             </h4>
                             
                             <div class="space-y-3">
@@ -952,15 +952,15 @@
                                     
                                     <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
                                         <div class="bg-gray-100 px-4 py-2 flex justify-between items-center">
-                                            <h5 class="font-bold">{{ $perbaikan['kategori'] ?? 'N/A' }}</h5>
-                                            <span class="px-2 py-1 {{ $badgeClass }} text-white text-xs rounded">{{ $prioritas }}</span>
+                                            <h5 class="font-bold">{{ trans_api($perbaikan['kategori'] ?? 'N/A', 'category') }}</h5>
+                                            <span class="px-2 py-1 {{ $badgeClass }} text-white text-xs rounded">{{ trans_api($prioritas, 'priority') }}</span>
                                         </div>
                                         <div class="p-4">
-                                            <p class="text-sm text-gray-700 mb-2"><strong>Masalah:</strong> {{ $perbaikan['masalah'] ?? 'N/A' }}</p>
+                                            <p class="text-sm text-gray-700 mb-2"><strong>{{ __('messages.problem') }}:</strong> {{ $perbaikan['masalah'] ?? 'N/A' }}</p>
                                             
                                             @if(isset($perbaikan['solusi']))
                                                 <div class="mb-2">
-                                                    <strong class="text-sm">Solusi:</strong>
+                                                    <strong class="text-sm">{{ __('messages.solution') }}:</strong>
                                                     <ul class="list-disc list-inside text-sm text-gray-700 mt-1">
                                                         @foreach($perbaikan['solusi'] as $solusi)
                                                             <li>{{ $solusi }}</li>
@@ -971,11 +971,11 @@
                                             
                                             <div class="grid grid-cols-2 gap-2 pt-2 border-t text-xs">
                                                 <div>
-                                                    <span class="text-gray-600">Biaya:</span>
+                                                    <span class="text-gray-600">{{ __('messages.cost') }}:</span>
                                                     <span class="font-bold">{{ $perbaikan['estimasi_biaya'] ?? 'N/A' }}</span>
                                                 </div>
                                                 <div>
-                                                    <span class="text-gray-600">Timeline:</span>
+                                                    <span class="text-gray-600">{{ __('messages.timeline') }}:</span>
                                                     <span class="font-bold">{{ $perbaikan['timeline'] ?? 'N/A' }}</span>
                                                 </div>
                                             </div>

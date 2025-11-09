@@ -124,4 +124,39 @@ return [
         'Buruk' => 'api.quality_parameter.bad',
     ],
     
+    // Sektor Pengguna Air
+    'sector' => [
+        'Domestik' => 'domestic',
+        'Pertanian' => 'agriculture',
+        'Industri' => 'industry',
+        'Komersial' => 'commercial',
+        'Publik' => 'public',
+    ],
+    
+    // Sumber Air
+    'source' => [
+        'Sungai' => 'river',
+        'Diversi' => 'diversion',
+        'Air Tanah' => 'groundwater',
+        'Danau' => 'lake',
+        'Embung' => 'retention_pond',
+        'Bendungan' => 'dam',
+    ],
+    
+    // Kategori Saran Perbaikan
+    'category' => [
+        'Kapasitas Kolam Retensi' => 'retention_pond_capacity',
+        'Keandalan Infrastruktur' => 'infrastructure_reliability',
+        'Kualitas Air' => 'water_quality',
+        'Efisiensi Distribusi' => 'distribution_efficiency',
+    ],
+    
+    // Prioritas
+    'priority' => [
+        'TINGGI' => 'high_priority',
+        'SEDANG' => 'medium_priority',
+        'RENDAH' => 'low_priority',
+        'NORMAL' => 'normal_priority',
+    ],
+    
 ];
