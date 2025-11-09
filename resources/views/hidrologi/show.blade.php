@@ -1002,7 +1002,7 @@
             @endif
 
             <!-- Full Process Logs - COMPLETE OUTPUT (Output Lengkap) -->
-            @if($fullLogs)
+            {{-- @if($fullLogs)
                 <div class="bg-gray-900 rounded-lg shadow-xl p-6 mb-6 border-2 border-green-500">
                     <div class="flex justify-between items-center mb-4">
                         <div>
@@ -1074,7 +1074,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif --}}
 
             <!-- 🌊 NEW: Interactive River Network Map Section -->
             @php
