@@ -9,28 +9,42 @@
 
 return [
     
-    // Status Pasokan Air
+    // Status Pasokan Air (dengan deskripsi lengkap)
     'status_pasokan' => [
         'Surplus' => 'api.water_supply.surplus',
         'Defisit' => 'api.water_supply.deficit',
         'Seimbang' => 'api.water_supply.balanced',
+        // Status dengan deskripsi lengkap
+        'Defisit - Pasokan kurang dari kebutuhan' => 'api.water_supply.deficit_insufficient',
+        'Surplus - Pasokan berlebih' => 'api.water_supply.surplus_excess',
+        'Seimbang - Pasokan cukup' => 'api.water_supply.balanced_sufficient',
     ],
     
-    // Kategori Risiko
+    // Kategori Risiko (dengan deskripsi lengkap)
     'kategori_risiko' => [
         'Rendah' => 'api.risk_category.low',
         'Sedang' => 'api.risk_category.medium',
         'Tinggi' => 'api.risk_category.high',
         'Sangat Tinggi' => 'api.risk_category.very_high',
+        // Status dengan deskripsi lengkap
+        'Rendah - Aman' => 'api.risk_category.low_safe',
+        'Sedang - Perlu monitoring' => 'api.risk_category.medium_needs_monitoring',
+        'Tinggi - Perlu tindakan' => 'api.risk_category.high_needs_action',
+        'Sangat Tinggi - Darurat' => 'api.risk_category.very_high_emergency',
     ],
     
-    // Status Keandalan Sistem
+    // Status Keandalan Sistem (dengan deskripsi lengkap)
     'status_keandalan' => [
         'Sangat Baik' => 'api.reliability_status.excellent',
         'Baik' => 'api.reliability_status.good',
         'Cukup' => 'api.reliability_status.fair',
         'Kurang' => 'api.reliability_status.poor',
         'Buruk' => 'api.reliability_status.bad',
+        // Status dengan deskripsi lengkap
+        'Kurang - Perlu intervensi segera' => 'api.reliability_status.poor_needs_intervention',
+        'Cukup - Perlu monitoring' => 'api.reliability_status.fair_needs_monitoring',
+        'Baik - Sistem stabil' => 'api.reliability_status.good_stable',
+        'Sangat Baik - Optimal' => 'api.reliability_status.excellent_optimal',
     ],
     
     // Status Water Quality Index (WQI)
