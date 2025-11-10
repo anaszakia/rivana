@@ -10,7 +10,6 @@ use App\Services\HidrologiApiService;
 use App\Models\HidrologiJobs;
 use App\Models\HidrologiFile;
 use App\Models\HidrologiLog;
-use App\Helpers\HidrologiHelper;
 
 class HidrologiJobController extends Controller
 {
@@ -290,12 +289,10 @@ class HidrologiJobController extends Controller
         $summary = null;
         $fullLogs = null;
         if (in_array($job->status, ['completed', 'completed_with_warning'])) {
-            // Coba ambil summary terstruktur dulu
+            // Ambil summary terstruktur langsung dari API (English keys)
             $summaryResult = $this->apiService->getSummary($job->job_id);
             if ($summaryResult['success']) {
-                $rawSummary = $summaryResult['data']['summary'] ?? null;
-                // Transform keys dari English (Python API) ke Indonesian (Laravel Blade)
-                $summary = HidrologiHelper::transformSummaryKeys($rawSummary);
+                $summary = $summaryResult['data']['summary'] ?? null;
             }
             
             // Ambil juga full logs untuk detail lengkap

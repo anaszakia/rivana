@@ -288,7 +288,7 @@
                                     <span class="font-bold text-blue-700 text-lg">{{ $summary['statistik_data']['total_hari'] ?? __('messages.n_a') }} {{ __('messages.days') }}</span>
                                 </div>
                                 
-                                @if(isset($summary['statistik_data']['curah_hujan']))
+                                @if(isset($summary['statistik_data']['curah_rainfall']))
                                     <div class="bg-blue-50 rounded p-3">
                                         <p class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-cloud-rain text-blue-600 mr-2"></i>
@@ -297,25 +297,25 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.average') }}</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['statistik_data']['curah_hujan']['rata_rata'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['statistik_data']['curah_rainfall']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.maximum') }}</div>
-                                                <div class="font-bold text-red-600">{{ $summary['statistik_data']['curah_hujan']['maksimum'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-red-600">{{ $summary['statistik_data']['curah_rainfall']['maximum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.minimum') }}</div>
-                                                <div class="font-bold text-green-600">{{ $summary['statistik_data']['curah_hujan']['minimum'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-green-600">{{ $summary['statistik_data']['curah_rainfall']['minimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.total') }}</div>
-                                                <div class="font-bold text-purple-600">{{ $summary['statistik_data']['curah_hujan']['total'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-purple-600">{{ $summary['statistik_data']['curah_rainfall']['total'] ?? __('messages.n_a') }}</div>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['statistik_data']['volume_kolam_retensi']))
+                                @if(isset($summary['statistik_data']['volume_reservoir']))
                                     <div class="bg-cyan-50 rounded p-3">
                                         <p class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
@@ -324,25 +324,25 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.average') }}</div>
-                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_kolam_retensi']['rata_rata'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-cyan-700">{{ $summary['statistik_data']['volume_reservoir']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.maximum') }}</div>
-                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-blue-600">{{ $summary['statistik_data']['volume_reservoir']['maximum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.minimum') }}</div>
-                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_kolam_retensi']['minimum'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-orange-600">{{ $summary['statistik_data']['volume_reservoir']['minimum'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.end_of_period') }}</div>
-                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-indigo-600">{{ $summary['statistik_data']['volume_reservoir']['akhir_periode'] ?? __('messages.n_a') }}</div>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['statistik_data']['keandalan_sistem']))
+                                @if(isset($summary['statistik_data']['reliability_sistem']))
                                     <div class="bg-green-50 rounded p-3">
                                         <p class="font-medium text-green-900 mb-2 flex items-center">
                                             <i class="fas fa-shield-alt text-green-600 mr-2"></i>
@@ -351,15 +351,15 @@
                                         <div class="flex justify-between items-center">
                                             <div>
                                                 <div class="text-gray-600 text-xs">{{ __('messages.average') }}</div>
-                                                <div class="font-bold text-2xl text-green-700">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? __('messages.n_a') }}</div>
+                                                <div class="font-bold text-2xl text-green-700">{{ $summary['statistik_data']['reliability_sistem']['rata_rata'] ?? __('messages.n_a') }}</div>
                                             </div>
                                             <div class="text-right">
                                                 <span class="px-4 py-2 rounded-full text-sm font-bold {{ 
-                                                    strpos($summary['statistik_data']['keandalan_sistem']['status'] ?? '', 'Sangat Baik') !== false ? 'bg-green-200 text-green-900' : 
-                                                    (strpos($summary['statistik_data']['keandalan_sistem']['status'] ?? '', 'Baik') !== false ? 'bg-blue-200 text-blue-900' : 
+                                                    strpos($summary['statistik_data']['reliability_sistem']['status'] ?? '', 'Sangat Baik') !== false ? 'bg-green-200 text-green-900' : 
+                                                    (strpos($summary['statistik_data']['reliability_sistem']['status'] ?? '', 'Baik') !== false ? 'bg-blue-200 text-blue-900' : 
                                                     'bg-yellow-200 text-yellow-900') 
                                                 }}">
-                                                    {{ trans_api($summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A', 'status_keandalan') }}
+                                                    {{ trans_api($summary['statistik_data']['reliability_sistem']['status'] ?? 'N/A', 'status_keandalan') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -370,14 +370,14 @@
                     @endif
 
                     <!-- Hasil Analisis -->
-                    @if(isset($summary['hasil_analisis']))
+                    @if(isset($summary['analysis_results']))
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-microscope text-indigo-500 mr-2"></i>
                                 {{ __('messages.analysis_results') }}
                             </h4>
                             <div class="space-y-3 text-sm">
-                                @if(isset($summary['hasil_analisis']['pasokan_air']))
+                                @if(isset($summary['analysis_results']['supply_air']))
                                     <div class="bg-blue-50 rounded p-3">
                                         <p class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-tint text-blue-600 mr-2"></i>
@@ -386,30 +386,30 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.total_supply') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['hasil_analisis']['pasokan_air']['total_supply'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['supply_air']['total_supply'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.total_demand') }}</div>
-                                                <div class="font-bold text-orange-700">{{ $summary['hasil_analisis']['pasokan_air']['total_demand'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-orange-700">{{ $summary['analysis_results']['supply_air']['total_demand'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.deficit') }}</div>
-                                                <div class="font-bold text-red-700">{{ $summary['hasil_analisis']['pasokan_air']['defisit'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-red-700">{{ $summary['analysis_results']['supply_air']['defisit'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2 flex items-center justify-center">
                                                 <span class="px-3 py-1 rounded-full text-xs font-bold {{ 
-                                                    strpos($summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? '', 'Surplus') !== false ? 'bg-green-200 text-green-900' : 
-                                                    (strpos($summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? '', 'Seimbang') !== false ? 'bg-blue-200 text-blue-900' : 
+                                                    strpos($summary['analysis_results']['supply_air']['status_supply'] ?? '', 'Surplus') !== false ? 'bg-green-200 text-green-900' : 
+                                                    (strpos($summary['analysis_results']['supply_air']['status_supply'] ?? '', 'Seimbang') !== false ? 'bg-blue-200 text-blue-900' : 
                                                     'bg-red-200 text-red-900') 
                                                 }}">
-                                                    {{ trans_api($summary['hasil_analisis']['pasokan_air']['status_pasokan'] ?? 'N/A', 'status_pasokan') }}
+                                                    {{ trans_api($summary['analysis_results']['supply_air']['status_supply'] ?? 'N/A', 'status_pasokan') }}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['hasil_analisis']['risiko']))
+                                @if(isset($summary['analysis_results']['risiko']))
                                     <div class="bg-yellow-50 rounded p-3">
                                         <p class="font-medium text-yellow-900 mb-2 flex items-center">
                                             <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
@@ -418,26 +418,26 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.flood_risk') }}</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['hasil_analisis']['risiko']['banjir'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analysis_results']['risiko']['banjir'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.drought_risk') }}</div>
-                                                <div class="font-bold text-orange-700">{{ $summary['hasil_analisis']['risiko']['kekeringan'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-orange-700">{{ $summary['analysis_results']['risiko']['kekeringan'] ?? 'N/A' }}</div>
                                             </div>
                                         </div>
                                         <div class="bg-white rounded p-2 text-center">
                                             <span class="px-3 py-1 rounded-full text-xs font-bold {{ 
-                                                strpos($summary['hasil_analisis']['risiko']['kategori_risiko'] ?? '', 'Rendah') !== false ? 'bg-green-200 text-green-900' : 
-                                                (strpos($summary['hasil_analisis']['risiko']['kategori_risiko'] ?? '', 'Sedang') !== false ? 'bg-yellow-200 text-yellow-900' : 
+                                                strpos($summary['analysis_results']['risiko']['kategori_risiko'] ?? '', 'Rendah') !== false ? 'bg-green-200 text-green-900' : 
+                                                (strpos($summary['analysis_results']['risiko']['kategori_risiko'] ?? '', 'Sedang') !== false ? 'bg-yellow-200 text-yellow-900' : 
                                                 'bg-red-200 text-red-900') 
                                             }}">
-                                                {{ trans_api($summary['hasil_analisis']['risiko']['kategori_risiko'] ?? 'N/A', 'kategori_risiko') }}
+                                                {{ trans_api($summary['analysis_results']['risiko']['kategori_risiko'] ?? 'N/A', 'kategori_risiko') }}
                                             </span>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['hasil_analisis']['kualitas_air']))
+                                @if(isset($summary['analysis_results']['water_quality']))
                                     <div class="bg-cyan-50 rounded p-3">
                                         <p class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-flask text-cyan-600 mr-2"></i>
@@ -446,28 +446,28 @@
                                         <div class="grid grid-cols-3 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2 col-span-2">
                                                 <div class="text-gray-600">WQI (Water Quality Index)</div>
-                                                <div class="font-bold text-2xl text-cyan-700">{{ $summary['hasil_analisis']['kualitas_air']['WQI_rata_rata'] ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['hasil_analisis']['kualitas_air']['status'] ?? 'N/A', 'status_wqi') }}</div>
+                                                <div class="font-bold text-2xl text-cyan-700">{{ $summary['analysis_results']['water_quality']['WQI_rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['analysis_results']['water_quality']['status'] ?? 'N/A', 'status_wqi') }}</div>
                                             </div>
                                             <div class="space-y-2">
                                                 <div class="bg-white rounded p-2">
                                                     <div class="text-gray-600 text-xs">pH</div>
-                                                    <div class="font-bold text-blue-700">{{ $summary['hasil_analisis']['kualitas_air']['pH'] ?? 'N/A' }}</div>
+                                                    <div class="font-bold text-blue-700">{{ $summary['analysis_results']['water_quality']['pH'] ?? 'N/A' }}</div>
                                                 </div>
                                                 <div class="bg-white rounded p-2">
                                                     <div class="text-gray-600 text-xs">DO</div>
-                                                    <div class="font-bold text-green-700 text-xs">{{ $summary['hasil_analisis']['kualitas_air']['DO'] ?? 'N/A' }}</div>
+                                                    <div class="font-bold text-green-700 text-xs">{{ $summary['analysis_results']['water_quality']['DO'] ?? 'N/A' }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="bg-white rounded p-2">
                                             <div class="text-gray-600 text-xs">TDS (Total Dissolved Solids)</div>
-                                            <div class="font-bold text-purple-700">{{ $summary['hasil_analisis']['kualitas_air']['TDS'] ?? 'N/A' }}</div>
+                                            <div class="font-bold text-purple-700">{{ $summary['analysis_results']['water_quality']['TDS'] ?? 'N/A' }}</div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']))
+                                @if(isset($summary['analysis_results']['ecosystem_health']))
                                     <div class="bg-green-50 rounded p-3">
                                         <p class="font-medium text-green-900 mb-2 flex items-center">
                                             <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -476,17 +476,17 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.health_index') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['analysis_results']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.fish_habitat') }} (HSI)</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] ?? 'N/A' }}</div>
                                             </div>
                                         </div>
                                         <div class="bg-white rounded p-2">
                                             <div class="text-gray-600 text-xs">{{ __('messages.vegetation_habitat') }}</div>
-                                            <div class="font-bold text-green-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_vegetation'] ?? 'N/A' }}</div>
+                                            <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] ?? 'N/A' }}</div>
                                         </div>
                                     </div>
                                 @endif
@@ -638,14 +638,14 @@
                     <!-- ====================== ADDITIONAL DETAILED SECTIONS (Matching Python Output) ====================== -->
                     
                     <!-- BAGIAN 1: PEMBAGIAN & PRIORITAS AIR -->
-                    @if(isset($summary['hasil_analisis']['pasokan_air_per_sektor']))
+                    @if(isset($summary['analysis_results']['pasokan_air_per_sektor']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-blue-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-blue-50 p-3 rounded">
                                 <i class="fas fa-water text-blue-600 mr-2"></i>
                                 {{ strtoupper(__('messages.water_distribution_priority')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
-                                @foreach($summary['hasil_analisis']['pasokan_air_per_sektor'] as $sector => $data)
+                                @foreach($summary['analysis_results']['pasokan_air_per_sektor'] as $sector => $data)
                                     <div class="bg-gray-50 rounded p-3 hover:bg-gray-100 transition">
                                         <div class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-tint text-blue-600 mr-2"></i>
@@ -664,14 +664,14 @@
                     @endif
 
                     <!-- BAGIAN 2: SUMBER-SUMBER AIR -->
-                    @if(isset($summary['hasil_analisis']['sumber_air']))
+                    @if(isset($summary['analysis_results']['sumber_air']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-cyan-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-cyan-50 p-3 rounded">
                                 <i class="fas fa-stream text-cyan-600 mr-2"></i>
                                 {{ strtoupper(__('messages.water_sources')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
-                                @foreach($summary['hasil_analisis']['sumber_air'] as $source => $data)
+                                @foreach($summary['analysis_results']['sumber_air'] as $source => $data)
                                     <div class="bg-cyan-50 rounded p-3 hover:bg-cyan-100 transition">
                                         <div class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
@@ -689,7 +689,7 @@
                     @endif
 
                     <!-- BAGIAN 3: BIAYA & MANFAAT -->
-                    @if(isset($summary['hasil_analisis']['ekonomi']))
+                    @if(isset($summary['analysis_results']['ekonomi']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
                                 <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
@@ -698,27 +698,27 @@
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div class="bg-red-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.cost') }}</div>
-                                    <div class="font-bold text-2xl text-red-700">{{ $summary['hasil_analisis']['ekonomi']['total_biaya'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-red-700">{{ $summary['analysis_results']['ekonomi']['total_biaya'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-green-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.benefit') }}</div>
-                                    <div class="font-bold text-2xl text-green-700">{{ $summary['hasil_analisis']['ekonomi']['total_manfaat'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-green-700">{{ $summary['analysis_results']['ekonomi']['total_manfaat'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-blue-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.net_benefit') }}</div>
-                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['hasil_analisis']['ekonomi']['net_benefit'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['analysis_results']['ekonomi']['net_benefit'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-purple-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.efficiency') }}</div>
-                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['hasil_analisis']['ekonomi']['efisiensi'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['analysis_results']['ekonomi']['efisiensi'] ?? 'N/A' }}</div>
                                 </div>
                             </div>
                             
-                            @if(isset($summary['hasil_analisis']['ekonomi']['breakdown']))
+                            @if(isset($summary['analysis_results']['ekonomi']['breakdown']))
                                 <div class="mt-3 pt-3 border-t">
                                     <div class="text-xs font-medium text-gray-700 mb-2">{{ __('messages.breakdown') }} {{ __('messages.cost') }}:</div>
                                     <div class="grid grid-cols-2 gap-2">
-                                        @foreach($summary['hasil_analisis']['ekonomi']['breakdown'] as $item => $nilai)
+                                        @foreach($summary['analysis_results']['ekonomi']['breakdown'] as $item => $nilai)
                                             <div class="bg-gray-50 rounded p-2 text-xs">
                                                 <span class="text-gray-600">{{ $item }}:</span>
                                                 <span class="font-bold text-gray-800 ml-2">{{ $nilai }}</span>
@@ -731,28 +731,28 @@
                     @endif
 
                     <!-- BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN -->
-                    @if(isset($summary['hasil_analisis']['morfologi']) || isset($summary['hasil_analisis']['kesehatan_ekosistem']))
+                    @if(isset($summary['analysis_results']['morfologi']) || isset($summary['analysis_results']['kesehatan_ekosistem']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-amber-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-amber-50 p-3 rounded">
                                 <i class="fas fa-mountain text-amber-600 mr-2"></i>
                                 {{ strtoupper(__('messages.river_environment')) }}
                             </h4>
                             
-                            @if(isset($summary['hasil_analisis']['morfologi']))
+                            @if(isset($summary['analysis_results']['morfologi']))
                                 <div class="bg-gray-50 rounded p-3 mb-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-layer-group text-amber-600 mr-2"></i>
                                         {{ __('messages.river_morphology') }}
                                     </div>
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
-                                        @foreach($summary['hasil_analisis']['morfologi'] as $param => $nilai)
+                                        @foreach($summary['analysis_results']['morfologi'] as $param => $nilai)
                                             <div><span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $param)) }}:</span> <span class="font-bold">{{ $nilai }}</span></div>
                                         @endforeach
                                     </div>
                                 </div>
                             @endif
                             
-                            @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']))
+                            @if(isset($summary['analysis_results']['kesehatan_ekosistem']))
                                 <div class="bg-green-50 rounded p-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -761,14 +761,14 @@
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
                                         <div class="col-span-2 mb-2">
                                             <span class="text-gray-600">{{ __('messages.health_index') }}:</span>
-                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</span>
-                                            <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['hasil_analisis']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
+                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['analysis_results']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</span>
+                                            <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['analysis_results']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
                                         </div>
-                                        @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish']))
-                                            <div><span class="text-gray-600">{{ __('messages.fish_habitat') }}:</span> <span class="font-bold text-blue-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_fish'] }}</span></div>
+                                        @if(isset($summary['analysis_results']['kesehatan_ekosistem']['habitat_fish']))
+                                            <div><span class="text-gray-600">{{ __('messages.fish_habitat') }}:</span> <span class="font-bold text-blue-700">{{ $summary['analysis_results']['kesehatan_ekosistem']['habitat_fish'] }}</span></div>
                                         @endif
-                                        @if(isset($summary['hasil_analisis']['kesehatan_ekosistem']['habitat_vegetation']))
-                                            <div><span class="text-gray-600">{{ __('messages.vegetation_habitat') }}:</span> <span class="font-bold text-green-700">{{ $summary['hasil_analisis']['kesehatan_ekosistem']['habitat_vegetation'] }}</span></div>
+                                        @if(isset($summary['analysis_results']['kesehatan_ekosistem']['habitat_vegetation']))
+                                            <div><span class="text-gray-600">{{ __('messages.vegetation_habitat') }}:</span> <span class="font-bold text-green-700">{{ $summary['analysis_results']['kesehatan_ekosistem']['habitat_vegetation'] }}</span></div>
                                         @endif
                                     </div>
                                 </div>
@@ -777,7 +777,7 @@
                     @endif
 
                     <!-- BAGIAN 5: RINGKASAN KONDISI SISTEM -->
-                    @if(isset($summary['statistik_data']['keandalan_sistem']))
+                    @if(isset($summary['statistik_data']['reliability_sistem']))
                         <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 mt-4 shadow-md border-2 border-indigo-200">
                             <h4 class="font-bold text-gray-800 mb-3 flex items-center bg-white bg-opacity-70 p-3 rounded-lg">
                                 <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
@@ -786,17 +786,17 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.water_availability_condition') }}</div>
-                                    <div class="font-bold text-3xl text-green-700 mb-1">{{ $summary['statistik_data']['keandalan_sistem']['rata_rata'] ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-600">{{ __('messages.status') }}: <span class="font-semibold text-green-800">{{ trans_api($summary['statistik_data']['keandalan_sistem']['status'] ?? 'N/A', 'status_keandalan') }}</span></div>
+                                    <div class="font-bold text-3xl text-green-700 mb-1">{{ $summary['statistik_data']['reliability_sistem']['rata_rata'] ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-600">{{ __('messages.status') }}: <span class="font-semibold text-green-800">{{ trans_api($summary['statistik_data']['reliability_sistem']['status'] ?? 'N/A', 'status_keandalan') }}</span></div>
                                 </div>
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.retention_pond_volume') }}</div>
-                                    <div class="font-bold text-3xl text-cyan-700 mb-1">{{ $summary['statistik_data']['volume_kolam_retensi']['akhir_periode'] ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-600">Max: <span class="font-semibold">{{ $summary['statistik_data']['volume_kolam_retensi']['maksimum'] ?? 'N/A' }}</span></div>
+                                    <div class="font-bold text-3xl text-cyan-700 mb-1">{{ $summary['statistik_data']['volume_reservoir']['akhir_periode'] ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-600">Max: <span class="font-semibold">{{ $summary['statistik_data']['volume_reservoir']['maximum'] ?? 'N/A' }}</span></div>
                                 </div>
                                 <div class="bg-white bg-opacity-70 rounded-lg p-4 shadow col-span-2">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.average_rainfall') }}</div>
-                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['statistik_data']['curah_hujan']['rata_rata'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['statistik_data']['curah_rainfall']['rata_rata'] ?? 'N/A' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -813,11 +813,11 @@
                             </h4>
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                @if(isset($summary['prediksi_30_hari']['hujan']))
+                                @if(isset($summary['prediksi_30_hari']['rainfall']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h5 class="font-semibold text-sky-800 mb-2">{{ __('messages.rainfall_forecast') }}</h5>
                                         <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['hujan'] as $key => $value)
+                                            @foreach($summary['prediksi_30_hari']['rainfall'] as $key => $value)
                                                 <div class="flex justify-between">
                                                     <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
@@ -827,11 +827,11 @@
                                     </div>
                                 @endif
                                 
-                                @if(isset($summary['prediksi_30_hari']['kolam_retensi']))
+                                @if(isset($summary['prediksi_30_hari']['reservoir']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h5 class="font-semibold text-blue-800 mb-2">{{ __('messages.retention_pond') }}</h5>
                                         <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['kolam_retensi'] as $key => $value)
+                                            @foreach($summary['prediksi_30_hari']['reservoir'] as $key => $value)
                                                 <div class="flex justify-between">
                                                     <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
@@ -841,11 +841,11 @@
                                     </div>
                                 @endif
                                 
-                                @if(isset($summary['prediksi_30_hari']['keandalan']))
+                                @if(isset($summary['prediksi_30_hari']['reliability']))
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h5 class="font-semibold text-green-800 mb-2">{{ __('messages.reliability') }}</h5>
                                         <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['keandalan'] as $key => $value)
+                                            @foreach($summary['prediksi_30_hari']['reliability'] as $key => $value)
                                                 <div class="flex justify-between">
                                                     <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
