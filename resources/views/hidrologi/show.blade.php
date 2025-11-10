@@ -731,7 +731,7 @@
                     @endif
 
                     <!-- BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN -->
-                    @if(isset($summary['analysis_results']['morfologi']) || isset($summary['analysis_results']['kesehatan_ekosistem']))
+                    @if(isset($summary['analysis_results']['morfologi']) || isset($summary['analysis_results']['ecosystem_health']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-amber-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-amber-50 p-3 rounded">
                                 <i class="fas fa-mountain text-amber-600 mr-2"></i>
@@ -752,7 +752,7 @@
                                 </div>
                             @endif
                             
-                            @if(isset($summary['analysis_results']['kesehatan_ekosistem']))
+                            @if(isset($summary['analysis_results']['ecosystem_health']))
                                 <div class="bg-green-50 rounded p-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -761,14 +761,14 @@
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
                                         <div class="col-span-2 mb-2">
                                             <span class="text-gray-600">{{ __('messages.health_index') }}:</span>
-                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['analysis_results']['kesehatan_ekosistem']['index'] ?? 'N/A' }}</span>
-                                            <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['analysis_results']['kesehatan_ekosistem']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
+                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A' }}</span>
+                                            <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['analysis_results']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
                                         </div>
-                                        @if(isset($summary['analysis_results']['kesehatan_ekosistem']['habitat_fish']))
-                                            <div><span class="text-gray-600">{{ __('messages.fish_habitat') }}:</span> <span class="font-bold text-blue-700">{{ $summary['analysis_results']['kesehatan_ekosistem']['habitat_fish'] }}</span></div>
+                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_fish']))
+                                            <div><span class="text-gray-600">{{ __('messages.fish_habitat') }}:</span> <span class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] }}</span></div>
                                         @endif
-                                        @if(isset($summary['analysis_results']['kesehatan_ekosistem']['habitat_vegetation']))
-                                            <div><span class="text-gray-600">{{ __('messages.vegetation_habitat') }}:</span> <span class="font-bold text-green-700">{{ $summary['analysis_results']['kesehatan_ekosistem']['habitat_vegetation'] }}</span></div>
+                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_vegetation']))
+                                            <div><span class="text-gray-600">{{ __('messages.vegetation_habitat') }}:</span> <span class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] }}</span></div>
                                         @endif
                                     </div>
                                 </div>
