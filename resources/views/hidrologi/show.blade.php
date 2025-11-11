@@ -467,7 +467,9 @@
                                     </div>
                                 @endif
 
-                                @if(isset($summary['analysis_results']['ecosystem_health']))
+                                @if(isset($summary['analysis_results']['ecosystem_health']) && 
+                                    ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'N/A' &&
+                                    ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'Data not available')
                                     <div class="bg-green-50 rounded p-3">
                                         <p class="font-medium text-green-900 mb-2 flex items-center">
                                             <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -476,18 +478,24 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.health_index') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['index'] }}</div>
                                                 <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['analysis_results']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
                                             </div>
+                                            @if(isset($summary['analysis_results']['ecosystem_health']['habitat_fish']) && 
+                                                $summary['analysis_results']['ecosystem_health']['habitat_fish'] !== 'N/A')
+                                                <div class="bg-white rounded p-2">
+                                                    <div class="text-gray-600">{{ __('messages.fish_habitat') }} (HSI)</div>
+                                                    <div class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] }}</div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_vegetation']) && 
+                                            $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] !== 'N/A')
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">{{ __('messages.fish_habitat') }} (HSI)</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600 text-xs">{{ __('messages.vegetation_habitat') }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] }}</div>
                                             </div>
-                                        </div>
-                                        <div class="bg-white rounded p-2">
-                                            <div class="text-gray-600 text-xs">{{ __('messages.vegetation_habitat') }}</div>
-                                            <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] ?? 'N/A' }}</div>
-                                        </div>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -752,7 +760,9 @@
                                 </div>
                             @endif
                             
-                            @if(isset($summary['analysis_results']['ecosystem_health']))
+                            @if(isset($summary['analysis_results']['ecosystem_health']) && 
+                                ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'N/A' &&
+                                ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'Data not available')
                                 <div class="bg-green-50 rounded p-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -761,13 +771,15 @@
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
                                         <div class="col-span-2 mb-2">
                                             <span class="text-gray-600">{{ __('messages.health_index') }}:</span>
-                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A' }}</span>
+                                            <span class="font-bold text-2xl text-green-700 ml-2">{{ $summary['analysis_results']['ecosystem_health']['index'] }}</span>
                                             <span class="text-xs text-gray-500 ml-2">({{ trans_api($summary['analysis_results']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }})</span>
                                         </div>
-                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_fish']))
+                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_fish']) && 
+                                            $summary['analysis_results']['ecosystem_health']['habitat_fish'] !== 'N/A')
                                             <div><span class="text-gray-600">{{ __('messages.fish_habitat') }}:</span> <span class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] }}</span></div>
                                         @endif
-                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_vegetation']))
+                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_vegetation']) && 
+                                            $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] !== 'N/A')
                                             <div><span class="text-gray-600">{{ __('messages.vegetation_habitat') }}:</span> <span class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] }}</span></div>
                                         @endif
                                     </div>
@@ -818,8 +830,17 @@
                                         <h5 class="font-semibold text-sky-800 mb-2">{{ __('messages.rainfall_forecast') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['rainfall'] as $key => $value)
+                                                @php
+                                                    $translations = [
+                                                        'rata_rata' => 'Rata-rata',
+                                                        'minimum' => 'Minimum',
+                                                        'maximum' => 'Maximum',
+                                                        'total' => 'Total',
+                                                    ];
+                                                    $label = $translations[strtolower($key)] ?? __('messages.' . strtolower($key));
+                                                @endphp
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
+                                                    <span class="text-gray-600">{{ $label }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
@@ -832,8 +853,17 @@
                                         <h5 class="font-semibold text-blue-800 mb-2">{{ __('messages.retention_pond') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['reservoir'] as $key => $value)
+                                                @php
+                                                    // Manual translation mapping for missing keys
+                                                    $translations = [
+                                                        'kondisi_saat_ini' => 'Kondisi Saat Ini',
+                                                        'prediksi_30_hari' => 'Prediksi 30 Hari',
+                                                        'persentase_capacity' => 'Persentase Kapasitas',
+                                                    ];
+                                                    $label = $translations[strtolower($key)] ?? __(('messages.' . strtolower($key)));
+                                                @endphp
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
+                                                    <span class="text-gray-600">{{ $label }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
@@ -846,8 +876,16 @@
                                         <h5 class="font-semibold text-green-800 mb-2">{{ __('messages.reliability') }}</h5>
                                         <div class="space-y-1 text-sm">
                                             @foreach($summary['prediksi_30_hari']['reliability'] as $key => $value)
+                                                @php
+                                                    $translations = [
+                                                        'saat_ini' => 'Saat Ini',
+                                                        'prediksi_30_hari' => 'Prediksi 30 Hari',
+                                                        'tren' => 'Tren',
+                                                    ];
+                                                    $label = $translations[strtolower($key)] ?? __('messages.' . strtolower($key));
+                                                @endphp
                                                 <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ __('messages.' . strtolower($key)) }}:</span>
+                                                    <span class="text-gray-600">{{ $label }}:</span>
                                                     <span class="font-bold">{{ $value }}</span>
                                                 </div>
                                             @endforeach
