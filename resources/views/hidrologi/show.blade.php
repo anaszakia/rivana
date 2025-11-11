@@ -3,7 +3,7 @@
 @section('title', __('messages.job_detail') . ' - ' . $job->job_id)
 
 @section('content')
-<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pt-20 lg:pt-6">
+<div class="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 pt-20 lg:pt-6">
     <!-- Header dengan Gradient Modern -->
     <div class="mb-6 sm:mb-8">
         <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-lg sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl sm:shadow-2xl">
@@ -129,9 +129,10 @@
         @endif
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <!-- Job Information -->
-        <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+    <!-- Main Content Wrapper with proper structure -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <!-- Main Content Column (Left) -->
+        <div class="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
             <!-- Location Info -->
             <div class="bg-white rounded-lg sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center space-x-3 mb-4 sm:mb-6">
@@ -165,12 +166,12 @@
             </div>
 
             <!-- Analysis Period -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center space-x-3 mb-6">
-                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-calendar-alt text-purple-600 text-lg"></i>
+            <div class="bg-white rounded-lg sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center space-x-3 mb-4 sm:mb-6">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-calendar-alt text-purple-600 text-sm sm:text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">{{ __('messages.analysis_period') }}</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">{{ __('messages.analysis_period') }}</h3>
                 </div>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
@@ -370,106 +371,132 @@
                     @endif
 
                     <!-- Hasil Analisis -->
-                    @if(isset($summary['analysis_results']))
+                    @if(isset($summary['analisis_keseimbangan_air']) || isset($summary['analisis_kondisi_sungai_soil_storage']))
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-microscope text-indigo-500 mr-2"></i>
                                 {{ __('messages.analysis_results') }}
                             </h4>
                             <div class="space-y-3 text-sm">
-                                @if(isset($summary['analysis_results']['supply_air']))
+                                @if(isset($summary['analisis_keseimbangan_air']['komponen_output']))
                                     <div class="bg-blue-50 rounded p-3">
                                         <p class="font-medium text-blue-900 mb-2 flex items-center">
-                                            <i class="fas fa-tint text-blue-600 mr-2"></i>
-                                            {{ __('messages.water_supply') }}
+                                            <i class="fas fa-arrow-up text-blue-600 mr-2"></i>
+                                            {{ __('messages.output_components') ?? 'Output Components' }}
                                         </p>
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.total_supply') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['supply_air']['total_supply'] ?? 'N/A' }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analisis_keseimbangan_air']['komponen_output']['total_supply'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">{{ __('messages.total_demand') }}</div>
-                                                <div class="font-bold text-orange-700">{{ $summary['analysis_results']['supply_air']['total_demand'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">Evapotranspiration</div>
+                                                <div class="font-bold text-orange-700">{{ $summary['analisis_keseimbangan_air']['komponen_output']['evapotranspirasi'] ?? 'N/A' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">{{ __('messages.deficit') }}</div>
-                                                <div class="font-bold text-red-700">{{ $summary['analysis_results']['supply_air']['defisit'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">Runoff</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analisis_keseimbangan_air']['komponen_output']['runoff'] ?? 'N/A' }}</div>
                                             </div>
-                                            <div class="bg-white rounded p-2 flex items-center justify-center">
-                                                <span class="px-3 py-1 rounded-full text-xs font-bold {{ 
-                                                    strpos($summary['analysis_results']['supply_air']['status_supply'] ?? '', 'Surplus') !== false ? 'bg-green-200 text-green-900' : 
-                                                    (strpos($summary['analysis_results']['supply_air']['status_supply'] ?? '', 'Seimbang') !== false ? 'bg-blue-200 text-blue-900' : 
-                                                    'bg-red-200 text-red-900') 
-                                                }}">
-                                                    {{ trans_api($summary['analysis_results']['supply_air']['status_supply'] ?? 'N/A', 'status_pasokan') }}
-                                                </span>
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">Total Output</div>
+                                                <div class="font-bold text-purple-700">{{ $summary['analisis_keseimbangan_air']['komponen_output']['total_output'] ?? 'N/A' }}</div>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['analysis_results']['risiko']))
-                                    <div class="bg-yellow-50 rounded p-3">
-                                        <p class="font-medium text-yellow-900 mb-2 flex items-center">
-                                            <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
-                                            {{ __('messages.risk_analysis') }}
+                                @if(isset($summary['analisis_keseimbangan_air']['komponen_input']))
+                                    <div class="bg-green-50 rounded p-3">
+                                        <p class="font-medium text-green-900 mb-2 flex items-center">
+                                            <i class="fas fa-arrow-down text-green-600 mr-2"></i>
+                                            {{ __('messages.input_components') }}
                                         </p>
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">{{ __('messages.flood_risk') }}</div>
-                                                <div class="font-bold text-blue-700">{{ $summary['analysis_results']['risiko']['banjir'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">{{ __('messages.rainfall') }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analisis_keseimbangan_air']['komponen_input']['rainfall'] ?? '0.00 mm' }}</div>
                                             </div>
                                             <div class="bg-white rounded p-2">
-                                                <div class="text-gray-600">{{ __('messages.drought_risk') }}</div>
-                                                <div class="font-bold text-orange-700">{{ $summary['analysis_results']['risiko']['kekeringan'] ?? 'N/A' }}</div>
+                                                <div class="text-gray-600">River Inflow</div>
+                                                <div class="font-bold text-cyan-700">
+                                                    @php
+                                                        $inflow = $summary['analisis_keseimbangan_air']['komponen_input']['inflow_sungai'] ?? 'N/A';
+                                                        echo ($inflow === 'N/A') ? '0.00 mm' : $inflow;
+                                                    @endphp
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="bg-white rounded p-2 text-center">
-                                            <span class="px-3 py-1 rounded-full text-xs font-bold {{ 
-                                                strpos($summary['analysis_results']['risiko']['kategori_risiko'] ?? '', 'Rendah') !== false ? 'bg-green-200 text-green-900' : 
-                                                (strpos($summary['analysis_results']['risiko']['kategori_risiko'] ?? '', 'Sedang') !== false ? 'bg-yellow-200 text-yellow-900' : 
-                                                'bg-red-200 text-red-900') 
-                                            }}">
-                                                {{ trans_api($summary['analysis_results']['risiko']['kategori_risiko'] ?? 'N/A', 'kategori_risiko') }}
-                                            </span>
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">Groundwater</div>
+                                                <div class="font-bold text-teal-700">
+                                                    @php
+                                                        $groundwater = $summary['analisis_keseimbangan_air']['komponen_input']['groundwater_recharge'] ?? 'N/A';
+                                                        echo ($groundwater === 'N/A') ? '0.00 mm' : $groundwater;
+                                                    @endphp
+                                                </div>
+                                            </div>
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">Total Input</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analisis_keseimbangan_air']['komponen_input']['total_input'] ?? '0.00 mm' }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['analysis_results']['water_quality']))
+                                @if(isset($summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']))
                                     <div class="bg-cyan-50 rounded p-3">
                                         <p class="font-medium text-cyan-900 mb-2 flex items-center">
-                                            <i class="fas fa-flask text-cyan-600 mr-2"></i>
-                                            {{ __('messages.water_quality') }}
+                                            <i class="fas fa-water text-cyan-600 mr-2"></i>
+                                            {{ __('messages.river_morphology') }}
                                         </p>
-                                        <div class="grid grid-cols-3 gap-2 text-xs mb-2">
+                                        <div class="grid grid-cols-2 gap-2 text-xs mb-2">
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">{{ __('messages.river_width') }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['lebar_sungai']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['lebar_sungai']['status'] ?? '' }}</div>
+                                            </div>
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">{{ __('messages.slope') }}</div>
+                                                <div class="font-bold text-purple-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['kemiringan']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['kemiringan']['kategori'] ?? '' }}</div>
+                                            </div>
                                             <div class="bg-white rounded p-2 col-span-2">
-                                                <div class="text-gray-600">WQI (Water Quality Index)</div>
-                                                <div class="font-bold text-2xl text-cyan-700">{{ $summary['analysis_results']['water_quality']['WQI_rata_rata'] ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['analysis_results']['water_quality']['status'] ?? 'N/A', 'status_wqi') }}</div>
+                                                <div class="text-gray-600">{{ __('messages.sediment_load') }}</div>
+                                                <div class="font-bold text-orange-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['beban_sediment']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['analisis_kondisi_sungai_soil_storage']['morfologi_sungai']['beban_sediment']['status'] ?? '' }}</div>
                                             </div>
-                                            <div class="space-y-2">
-                                                <div class="bg-white rounded p-2">
-                                                    <div class="text-gray-600 text-xs">pH</div>
-                                                    <div class="font-bold text-blue-700">{{ $summary['analysis_results']['water_quality']['pH'] ?? 'N/A' }}</div>
-                                                </div>
-                                                <div class="bg-white rounded p-2">
-                                                    <div class="text-gray-600 text-xs">DO</div>
-                                                    <div class="font-bold text-green-700 text-xs">{{ $summary['analysis_results']['water_quality']['DO'] ?? 'N/A' }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="bg-white rounded p-2">
-                                            <div class="text-gray-600 text-xs">TDS (Total Dissolved Solids)</div>
-                                            <div class="font-bold text-purple-700">{{ $summary['analysis_results']['water_quality']['TDS'] ?? 'N/A' }}</div>
                                         </div>
                                     </div>
                                 @endif
 
-                                @if(isset($summary['analysis_results']['ecosystem_health']) && 
-                                    ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'N/A' &&
-                                    ($summary['analysis_results']['ecosystem_health']['index'] ?? 'N/A') !== 'Data not available')
+                                @if(isset($summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']))
+                                    <div class="bg-amber-50 rounded p-3">
+                                        <p class="font-medium text-amber-900 mb-2 flex items-center">
+                                            <i class="fas fa-mountain text-amber-600 mr-2"></i>
+                                            {{ __('messages.soil_storage_condition') }}
+                                        </p>
+                                        <div class="grid grid-cols-2 gap-2 text-xs mb-2">
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">{{ __('messages.soil_moisture') }}</div>
+                                                <div class="font-bold text-blue-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['soil_moisture']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['soil_moisture']['status'] ?? '' }}</div>
+                                            </div>
+                                            <div class="bg-white rounded p-2">
+                                                <div class="text-gray-600">{{ __('messages.infiltration') }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['infiltration']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['infiltration']['capacity'] ?? '' }}</div>
+                                            </div>
+                                            <div class="bg-white rounded p-2 col-span-2">
+                                                <div class="text-gray-600">{{ __('messages.percolation') }}</div>
+                                                <div class="font-bold text-teal-700">{{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['percolation']['rata_rata'] ?? 'N/A' }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">To groundwater: {{ $summary['analisis_kondisi_sungai_soil_storage']['kondisi_soil_storage']['percolation']['ke_groundwater'] ?? 'N/A' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if(isset($summary['ekologi']['ecosystem_health']) && 
+                                    ($summary['ekologi']['ecosystem_health']['index'] ?? 'N/A') !== 'N/A' &&
+                                    ($summary['ekologi']['ecosystem_health']['index'] ?? 'N/A') !== 'Data not available')
                                     <div class="bg-green-50 rounded p-3">
                                         <p class="font-medium text-green-900 mb-2 flex items-center">
                                             <i class="fas fa-leaf text-green-600 mr-2"></i>
@@ -478,22 +505,22 @@
                                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600">{{ __('messages.health_index') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['index'] }}</div>
-                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['analysis_results']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['ekologi']['ecosystem_health']['index'] }}</div>
+                                                <div class="text-xs text-gray-500 mt-1">{{ trans_api($summary['ekologi']['ecosystem_health']['status'] ?? 'N/A', 'status_ekosistem') }}</div>
                                             </div>
-                                            @if(isset($summary['analysis_results']['ecosystem_health']['habitat_fish']) && 
-                                                $summary['analysis_results']['ecosystem_health']['habitat_fish'] !== 'N/A')
+                                            @if(isset($summary['ekologi']['ecosystem_health']['habitat_fish']) && 
+                                                $summary['ekologi']['ecosystem_health']['habitat_fish'] !== 'N/A')
                                                 <div class="bg-white rounded p-2">
                                                     <div class="text-gray-600">{{ __('messages.fish_habitat') }} (HSI)</div>
-                                                    <div class="font-bold text-blue-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_fish'] }}</div>
+                                                    <div class="font-bold text-blue-700">{{ $summary['ekologi']['ecosystem_health']['habitat_fish'] }}</div>
                                                 </div>
                                             @endif
                                         </div>
-                                        @if(isset($summary['analysis_results']['ecosystem_health']['habitat_vegetation']) && 
-                                            $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] !== 'N/A')
+                                        @if(isset($summary['ekologi']['ecosystem_health']['habitat_vegetation']) && 
+                                            $summary['ekologi']['ecosystem_health']['habitat_vegetation'] !== 'N/A')
                                             <div class="bg-white rounded p-2">
                                                 <div class="text-gray-600 text-xs">{{ __('messages.vegetation_habitat') }}</div>
-                                                <div class="font-bold text-green-700">{{ $summary['analysis_results']['ecosystem_health']['habitat_vegetation'] }}</div>
+                                                <div class="font-bold text-green-700">{{ $summary['ekologi']['ecosystem_health']['habitat_vegetation'] }}</div>
                                             </div>
                                         @endif
                                     </div>
@@ -646,14 +673,15 @@
                     <!-- ====================== ADDITIONAL DETAILED SECTIONS (Matching Python Output) ====================== -->
                     
                     <!-- BAGIAN 1: PEMBAGIAN & PRIORITAS AIR -->
-                    @if(isset($summary['analysis_results']['pasokan_air_per_sektor']))
+                    @if(isset($summary['analysis_results']['water_supply_per_sector']) && is_array($summary['analysis_results']['water_supply_per_sector']) && !isset($summary['analysis_results']['water_supply_per_sector']['error']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-blue-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-blue-50 p-3 rounded">
                                 <i class="fas fa-water text-blue-600 mr-2"></i>
                                 {{ strtoupper(__('messages.water_distribution_priority')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
-                                @foreach($summary['analysis_results']['pasokan_air_per_sektor'] as $sector => $data)
+                                @foreach($summary['analysis_results']['water_supply_per_sector'] as $sector => $data)
+                                    @if(is_array($data))
                                     <div class="bg-gray-50 rounded p-3 hover:bg-gray-100 transition">
                                         <div class="font-medium text-blue-900 mb-2 flex items-center">
                                             <i class="fas fa-tint text-blue-600 mr-2"></i>
@@ -666,38 +694,41 @@
                                             <div><span class="text-gray-600">{{ __('messages.fulfillment') }}:</span> <span class="font-bold text-blue-700">{{ $data['pemenuhan'] ?? 'N/A' }}</span></div>
                                         </div>
                                     </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
                     @endif
 
                     <!-- BAGIAN 2: SUMBER-SUMBER AIR -->
-                    @if(isset($summary['analysis_results']['sumber_air']))
+                    @if(isset($summary['analysis_results']['water_sources']) && is_array($summary['analysis_results']['water_sources']) && !isset($summary['analysis_results']['water_sources']['error']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-cyan-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-cyan-50 p-3 rounded">
                                 <i class="fas fa-stream text-cyan-600 mr-2"></i>
                                 {{ strtoupper(__('messages.water_sources')) }}
                             </h4>
                             <div class="space-y-2 text-sm">
-                                @foreach($summary['analysis_results']['sumber_air'] as $source => $data)
+                                @foreach($summary['analysis_results']['water_sources'] as $source => $data)
+                                    @if(is_array($data))
                                     <div class="bg-cyan-50 rounded p-3 hover:bg-cyan-100 transition">
                                         <div class="font-medium text-cyan-900 mb-2 flex items-center">
                                             <i class="fas fa-water text-cyan-600 mr-2"></i>
                                             {{ trans_api($source, 'source') }}
                                         </div>
                                         <div class="grid grid-cols-2 gap-2 text-xs pl-6">
-                                            <div><span class="text-gray-600">{{ __('messages.supply') }}:</span> <span class="font-bold text-green-700">{{ $data['pasokan'] ?? 'N/A' }}</span></div>
+                                            <div><span class="text-gray-600">{{ __('messages.supply') }}:</span> <span class="font-bold text-green-700">{{ $data['supply'] ?? 'N/A' }}</span></div>
                                             <div><span class="text-gray-600">{{ __('messages.cost') }}:</span> <span class="font-bold text-red-700">{{ $data['biaya'] ?? 'N/A' }}</span></div>
                                             <div class="col-span-2"><span class="text-gray-600">{{ __('messages.contribution') }}:</span> <span class="font-bold text-blue-700">{{ $data['kontribusi'] ?? 'N/A' }}</span></div>
                                         </div>
                                     </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
                     @endif
 
                     <!-- BAGIAN 3: BIAYA & MANFAAT -->
-                    @if(isset($summary['analysis_results']['ekonomi']))
+                    @if(isset($summary['analysis_results']['economics']) && !isset($summary['analysis_results']['economics']['error']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
                                 <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
@@ -706,27 +737,27 @@
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div class="bg-red-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.cost') }}</div>
-                                    <div class="font-bold text-2xl text-red-700">{{ $summary['analysis_results']['ekonomi']['total_biaya'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-red-700">{{ $summary['analysis_results']['economics']['total_biaya'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-green-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.benefit') }}</div>
-                                    <div class="font-bold text-2xl text-green-700">{{ $summary['analysis_results']['ekonomi']['total_manfaat'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-green-700">{{ $summary['analysis_results']['economics']['total_manfaat'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-blue-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.net_benefit') }}</div>
-                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['analysis_results']['ekonomi']['net_benefit'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['analysis_results']['economics']['net_benefit'] ?? 'N/A' }}</div>
                                 </div>
                                 <div class="bg-purple-50 rounded p-3">
                                     <div class="text-xs text-gray-600 mb-1">{{ __('messages.efficiency') }}</div>
-                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['analysis_results']['ekonomi']['efisiensi'] ?? 'N/A' }}</div>
+                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['analysis_results']['economics']['efisiensi'] ?? 'N/A' }}</div>
                                 </div>
                             </div>
                             
-                            @if(isset($summary['analysis_results']['ekonomi']['breakdown']))
+                            @if(isset($summary['analysis_results']['economics']['breakdown']))
                                 <div class="mt-3 pt-3 border-t">
                                     <div class="text-xs font-medium text-gray-700 mb-2">{{ __('messages.breakdown') }} {{ __('messages.cost') }}:</div>
                                     <div class="grid grid-cols-2 gap-2">
-                                        @foreach($summary['analysis_results']['ekonomi']['breakdown'] as $item => $nilai)
+                                        @foreach($summary['analysis_results']['economics']['breakdown'] as $item => $nilai)
                                             <div class="bg-gray-50 rounded p-2 text-xs">
                                                 <span class="text-gray-600">{{ $item }}:</span>
                                                 <span class="font-bold text-gray-800 ml-2">{{ $nilai }}</span>
@@ -738,7 +769,47 @@
                         </div>
                     @endif
 
-                    <!-- BAGIAN 4: KONDISI SUNGAI & LINGKUNGAN -->
+                    <!-- BAGIAN 4: WATER QUALITY -->
+                    @if(isset($summary['analysis_results']['water_quality']) && !isset($summary['analysis_results']['water_quality']['error']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-cyan-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-cyan-50 p-3 rounded">
+                                <i class="fas fa-flask text-cyan-600 mr-2"></i>
+                                {{ strtoupper(__('messages.water_quality')) }}
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                                <div class="bg-cyan-50 rounded p-4 col-span-2">
+                                    <div class="text-xs text-gray-600 mb-1">WQI (Water Quality Index)</div>
+                                    <div class="font-bold text-4xl text-cyan-700 mb-2">{{ $summary['analysis_results']['water_quality']['WQI_rata_rata'] ?? 'N/A' }}</div>
+                                    <div class="text-sm">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold {{
+                                            strpos($summary['analysis_results']['water_quality']['status'] ?? '', 'Excellent') !== false ? 'bg-green-200 text-green-900' :
+                                            (strpos($summary['analysis_results']['water_quality']['status'] ?? '', 'Good') !== false ? 'bg-blue-200 text-blue-900' :
+                                            (strpos($summary['analysis_results']['water_quality']['status'] ?? '', 'Fair') !== false ? 'bg-yellow-200 text-yellow-900' :
+                                            'bg-red-200 text-red-900'))
+                                        }}">
+                                            {{ $summary['analysis_results']['water_quality']['status'] ?? 'N/A' }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-blue-50 rounded p-3">
+                                        <div class="text-xs text-gray-600">pH Level</div>
+                                        <div class="font-bold text-xl text-blue-700">{{ $summary['analysis_results']['water_quality']['pH'] ?? 'N/A' }}</div>
+                                    </div>
+                                    <div class="bg-green-50 rounded p-3">
+                                        <div class="text-xs text-gray-600">DO (Dissolved Oxygen)</div>
+                                        <div class="font-bold text-xl text-green-700">{{ $summary['analysis_results']['water_quality']['DO'] ?? 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="bg-purple-50 rounded p-3 col-span-full">
+                                    <div class="text-xs text-gray-600 mb-1">TDS (Total Dissolved Solids)</div>
+                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['analysis_results']['water_quality']['TDS'] ?? 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- BAGIAN 5: KONDISI SUNGAI & LINGKUNGAN -->
                     @if(isset($summary['analysis_results']['morfologi']) || isset($summary['analysis_results']['ecosystem_health']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-amber-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-amber-50 p-3 rounded">
@@ -788,7 +859,7 @@
                         </div>
                     @endif
 
-                    <!-- BAGIAN 5: RINGKASAN KONDISI SISTEM -->
+                    <!-- BAGIAN 6: RINGKASAN KONDISI SISTEM -->
                     @if(isset($summary['statistik_data']['reliability_sistem']))
                         <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 mt-4 shadow-md border-2 border-indigo-200">
                             <h4 class="font-bold text-gray-800 mb-3 flex items-center bg-white bg-opacity-70 p-3 rounded-lg">
@@ -1114,45 +1185,53 @@
                 </div>
             @endif --}}
 
-            <!-- 🌊 NEW: Interactive River Network Map Section -->
+            <!-- 🌊 Interactive River Network Map Section -->
             @php
-                // Cari file peta aliran sungai - gunakan 'filename' bukan 'file_name'
-                $riverMapHtml = $job->files->firstWhere('filename', 'peta_aliran_sungai_interaktif.html');
+                // Cari file peta aliran sungai - NAMA FILE YANG BENAR dari API
+                $riverMapHtml = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.html');
                 $riverMapPng = $job->files->firstWhere('filename', 'peta_aliran_sungai.png');
                 $riverMapMetadata = $job->files->firstWhere('filename', 'peta_aliran_sungai_metadata.json');
                 
-                // Debug: Tampilkan info file yang ditemukan
-                // dd($riverMapHtml, $riverMapPng, $riverMapMetadata, $job->files->pluck('filename')->toArray()); // Uncomment untuk debug
+                // Debug: Log semua files untuk debugging
+                \Log::info('Map Files Check', [
+                    'job_id' => $job->id,
+                    'all_files' => $job->files->pluck('filename')->toArray(),
+                    'html_found' => $riverMapHtml ? 'YES' : 'NO',
+                    'png_found' => $riverMapPng ? 'YES' : 'NO',
+                    'metadata_found' => $riverMapMetadata ? 'YES' : 'NO'
+                ]);
             @endphp
 
-            @if($riverMapHtml)
-                <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 border-2 border-cyan-200 mb-6">
+            @if($riverMapHtml || $riverMapPng)
+                <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-2 border-cyan-200 mb-6">
                     <!-- Header -->
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                         <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <i class="fas fa-water text-white text-xl"></i>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                                <i class="fas fa-water text-white text-lg sm:text-xl"></i>
                             </div>
-                            <div>
-                                <h3 class="text-2xl font-bold text-gray-800 flex items-center">
-                                    🌊 {{ __('messages.interactive_river_map') }}
-                                    <span class="ml-3 text-xs bg-green-500 text-white px-3 py-1 rounded-full animate-pulse">NEW</span>
+                            <div class="min-w-0">
+                                <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 flex items-center flex-wrap">
+                                    <span class="mr-2">🌊 {{ __('messages.interactive_river_map') }}</span>
+                                    <span class="text-xs bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full animate-pulse">NEW</span>
                                 </h3>
-                                <p class="text-sm text-gray-600">{{ __('messages.river_network_visualization') }}</p>
+                                <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ __('messages.river_network_visualization') }}</p>
                             </div>
                         </div>
-                        <div class="flex space-x-2">
+                        
+                        <!-- Action Buttons - Responsive -->
+                        <div class="flex flex-wrap gap-2">
                             @if($riverMapHtml)
-                                <button onclick="openMapFullscreen()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <i class="fas fa-expand mr-2"></i>Fullscreen
+                                <button onclick="openMapFullscreen()" class="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                                    <i class="fas fa-expand mr-1 sm:mr-2"></i><span class="hidden xs:inline">Fullscreen</span>
                                 </button>
-                                <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <i class="fas fa-download mr-2"></i>Download HTML
+                                <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}" class="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                                    <i class="fas fa-download mr-1 sm:mr-2"></i><span class="hidden sm:inline">Download HTML</span><span class="sm:hidden">HTML</span>
                                 </a>
                             @endif
                             @if($riverMapPng)
-                                <a href="/hidrologi/file/download/{{ $riverMapPng->id }}" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <i class="fas fa-image mr-2"></i>Download PNG
+                                <a href="/hidrologi/file/download/{{ $riverMapPng->id }}" class="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                                    <i class="fas fa-image mr-1 sm:mr-2"></i><span class="hidden sm:inline">Download PNG</span><span class="sm:hidden">PNG</span>
                                 </a>
                             @endif
                         </div>
@@ -1160,48 +1239,71 @@
 
                     <!-- Map Container -->
                     <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
-                        <!-- Loading Overlay -->
-                        <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
-                            <div class="text-center">
-                                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
-                                <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
-                                <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
+                        @if($riverMapPng)
+                            <!-- Static Map Preview (PNG) -->
+                            <div class="relative">
+                                <img 
+                                    src="{{ route('hidrologi.file.preview', $riverMapPng->id) }}" 
+                                    alt="Peta Aliran Sungai"
+                                    class="w-full h-auto"
+                                    style="max-height: 600px; object-fit: contain;"
+                                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22600%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23666%22%3EGambar tidak tersedia%3C/text%3E%3C/svg%3E';"
+                                />
+                                
+                                <!-- Overlay Button untuk Buka Interaktif -->
+                                @if($riverMapHtml)
+                                <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                    <a 
+                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                                        target="_blank"
+                                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-2xl transform hover:scale-105 transition-all"
+                                    >
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        Buka Peta Interaktif
+                                    </a>
+                                </div>
+                                @endif
                             </div>
-                        </div>
-                        
-                        <!-- Map iframe -->
-                        <iframe 
-                            id="riverMapFrame"
-                            src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                            class="w-full"
-                            style="height: 600px; border: none; min-height: 600px;"
-                            onload="hideMapLoading()"
-                            onerror="showMapError()"
-                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-modals allow-top-navigation-by-user-activation"
-                            loading="eager"
-                            allow="geolocation"
-                            title="Peta Aliran Sungai Interaktif">
-                        </iframe>
+                            
+                            <!-- Info Banner -->
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2 text-sm text-gray-700">
+                                        <i class="fas fa-info-circle text-blue-600"></i>
+                                        <span>Preview peta statis. @if($riverMapHtml)Klik atau hover untuk membuka peta interaktif penuh.@endif</span>
+                                    </div>
+                                    @if($riverMapHtml)
+                                    <a 
+                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                                        target="_blank"
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all"
+                                    >
+                                        <i class="fas fa-map mr-2"></i>Peta Interaktif
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @else
+                            <!-- Fallback jika tidak ada PNG -->
+                            <div class="flex items-center justify-center py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
+                                <div class="text-center max-w-md">
+                                    <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                        <i class="fas fa-map text-yellow-600 text-4xl"></i>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-gray-800 mb-3">Preview Peta Belum Tersedia</h4>
+                                    <p class="text-gray-600 mb-4">File PNG peta belum tersedia untuk preview.</p>
+                                    @if($riverMapHtml)
+                                        <a href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" target="_blank" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                                            <i class="fas fa-external-link-alt mr-2"></i>Buka Peta Interaktif
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     
-                    <!-- Map Controls -->
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <button onclick="refreshMap()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-semibold rounded-lg transition-all">
-                            <i class="fas fa-sync-alt mr-2"></i>Refresh Peta
-                        </button>
-                        <button onclick="zoomIn()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
-                            <i class="fas fa-search-plus mr-2"></i>Zoom In
-                        </button>
-                        <button onclick="zoomOut()" class="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-semibold rounded-lg transition-all">
-                            <i class="fas fa-search-minus mr-2"></i>Zoom Out
-                        </button>
-                        <div class="ml-auto flex items-center space-x-2 text-sm text-gray-600">
-                            <i class="fas fa-info-circle text-cyan-600"></i>
-                            <span>Gunakan mouse untuk zoom & pan peta</span>
-                        </div>
-                    </div>
-
                     <!-- Map Info & Metadata -->
+                    @if($riverMapPng || $riverMapHtml)
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Quick Info Cards -->
                             <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
@@ -1253,7 +1355,7 @@
                             </div>
                         </div>
 
-                        <!-- Metadata Detail (if available) -->
+                        <!-- Metadata Detail -->
                         @if($riverMapMetadata)
                             <div class="mt-4 bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
                                 <button onclick="toggleRiverMetadata()" class="w-full flex items-center justify-between text-left">
@@ -1294,15 +1396,16 @@
                                 </div>
                             </div>
                         @endif
+                    @endif
                 </div>
             @else
-                <!-- Fallback message if HTML map not available -->
-                <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-6 text-center">
-                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-map-marked-alt text-yellow-600 text-2xl"></i>
+                <!-- Fallback message if no map available -->
+                <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-4 sm:p-6 text-center mb-6">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-map-marked-alt text-yellow-600 text-xl sm:text-2xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-yellow-800 mb-2">Peta Interaktif Belum Tersedia</h3>
-                    <p class="text-yellow-700 text-sm mb-4">
+                    <h3 class="text-base sm:text-lg font-bold text-yellow-800 mb-2">Peta Interaktif Belum Tersedia</h3>
+                    <p class="text-yellow-700 text-xs sm:text-sm mb-4">
                         File peta aliran sungai interaktif (HTML) belum di-generate atau belum selesai diproses.
                     </p>
                     @if($riverMapPng)
@@ -1311,12 +1414,12 @@
                             File PNG peta tersedia di bagian "File yang Dihasilkan" di bawah.
                         </p>
                     @endif
-                    <div class="flex justify-center gap-2">
-                        <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                    <div class="flex flex-col sm:flex-row justify-center gap-2">
+                        <button onclick="location.reload()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition text-sm">
                             <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
                         </button>
                         @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                            <span class="px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-lg">
+                            <span class="w-full sm:w-auto px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-lg text-sm inline-block">
                                 <i class="fas fa-clock mr-2"></i>Sedang Diproses...
                             </span>
                         @endif
@@ -1326,78 +1429,86 @@
 
             <!-- Generated Files -->
             @if($job->files->count() > 0)
-                <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-100">
+                    <!-- Header Section -->
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                         <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-file-download text-blue-600 text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-800">File yang Dihasilkan</h3>
-                                <p class="text-sm text-gray-500">Total {{ $job->files->count() }} file</p>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800">File yang Dihasilkan</h3>
+                                <p class="text-xs sm:text-sm text-gray-500">Total {{ $job->files->count() }} file</p>
                             </div>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="filterFiles('all')" class="filter-btn active px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="all">
-                                <i class="fas fa-th mr-1"></i>Semua
+                        
+                        <!-- Filter Buttons - Responsive -->
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="filterFiles('all')" class="filter-btn active px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="all">
+                                <i class="fas fa-th mr-1"></i><span class="hidden xs:inline">Semua</span><span class="xs:hidden">All</span>
                             </button>
-                            <button onclick="filterFiles('png')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="png">
+                            <button onclick="filterFiles('png')" class="filter-btn px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="png">
                                 <i class="fas fa-image mr-1"></i>PNG
                             </button>
-                            <button onclick="filterFiles('csv')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="csv">
+                            <button onclick="filterFiles('csv')" class="filter-btn px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="csv">
                                 <i class="fas fa-table mr-1"></i>CSV
                             </button>
-                            <button onclick="filterFiles('json')" class="filter-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm" data-type="json">
+                            <button onclick="filterFiles('json')" class="filter-btn px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="json">
                                 <i class="fas fa-code mr-1"></i>JSON
                             </button>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 gap-4">
+                    <!-- File List -->
+                    <div class="grid grid-cols-1 gap-3 sm:gap-4">
                         @foreach($job->files->sortBy('display_order') as $file)
-                            <div class="file-item border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200" data-file-type="{{ strtolower($file->file_type) }}">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div class="flex-1">
-                                        <h4 class="font-medium text-gray-800 mb-1 flex items-center">
+                            <div class="file-item border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition duration-200" data-file-type="{{ strtolower($file->file_type) }}">
+                                <!-- File Info and Actions -->
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                                    <!-- File Details -->
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-medium text-gray-800 mb-1 flex items-center text-sm sm:text-base break-words">
                                             @if($file->file_type === 'png')
-                                                <i class="fas fa-image text-blue-500 mr-2"></i>
+                                                <i class="fas fa-image text-blue-500 mr-2 flex-shrink-0"></i>
                                             @elseif($file->file_type === 'csv')
-                                                <i class="fas fa-table text-green-500 mr-2"></i>
+                                                <i class="fas fa-table text-green-500 mr-2 flex-shrink-0"></i>
                                             @elseif($file->file_type === 'json')
-                                                <i class="fas fa-code text-orange-500 mr-2"></i>
+                                                <i class="fas fa-code text-orange-500 mr-2 flex-shrink-0"></i>
                                             @else
-                                                <i class="fas fa-file text-gray-500 mr-2"></i>
+                                                <i class="fas fa-file text-gray-500 mr-2 flex-shrink-0"></i>
                                             @endif
-                                            {{ $file->display_name ?? $file->filename }}
+                                            <span class="break-all">{{ $file->display_name ?? $file->filename }}</span>
                                         </h4>
                                         @if($file->description)
-                                            <p class="text-xs text-gray-600 mb-2">{{ $file->description }}</p>
+                                            <p class="text-xs text-gray-600 mb-2 break-words">{{ $file->description }}</p>
                                         @endif
-                                        <div class="flex items-center space-x-4 text-xs text-gray-500">
-                                            <span><i class="fas fa-file mr-1"></i>{{ strtoupper($file->file_type) }}</span>
-                                            <span><i class="fas fa-weight mr-1"></i>{{ number_format($file->file_size_mb, 2) }} MB</span>
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+                                            <span class="flex items-center"><i class="fas fa-file mr-1"></i>{{ strtoupper($file->file_type) }}</span>
+                                            <span class="flex items-center"><i class="fas fa-weight mr-1"></i>{{ number_format($file->file_size_mb, 2) }} MB</span>
                                             @if($file->created_at)
-                                                <span><i class="fas fa-clock mr-1"></i>{{ $file->created_at->format('d M Y, H:i') }}</span>
+                                                <span class="flex items-center hidden sm:inline-flex"><i class="fas fa-clock mr-1"></i>{{ $file->created_at->format('d M Y, H:i') }}</span>
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="flex space-x-2 ml-4">
+                                    
+                                    <!-- Action Buttons - Stack on mobile, inline on desktop -->
+                                    <div class="flex flex-row sm:flex-row gap-2 sm:ml-4 flex-shrink-0">
                                         @if($file->file_type === 'png')
-                                            <button onclick="viewImage({{ $file->id }}, '{{ $file->display_name ?? $file->filename }}')" class="px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition duration-200 text-sm">
-                                                <i class="fas fa-eye mr-1"></i>View
+                                            <button onclick="viewImage({{ $file->id }}, '{{ addslashes($file->display_name ?? $file->filename) }}')" class="flex-1 sm:flex-initial px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition duration-200 text-xs sm:text-sm whitespace-nowrap">
+                                                <i class="fas fa-eye mr-1"></i><span class="hidden sm:inline">View</span><i class="fas fa-eye sm:hidden"></i>
                                             </button>
                                         @elseif($file->file_type === 'csv')
-                                            <button onclick="viewCSV({{ $file->id }}, '{{ $file->display_name ?? $file->filename }}')" class="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition duration-200 text-sm">
-                                                <i class="fas fa-eye mr-1"></i>View
+                                            <button onclick="viewCSV({{ $file->id }}, '{{ addslashes($file->display_name ?? $file->filename) }}')" class="flex-1 sm:flex-initial px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition duration-200 text-xs sm:text-sm whitespace-nowrap">
+                                                <i class="fas fa-eye mr-1"></i><span class="hidden sm:inline">View</span><i class="fas fa-eye sm:hidden"></i>
                                             </button>
                                         @elseif($file->file_type === 'json')
-                                            <button onclick="viewJSON({{ $file->id }}, '{{ $file->display_name ?? $file->filename }}')" class="px-3 py-2 bg-orange-100 text-orange-700 rounded hover:bg-orange-200 transition duration-200 text-sm">
-                                                <i class="fas fa-eye mr-1"></i>View
+                                            <button onclick="viewJSON({{ $file->id }}, '{{ addslashes($file->display_name ?? $file->filename) }}')" class="flex-1 sm:flex-initial px-3 py-2 bg-orange-100 text-orange-700 rounded hover:bg-orange-200 transition duration-200 text-xs sm:text-sm whitespace-nowrap">
+                                                <i class="fas fa-eye mr-1"></i><span class="hidden sm:inline">View</span><i class="fas fa-eye sm:hidden"></i>
                                             </button>
                                         @endif
-                                            <a href="{{ route('hidrologi.file.download', $file->id) }}" class="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-200 text-sm">
-                                                <i class="fas fa-download mr-1"></i>Download
-                                            </a>
+                                        <a href="{{ route('hidrologi.file.download', $file->id) }}" class="flex-1 sm:flex-initial px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-200 text-xs sm:text-sm whitespace-nowrap text-center">
+                                            <i class="fas fa-download mr-1"></i><span class="hidden sm:inline">Download</span><i class="fas fa-download sm:hidden"></i>
+                                        </a>
                                     </div>
                                 </div>
                                 
@@ -1420,48 +1531,48 @@
             @endif
         </div>
 
-        <!-- Sidebar -->
-        <div class="lg:col-span-1 space-y-6">
+        <!-- Sidebar (Right) -->
+        <div class="lg:col-span-1 space-y-4 sm:space-y-6 order-1 lg:order-2">
             <!-- Timeline -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-6 border border-blue-200">
-                <div class="flex items-center space-x-3 mb-6">
-                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-blue-200">
+                <div class="flex items-center space-x-3 mb-4 sm:mb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <i class="fas fa-clock text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-blue-900">Timeline</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-blue-900">Timeline</h3>
                 </div>
-                <div class="space-y-4">
-                    <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
-                        <div class="w-3 h-3 bg-blue-600 rounded-full mt-2 mr-4 shadow"></div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-gray-800">Dibuat</p>
-                            <p class="text-xs text-gray-600 mt-1">{{ $job->created_at->format('d M Y, H:i') }}</p>
+                <div class="space-y-3 sm:space-y-4">
+                    <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                        <div class="w-3 h-3 bg-blue-600 rounded-full mt-1 sm:mt-2 mr-3 sm:mr-4 shadow flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-bold text-gray-800">Dibuat</p>
+                            <p class="text-xs text-gray-600 mt-1 break-words">{{ $job->created_at->format('d M Y, H:i') }}</p>
                         </div>
                     </div>
                     @if($job->submitted_at)
-                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
-                            <div class="w-3 h-3 bg-blue-600 rounded-full mt-2 mr-4 shadow"></div>
-                            <div class="flex-1">
-                                <p class="text-sm font-bold text-gray-800">Dikirim</p>
-                                <p class="text-xs text-gray-600 mt-1">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                            <div class="w-3 h-3 bg-blue-600 rounded-full mt-1 sm:mt-2 mr-3 sm:mr-4 shadow flex-shrink-0"></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs sm:text-sm font-bold text-gray-800">Dikirim</p>
+                                <p class="text-xs text-gray-600 mt-1 break-words">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
                     @if($job->started_at)
-                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
-                            <div class="w-3 h-3 bg-yellow-600 rounded-full mt-2 mr-4 shadow"></div>
-                            <div class="flex-1">
-                                <p class="text-sm font-bold text-gray-800">Mulai Diproses</p>
-                                <p class="text-xs text-gray-600 mt-1">{{ $job->started_at->format('d M Y, H:i') }}</p>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                            <div class="w-3 h-3 bg-yellow-600 rounded-full mt-1 sm:mt-2 mr-3 sm:mr-4 shadow flex-shrink-0"></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs sm:text-sm font-bold text-gray-800">Mulai Diproses</p>
+                                <p class="text-xs text-gray-600 mt-1 break-words">{{ $job->started_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
                     @if($job->completed_at)
-                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-xl">
-                            <div class="w-3 h-3 bg-green-600 rounded-full mt-2 mr-4 shadow"></div>
-                            <div class="flex-1">
-                                <p class="text-sm font-bold text-gray-800">Selesai</p>
-                                <p class="text-xs text-gray-600 mt-1">{{ $job->completed_at->format('d M Y, H:i') }}</p>
+                        <div class="flex items-start p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                            <div class="w-3 h-3 bg-green-600 rounded-full mt-1 sm:mt-2 mr-3 sm:mr-4 shadow flex-shrink-0"></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs sm:text-sm font-bold text-gray-800">Selesai</p>
+                                <p class="text-xs text-gray-600 mt-1 break-words">{{ $job->completed_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
@@ -1469,42 +1580,45 @@
             </div>
 
             <!-- Statistics -->
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-6 border border-purple-200">
-                <div class="flex items-center space-x-3 mb-6">
-                    <div class="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-purple-200">
+                <div class="flex items-center space-x-3 mb-4 sm:mb-6">
+                    <div class="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <i class="fas fa-chart-bar text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-purple-900">Statistik</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-purple-900">Statistik</h3>
                 </div>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
-                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                        <span class="text-xs sm:text-sm font-semibold text-gray-700 flex items-center">
                             <i class="fas fa-image text-blue-500 mr-2"></i>File PNG
                         </span>
-                        <span class="font-bold text-gray-800 text-lg">{{ $job->png_count }}</span>
+                        <span class="font-bold text-gray-800 text-base sm:text-lg">{{ $job->png_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
-                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                        <span class="text-xs sm:text-sm font-semibold text-gray-700 flex items-center">
                             <i class="fas fa-table text-green-500 mr-2"></i>File CSV
                         </span>
-                        <span class="font-bold text-gray-800 text-lg">{{ $job->csv_count }}</span>
+                        <span class="font-bold text-gray-800 text-base sm:text-lg">{{ $job->csv_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-xl">
-                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                    <div class="flex justify-between items-center p-3 bg-white bg-opacity-70 rounded-lg sm:rounded-xl">
+                        <span class="text-xs sm:text-sm font-semibold text-gray-700 flex items-center">
                             <i class="fas fa-code text-orange-500 mr-2"></i>File JSON
                         </span>
-                        <span class="font-bold text-gray-800 text-lg">{{ $job->json_count }}</span>
+                        <span class="font-bold text-gray-800 text-base sm:text-lg">{{ $job->json_count }}</span>
                     </div>
-                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg border-t-2 border-white">
-                        <span class="text-sm font-bold text-white flex items-center">
+                    <div class="flex justify-between items-center p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl shadow-lg border-t-2 border-white">
+                        <span class="text-xs sm:text-sm font-bold text-white flex items-center">
                             <i class="fas fa-folder text-white mr-2"></i>Total File
                         </span>
-                        <span class="font-bold text-white text-2xl">{{ $job->total_files }}</span>
+                        <span class="font-bold text-white text-xl sm:text-2xl">{{ $job->total_files }}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Clear all floats and ensure proper footer placement -->
+    <div class="clear-both h-8"></div>
 </div>
 
 @push('styles')
@@ -1560,6 +1674,11 @@
         overflow-wrap: break-word;
     }
     
+    .break-all {
+        word-break: break-all;
+        overflow-wrap: anywhere;
+    }
+    
     /* Adjust font sizes for mobile */
     .mobile-text-sm {
         font-size: 0.75rem;
@@ -1577,6 +1696,228 @@
     
     .mobile-btn-stack > *:last-child {
         margin-bottom: 0;
+    }
+    
+    /* Stack flex items on mobile */
+    .flex-col-mobile {
+        flex-direction: column;
+    }
+    
+    /* Full width buttons on mobile */
+    .w-full-mobile {
+        width: 100%;
+    }
+    
+    /* Hide on mobile */
+    .hidden-mobile {
+        display: none !important;
+    }
+    
+    /* Adjust grid gaps */
+    .grid {
+        gap: 1rem;
+    }
+    
+    /* Better sidebar stacking - sidebar appears FIRST on mobile */
+    .order-1 {
+        order: 1 !important;
+    }
+    
+    .order-2 {
+        order: 2 !important;
+    }
+    
+    /* Prevent horizontal overflow */
+    body {
+        overflow-x: hidden;
+    }
+    
+    .container, .max-w-7xl {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    /* Fix grid column spans */
+    .grid > * {
+        min-width: 0;
+    }
+    
+    /* Ensure map container doesn't overflow */
+    .map-container,
+    .bg-white.rounded-xl {
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Fix image responsiveness */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    /* Hide text on very small screens, keep icons only */
+    .xs\:hidden {
+        display: none;
+    }
+    
+    .xs\:inline {
+        display: inline;
+    }
+    
+    /* Reduce padding on small screens */
+    .sm\:p-6 {
+        padding: 1rem !important;
+    }
+    
+    /* Stack buttons vertically */
+    .filter-btn {
+        min-width: auto;
+        font-size: 0.7rem;
+    }
+    
+    /* Smaller icons on mobile */
+    .w-12, .h-12 {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    
+    /* Reduce header size */
+    h3 {
+        font-size: 1rem !important;
+    }
+    
+    /* Force single column on very small screens */
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .md\:grid-cols-3,
+    .sm\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .lg\:col-span-2,
+    .lg\:col-span-1 {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* Prevent layout shifts */
+* {
+    box-sizing: border-box;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll */
+body, html {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Fix main content wrapper */
+main {
+    overflow-x: hidden;
+}
+
+/* Ensure grid doesn't break layout */
+.grid {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Utility classes for layout stability */
+.layout-stable {
+    position: relative;
+    contain: layout;
+}
+
+.no-overflow {
+    overflow: hidden;
+}
+
+.full-width {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Fix any floating issues */
+.clear-both {
+    clear: both;
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Mobile-first responsive breakpoint fixes */
+@media screen and (max-width: 640px) {
+    * {
+        max-width: 100vw !important;
+    }
+    
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Ensure proper container behavior */
+.container, .max-w-7xl {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix any potential z-index issues */
+.relative {
+    z-index: auto;
+}
+
+/* Ensure all sections are properly contained */
+.space-y-4 > *,
+.space-y-6 > * {
+    position: relative;
+}
+
+/* Grid fixes */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .lg\:col-span-2 {
+        grid-column: span 2 / span 2;
+    }
+    
+    .lg\:col-span-1 {
+        grid-column: span 1 / span 1;
     }
 }
 
@@ -2962,105 +3303,10 @@ function copyJSONData(fileId) {
     }
 }
 
-// 🌊 River Map Functions
-function hideMapLoading() {
-    const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    const mapFrame = document.getElementById('riverMapFrame');
-    
-    console.log('🗺️ hideMapLoading called', {
-        loadingOverlay: !!loadingOverlay,
-        mapFrame: !!mapFrame,
-        frameSrc: mapFrame ? mapFrame.src : 'N/A'
-    });
-    
-    if (loadingOverlay && mapFrame) {
-        // Fade out loading overlay
-        loadingOverlay.style.transition = 'opacity 0.5s ease';
-        loadingOverlay.style.opacity = '0';
-        
-        setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-        }, 500);
-        
-        mapFrame.classList.remove('hidden');
-        console.log('✅ River map loaded successfully');
-        
-        // Show success notification
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Peta Berhasil Dimuat',
-                text: 'Peta aliran sungai siap ditampilkan',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
-    }
-}
+// 🌊 River Map Functions - Simple version
+// No complex error handling, just display PNG preview with button to open HTML
 
-// Add event listener to check iframe loading
-document.addEventListener('DOMContentLoaded', function() {
-    const mapFrame = document.getElementById('riverMapFrame');
-    if (mapFrame) {
-        console.log('🗺️ River map iframe detected', {
-            src: mapFrame.src,
-            id: mapFrame.id
-        });
-        
-        // Additional error logging
-        mapFrame.addEventListener('load', function() {
-            console.log('✅ Iframe load event fired');
-        });
-        
-        mapFrame.addEventListener('error', function(e) {
-            console.error('❌ Iframe error event fired', e);
-        });
-    }
-});
 
-function showMapError() {
-    const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    
-    if (loadingOverlay) {
-        loadingOverlay.innerHTML = `
-            <div class="text-center py-8">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                </div>
-                <p class="text-red-600 font-semibold mb-2">Gagal Memuat Peta</p>
-                <p class="text-sm text-gray-600 mb-4">Terjadi kesalahan saat memuat peta interaktif</p>
-                <button onclick="refreshMap()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-redo mr-2"></i>Muat Ulang Peta
-                </button>
-            </div>
-        `;
-        
-        console.error('❌ Failed to load river map');
-    }
-}
-
-function refreshMap() {
-    const mapFrame = document.getElementById('riverMapFrame');
-    const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    
-    if (mapFrame && loadingOverlay) {
-        // Show loading overlay
-        loadingOverlay.style.display = 'flex';
-        loadingOverlay.style.opacity = '1';
-        loadingOverlay.innerHTML = `
-            <div class="text-center">
-                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-600 mx-auto mb-4"></div>
-                <p class="text-gray-600 font-semibold">Memuat ulang peta...</p>
-            </div>
-        `;
-        
-        // Reload iframe
-        mapFrame.src = mapFrame.src;
-        console.log('🔄 Refreshing map...');
-    }
-}
 
 function zoomIn() {
     // Note: Zoom control requires communication with iframe content

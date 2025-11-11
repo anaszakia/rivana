@@ -19,7 +19,7 @@ class SecurityHeaders
         // Don't set X-Frame-Options for file preview routes
         if (!$request->is('hidrologi/file/preview/*')) {
             // Prevent clickjacking for all other routes
-            $response->headers->set('X-Frame-Options', 'DENY');
+            $response->headers->set('X-Frame-Options', 'SAMEORIGIN'); // Changed from DENY to SAMEORIGIN
         }
         
         // Prevent MIME type sniffing
@@ -44,6 +44,7 @@ class SecurityHeaders
                 "frame-ancestors 'self';" // Allow same-origin iframe
             );
         } else {
+            // For show page, allow iframe-src for embedding
             $response->headers->set('Content-Security-Policy', 
                 "default-src 'self'; " .
                 "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
@@ -51,7 +52,8 @@ class SecurityHeaders
                 "img-src 'self' data: https:; " .
                 "font-src 'self' https://cdnjs.cloudflare.com; " .
                 "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com; " .
-                "frame-ancestors 'none';"
+                "frame-src 'self'; " . // IMPORTANT: Allow same-origin iframes
+                "frame-ancestors 'self';" // Allow this page to be iframed by same origin
             );
         }
 

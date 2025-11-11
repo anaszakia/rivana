@@ -558,4 +558,17 @@ return [
     'implement_water_rationing_immediately' => 'Terapkan rationing air segera',
     'system_reliability' => 'Keandalan sistem',
     'reduce_leakage' => 'kurangi kebocoran',
+    
+    // Water Balance Components
+    'output_components' => 'Komponen Output',
+    'input_components' => 'Komponen Input',
+    'river_width' => 'Lebar Sungai',
+    'slope' => 'Kemiringan',
+    'sediment_load' => 'Beban Sedimen',
+    'soil_storage_condition' => 'Kondisi Penyimpanan Tanah',
+    'soil_moisture' => 'Kelembaban Tanah',
+    'infiltration' => 'Infiltrasi',
+    'percolation' => 'Perkolasi',
+    'river_morphology' => 'Morfologi Sungai',
+    'river_environment' => 'Kondisi Sungai & Lingkungan',
 ];

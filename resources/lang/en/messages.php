@@ -582,4 +582,17 @@ return [
     'implement_water_rationing_immediately' => 'Implement water rationing immediately',
     'system_reliability' => 'System reliability',
     'reduce_leakage' => 'reduce leakage',
+    
+    // Water Balance Components
+    'output_components' => 'Output Components',
+    'input_components' => 'Input Components',
+    'river_width' => 'River Width',
+    'slope' => 'Slope',
+    'sediment_load' => 'Sediment Load',
+    'soil_storage_condition' => 'Soil Storage Condition',
+    'soil_moisture' => 'Soil Moisture',
+    'infiltration' => 'Infiltration',
+    'percolation' => 'Percolation',
+    'river_morphology' => 'River Morphology',
+    'river_environment' => 'River & Environment Condition',
 ];
