@@ -1253,17 +1253,14 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Interactive Map iframe -->
+                                <!-- Interactive Map iframe - NO RESTRICTIONS -->
                                 <iframe 
                                     id="riverMapFrame"
                                     src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
                                     class="w-full border-0"
                                     style="height: 600px; min-height: 600px;"
                                     title="Peta Aliran Sungai Interaktif"
-                                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                                    loading="lazy"
-                                    onload="document.getElementById('mapLoadingOverlay').style.display='none'; console.log('✅ Map iframe loaded successfully');"
-                                    onerror="console.error('❌ Error loading map iframe'); document.getElementById('mapLoadingOverlay').innerHTML='<div class=\'text-center\'><i class=\'fas fa-exclamation-triangle text-red-500 text-4xl mb-4\'></i><p class=\'text-red-600 font-semibold\'>Gagal memuat peta</p><a href=\'{{ route('hidrologi.file.preview', $riverMapHtml->id) }}\' target=\'_blank\' class=\'inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700\'>Buka di Tab Baru</a></div>';"
+                                    onload="setTimeout(function(){ document.getElementById('mapLoadingOverlay').style.display='none'; console.log('✅ Map loaded'); }, 500);"
                                 ></iframe>
                             </div>
                             
@@ -1272,15 +1269,23 @@
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                     <div class="flex items-center space-x-2 text-sm text-gray-700">
                                         <i class="fas fa-info-circle text-blue-600"></i>
-                                        <span>Peta interaktif aktif. Gunakan mouse untuk zoom & navigasi. Klik ikon layer untuk toggle data.</span>
+                                        <span>Peta interaktif dengan marker & buffer. Zoom/pan dengan mouse. Toggle layer di kanan atas.</span>
                                     </div>
-                                    <a 
-                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                        target="_blank"
-                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
-                                    >
-                                        <i class="fas fa-external-link-alt mr-2"></i>Buka Fullscreen
-                                    </a>
+                                    <div class="flex gap-2">
+                                        <a 
+                                            href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                                            target="_blank"
+                                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
+                                        >
+                                            <i class="fas fa-external-link-alt mr-2"></i>Fullscreen
+                                        </a>
+                                        <a 
+                                            href="{{ route('hidrologi.file.download', $riverMapHtml->id) }}" 
+                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
+                                        >
+                                            <i class="fas fa-download mr-2"></i>Download
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @elseif($riverMapPng)

@@ -271,46 +271,20 @@ class HidrologiFileController extends Controller
                     abort(404, 'File HTML tidak ditemukan atau tidak dapat diakses');
                 }
                 
-                // Get the base URL for the external API
-                $apiUrl = config('services.hidrologi.api_url');
-                $apiHost = parse_url($apiUrl, PHP_URL_HOST);
-                
-                // Replace all references to external domain with local proxy
-                // This is crucial because rivana.cloud sends frame-ancestors: 'none' CSP header
-                $htmlContent = str_replace(
-                    ['https://' . $apiHost, 'http://' . $apiHost, '//' . $apiHost],
-                    [url('/'), url('/'), url('/')],
-                    $htmlContent
-                );
-                
-                // Inject permissive CSP and base tag for remaining relative URLs
-                $headInjection = '<head>' .
-                    '<meta http-equiv="Content-Security-Policy" content="' .
-                    "default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; " .
-                    "script-src * 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                    "style-src * 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                    "img-src * 'self' data: blob: https: http:; " .
-                    "font-src * 'self' data: https://fonts.gstatic.com; " .
-                    "connect-src * 'self' https://tile.openstreetmap.org https://*.tile.openstreetmap.org; " .
-                    "frame-src * 'self';" .
-                    '">' .
-                    '<base href="' . $apiUrl . '/">';
-                
-                // Replace <head> with <head> + injection
-                $htmlContent = preg_replace('/<head>/i', $headInjection, $htmlContent, 1);
-                
-                \Log::info('HTML content served for iframe with URL rewriting', [
+                \Log::info('HTML content fetched successfully', [
                     'file_id' => $id,
                     'content_length' => strlen($htmlContent),
-                    'api_host' => $apiHost
+                    'file_name' => $file->filename
                 ]);
                 
-                // Return HTML dengan headers yang allow iframe embedding
-                // Note: Tidak set X-Frame-Options dan Content-Security-Policy agar bisa di-embed di iframe
+                // Return HTML ASLI tanpa modifikasi - biarkan browser handle semuanya
+                // Hanya set headers yang diperlukan agar bisa di-embed di iframe
                 return response($htmlContent, 200, [
                     'Content-Type' => 'text/html; charset=UTF-8',
                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
                     'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers' => '*',
                     'X-Content-Type-Options' => 'nosniff'
                 ]);
             }
