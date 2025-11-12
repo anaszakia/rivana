@@ -306,13 +306,13 @@ class HidrologiFileController extends Controller
                 ]);
                 
                 // Return HTML dengan headers yang allow iframe embedding
-                return response($htmlContent)
-                    ->header('Content-Type', 'text/html; charset=UTF-8')
-                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-                    ->header('Access-Control-Allow-Origin', '*')
-                    ->header('X-Content-Type-Options', 'nosniff')
-                    ->withoutHeader('X-Frame-Options') // PENTING: Remove X-Frame-Options
-                    ->withoutHeader('Content-Security-Policy'); // PENTING: Remove CSP yang block iframe
+                // Note: Tidak set X-Frame-Options dan Content-Security-Policy agar bisa di-embed di iframe
+                return response($htmlContent, 200, [
+                    'Content-Type' => 'text/html; charset=UTF-8',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Access-Control-Allow-Origin' => '*',
+                    'X-Content-Type-Options' => 'nosniff'
+                ]);
             }
             
             // Untuk file lain, redirect ke download

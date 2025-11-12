@@ -1191,8 +1191,8 @@
             @php
                 // Cari file peta aliran sungai - NAMA FILE YANG BENAR dari API
                 $riverMapHtml = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.html');
-                $riverMapPng = $job->files->firstWhere('filename', 'peta_aliran_sungai.png');
-                $riverMapMetadata = $job->files->firstWhere('filename', 'peta_aliran_sungai_metadata.json');
+                $riverMapPng = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.png');
+                $riverMapMetadata = $job->files->firstWhere('filename', 'RIVANA_Metadata_Peta.json');
                 
                 // Debug: Log semua files untuk debugging
                 \Log::info('Map Files Check', [
@@ -1241,8 +1241,50 @@
 
                     <!-- Map Container -->
                     <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
-                        @if($riverMapPng)
-                            <!-- Static Map Preview (PNG) -->
+                        @if($riverMapHtml)
+                            <!-- Interactive Map (HTML) in iframe -->
+                            <div class="relative map-container">
+                                <!-- Loading Overlay -->
+                                <div id="mapLoadingOverlay" class="absolute inset-0 bg-white flex items-center justify-center z-10">
+                                    <div class="text-center">
+                                        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+                                        <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
+                                        <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Interactive Map iframe -->
+                                <iframe 
+                                    id="riverMapFrame"
+                                    src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                                    class="w-full border-0"
+                                    style="height: 600px; min-height: 600px;"
+                                    title="Peta Aliran Sungai Interaktif"
+                                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                                    loading="lazy"
+                                    onload="document.getElementById('mapLoadingOverlay').style.display='none'; console.log('✅ Map iframe loaded successfully');"
+                                    onerror="console.error('❌ Error loading map iframe'); document.getElementById('mapLoadingOverlay').innerHTML='<div class=\'text-center\'><i class=\'fas fa-exclamation-triangle text-red-500 text-4xl mb-4\'></i><p class=\'text-red-600 font-semibold\'>Gagal memuat peta</p><a href=\'{{ route('hidrologi.file.preview', $riverMapHtml->id) }}\' target=\'_blank\' class=\'inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700\'>Buka di Tab Baru</a></div>';"
+                                ></iframe>
+                            </div>
+                            
+                            <!-- Info Banner -->
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="flex items-center space-x-2 text-sm text-gray-700">
+                                        <i class="fas fa-info-circle text-blue-600"></i>
+                                        <span>Peta interaktif aktif. Gunakan mouse untuk zoom & navigasi. Klik ikon layer untuk toggle data.</span>
+                                    </div>
+                                    <a 
+                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
+                                        target="_blank"
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
+                                    >
+                                        <i class="fas fa-external-link-alt mr-2"></i>Buka Fullscreen
+                                    </a>
+                                </div>
+                            </div>
+                        @elseif($riverMapPng)
+                            <!-- Fallback: Static Map Preview (PNG) jika HTML tidak ada -->
                             <div class="relative">
                                 <img 
                                     src="{{ route('hidrologi.file.preview', $riverMapPng->id) }}" 
@@ -1251,54 +1293,25 @@
                                     style="max-height: 600px; object-fit: contain;"
                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22600%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23666%22%3EGambar tidak tersedia%3C/text%3E%3C/svg%3E';"
                                 />
-                                
-                                <!-- Overlay Button untuk Buka Interaktif -->
-                                @if($riverMapHtml)
-                                <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                                    <a 
-                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                        target="_blank"
-                                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-2xl transform hover:scale-105 transition-all"
-                                    >
-                                        <i class="fas fa-external-link-alt mr-2"></i>
-                                        Buka Peta Interaktif
-                                    </a>
-                                </div>
-                                @endif
                             </div>
-                            
-                            <!-- Info Banner -->
-                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2 text-sm text-gray-700">
-                                        <i class="fas fa-info-circle text-blue-600"></i>
-                                        <span>Preview peta statis. @if($riverMapHtml)Klik atau hover untuk membuka peta interaktif penuh.@endif</span>
-                                    </div>
-                                    @if($riverMapHtml)
-                                    <a 
-                                        href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                        target="_blank"
-                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all"
-                                    >
-                                        <i class="fas fa-map mr-2"></i>Peta Interaktif
-                                    </a>
-                                    @endif
+                            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-t-2 border-yellow-200 p-3">
+                                <div class="flex items-center space-x-2 text-sm text-yellow-800">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                                    <span>Menampilkan peta statis (PNG). Peta interaktif tidak tersedia.</span>
                                 </div>
                             </div>
                         @else
-                            <!-- Fallback jika tidak ada PNG -->
+                            <!-- Fallback jika tidak ada peta sama sekali -->
                             <div class="flex items-center justify-center py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
                                 <div class="text-center max-w-md">
                                     <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                                         <i class="fas fa-map text-yellow-600 text-4xl"></i>
                                     </div>
-                                    <h4 class="text-xl font-bold text-gray-800 mb-3">Preview Peta Belum Tersedia</h4>
-                                    <p class="text-gray-600 mb-4">File PNG peta belum tersedia untuk preview.</p>
-                                    @if($riverMapHtml)
-                                        <a href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" target="_blank" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
-                                            <i class="fas fa-external-link-alt mr-2"></i>Buka Peta Interaktif
-                                        </a>
-                                    @endif
+                                    <h4 class="text-xl font-bold text-gray-800 mb-3">Peta Belum Tersedia</h4>
+                                    <p class="text-gray-600 mb-4">Peta sedang diproses atau belum di-generate.</p>
+                                    <button onclick="location.reload()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                                        <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
+                                    </button>
                                 </div>
                             </div>
                         @endif
