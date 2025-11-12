@@ -81,102 +81,90 @@
         .backdrop-enter-end, .backdrop-leave-start {
             opacity: 1;
         }
+
+        /* Custom animations for floating button */
+        .floating-button {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip-parent:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Header dropdown animations */
+        .dropdown-enter {
+            animation: dropdownEnter 0.2s ease-out forwards;
+        }
+
+        @keyframes dropdownEnter {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        @include('partials.sidebar')
+    <div class="min-h-screen flex flex-col" x-data="{ mobileMenuOpen: false }">
+        <!-- Navigation Header -->
+        @include('partials.navbar')
         
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Bar with Language Switcher - Desktop Only -->
-            <div class="hidden lg:flex bg-white border-b border-gray-200 px-4 sm:px-6 py-2 sm:py-3 shadow-sm">
-                <div class="flex justify-between sm:justify-end items-center gap-3 w-full">
-                    <!-- Page Title (optional - can be removed) -->
-                    <div class="flex items-center sm:hidden">
-                        <h1 class="text-sm font-semibold text-gray-700">@yield('page-title', 'Dashboard')</h1>
-                    </div>
-                    
-                    <!-- Language Switcher -->
-                    @include('partials.language-switcher')
+        <!-- Main Content Area -->
+        <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Page Header (Optional) -->
+            @hasSection('page-header')
+                <div class="mb-6">
+                    @yield('page-header')
                 </div>
-            </div>
+            @endif
             
-            <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:mt-0 mt-16">
+            <!-- Content -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[600px] p-6">
                 @yield('content')
-            </main>
-            
-            <!-- Footer -->
-            @include('partials.footer')
-        </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        @include('partials.footer')
     </div>
 
    <script>
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-
-        // Toggle notifications dropdown
-        function toggleNotifications() {
-            const dropdown = document.getElementById('notifications-dropdown');
-            const profileDropdown = document.getElementById('profile-dropdown');
-            
-            // Close profile dropdown if open
-            if (!profileDropdown.classList.contains('hidden')) {
-                profileDropdown.classList.add('hidden');
-            }
-            
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Toggle profile dropdown
-        function toggleProfile() {
-            const dropdown = document.getElementById('profile-dropdown');
-            const notificationsDropdown = document.getElementById('notifications-dropdown');
-            
-            // Close notifications dropdown if open
-            if (!notificationsDropdown.classList.contains('hidden')) {
-                notificationsDropdown.classList.add('hidden');
-            }
-            
-            dropdown.classList.toggle('hidden');
-        }
-
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
-            const notificationsDropdown = document.getElementById('notifications-dropdown');
-            const profileDropdown = document.getElementById('profile-dropdown');
-            
-            // Check if click is outside notifications dropdown
-            if (!event.target.closest('.relative') || !event.target.closest('button[onclick="toggleNotifications()"]')) {
-                if (!event.target.closest('#notifications-dropdown')) {
-                    notificationsDropdown?.classList.add('hidden');
-                }
-            }
-            
-            // Check if click is outside profile dropdown
-            if (!event.target.closest('.relative') || !event.target.closest('button[onclick="toggleProfile()"]')) {
-                if (!event.target.closest('#profile-dropdown')) {
-                    profileDropdown?.classList.add('hidden');
-                }
+            // Close any open dropdowns when clicking outside
+            if (!event.target.closest('.relative')) {
+                const dropdowns = document.querySelectorAll('[x-show]');
+                dropdowns.forEach(dropdown => {
+                    if (dropdown.style.display !== 'none') {
+                        dropdown.style.display = 'none';
+                    }
+                });
             }
         });
-
-        // Close sidebar when clicking overlay
-        document.getElementById('sidebar-overlay')?.addEventListener('click', toggleSidebar);
 
         // Close dropdowns when pressing Escape
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
-                document.getElementById('notifications-dropdown')?.classList.add('hidden');
-                document.getElementById('profile-dropdown')?.classList.add('hidden');
+                const dropdowns = document.querySelectorAll('[x-show]');
+                dropdowns.forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
             }
         });
     </script>

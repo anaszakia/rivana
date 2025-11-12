@@ -1,276 +1,292 @@
 @extends('layouts.app')
 
-@section('title', 'RIVANA')
+@section('title', 'RIVANA - Dashboard')
 
 @section('content')
-<div x-data="dashboardData()" class="space-y-8">
-    <!-- Welcome Section with Enhanced Design -->
-    <div class="mb-8">
-        <div class="relative overflow-hidden bg-gradient-to-br from-cyan-600 via-blue-700 to-indigo-900 rounded-2xl p-8 text-white shadow-2xl">
-            <!-- Water Wave Pattern Background -->
-            <div class="absolute inset-0 opacity-10">
-                <svg class="absolute bottom-0 left-0 w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                    <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                </svg>
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white rounded-full"></div>
-                <div class="absolute top-20 right-20 w-20 h-20 bg-white rounded-full"></div>
-                <div class="absolute bottom-10 left-10 w-32 h-32 bg-white rounded-full"></div>
-            </div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between">
-                <div class="mb-4 md:mb-0">
-                    <h1 class="text-3xl md:text-4xl font-bold mb-2 animate-fade-in flex items-center">
-                        <i class="fas fa-water mr-3 text-cyan-300"></i>
-                        {{ __('messages.river_dna_analysis') }} - {{ __('messages.hidrologi') }} {{ __('messages.analysis_status') }}
-                    </h1>
-                    <p class="text-cyan-100 text-lg animate-fade-in-delay">
+<div x-data="dashboardData()" class="space-y-6">
+    <!-- Modern Welcome Banner -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 rounded-3xl shadow-2xl">
+        <!-- Animated Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute w-96 h-96 -top-48 -right-48 bg-white rounded-full animate-pulse"></div>
+            <div class="absolute w-64 h-64 -bottom-32 -left-32 bg-white rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+            <div class="absolute w-40 h-40 top-1/2 left-1/4 bg-white rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+        
+        <div class="relative z-10 p-8 md:p-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-water text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                                RIVANA Dashboard
+                            </h1>
+                            <p class="text-blue-100 text-sm mt-1">River DNA Analysis System</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-white/90 text-lg font-medium mb-4">
                         {{ __('messages.welcome_to_rivana') }}
                     </p>
-                    <p class="text-cyan-200 text-sm mt-2">
-                        {{ __('messages.manage_monitor_hydrology') }}
-                    </p>
-                    <div class="mt-4 flex items-center text-cyan-200">
-                        <i class="fas fa-calendar-alt mr-2"></i>
-                        <span>{{ now()->format('l, d F Y') }}</span>
-                        <i class="fas fa-clock ml-4 mr-2"></i>
-                        <span x-text="currentTime"></span>
+                    
+                    <div class="flex flex-wrap items-center gap-4 text-sm">
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                            <i class="fas fa-calendar-alt text-blue-200"></i>
+                            <span class="text-white font-medium">{{ now()->format('d M Y') }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                            <i class="fas fa-clock text-blue-200"></i>
+                            <span class="text-white font-medium" x-text="currentTime"></span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-green-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-green-300/30">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-white font-medium">System Online</span>
+                        </div>
                     </div>
                 </div>
-                <div class="hidden md:block">
-                    <div class="w-24 h-24 rounded-full flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-90 shadow-2xl">
-                        <img src="/images/logo2.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover">
+                
+                <div class="hidden md:flex items-center justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-white/20 rounded-3xl blur-xl"></div>
+                        <div class="relative w-28 h-28 bg-white rounded-3xl shadow-2xl flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
+                            <img src="/images/logo2.jpg" alt="Logo" class="w-24 h-24 rounded-2xl object-cover">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Enhanced Stats Overview with Animations -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Modern Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Total Hidrologi Jobs -->
-        <div class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 hover:border-cyan-300">
-            <div class="flex items-center justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.total_analysis') }}</p>
-                        <div class="ml-2 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+        <div class="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chart-area text-white text-xl"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-cyan-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalHidrologiJobs }}; let increment = target / 50; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 20); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalHidrologiJobs) }}</p>
-                    <div class="flex items-center">
-                        <div class="flex items-center bg-cyan-100 rounded-full px-2 py-1">
-                            <i class="fas fa-arrow-up text-cyan-600 text-xs mr-1"></i>
-                            <span class="text-sm text-cyan-600 font-semibold">+{{ $todayJobs }}</span>
-                        </div>
-                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.today') }}</span>
+                    <div class="flex items-center gap-1 bg-cyan-50 px-3 py-1 rounded-full">
+                        <i class="fas fa-arrow-up text-cyan-600 text-xs"></i>
+                        <span class="text-xs font-bold text-cyan-600">+{{ $todayJobs }}</span>
                     </div>
                 </div>
-                <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <i class="fas fa-chart-area text-white text-xl"></i>
-                </div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{{ __('messages.total_analysis') }}</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalHidrologiJobs }}; let increment = target / 50; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 20); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalHidrologiJobs) }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.today') }}</p>
             </div>
         </div>
 
         <!-- Completed Jobs -->
-        <div class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 hover:border-green-300">
-            <div class="flex items-center justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.successful') }}</p>
-                        <div class="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <div class="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-check-circle text-white text-xl"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $completedJobs }}; let increment = target / 30; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 30); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($completedJobs) }}</p>
-                    <div class="flex items-center">
-                        <div class="flex items-center bg-red-100 rounded-full px-2 py-1">
-                            <i class="fas fa-times text-red-600 text-xs mr-1"></i>
-                            <span class="text-sm text-red-600 font-semibold">{{ number_format($failedJobs) }}</span>
-                        </div>
-                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.failed') }}</span>
+                    <div class="flex items-center gap-1 bg-red-50 px-3 py-1 rounded-full">
+                        <i class="fas fa-times text-red-600 text-xs"></i>
+                        <span class="text-xs font-bold text-red-600">{{ number_format($failedJobs) }}</span>
                     </div>
                 </div>
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <i class="fas fa-check-circle text-white text-xl"></i>
-                </div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{{ __('messages.successful') }}</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $completedJobs }}; let increment = target / 30; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 30); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($completedJobs) }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.failed') }}</p>
             </div>
         </div>
 
         <!-- Running Jobs -->
-        <div class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 hover:border-amber-300">
-            <div class="flex items-center justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.running') }}</p>
-                        <div class="ml-2 w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+        <div class="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-spinner fa-spin text-white text-xl"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $runningJobs }}; let increment = target / 25; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 40); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($runningJobs) }}</p>
-                    <div class="flex items-center">
-                        <div class="flex items-center bg-amber-100 rounded-full px-2 py-1">
-                            <i class="fas fa-chart-line text-amber-600 text-xs mr-1"></i>
-                            <span class="text-sm text-amber-600 font-semibold">{{ $thisWeekJobs }}</span>
-                        </div>
-                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.this_week') }}</span>
+                    <div class="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full">
+                        <i class="fas fa-chart-line text-amber-600 text-xs"></i>
+                        <span class="text-xs font-bold text-amber-600">{{ $thisWeekJobs }}</span>
                     </div>
                 </div>
-                <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <i class="fas fa-spinner fa-spin text-white text-xl"></i>
-                </div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{{ __('messages.running') }}</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $runningJobs }}; let increment = target / 25; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 40); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($runningJobs) }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.this_week') }}</p>
             </div>
         </div>
 
         <!-- Total Files Generated -->
-        <div class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 hover:border-purple-300">
-            <div class="flex items-center justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2">
-                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">{{ __('messages.total_files') }}</p>
-                        <div class="ml-2 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+        <div class="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-violet-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-file-alt text-white text-xl"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalFiles }}; let increment = target / 40; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 25); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalFiles) }}</p>
-                    <div class="flex items-center">
-                        <div class="flex items-center bg-purple-100 rounded-full px-2 py-1">
-                            <i class="fas fa-calendar text-purple-600 text-xs mr-1"></i>
-                            <span class="text-sm text-purple-600 font-semibold">{{ $thisMonthJobs }}</span>
-                        </div>
-                        <span class="text-sm text-gray-500 ml-2">{{ __('messages.this_month') }}</span>
+                    <div class="flex items-center gap-1 bg-purple-50 px-3 py-1 rounded-full">
+                        <i class="fas fa-calendar text-purple-600 text-xs"></i>
+                        <span class="text-xs font-bold text-purple-600">{{ $thisMonthJobs }}</span>
                     </div>
                 </div>
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <i class="fas fa-file-alt text-white text-xl"></i>
-                </div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{{ __('messages.total_files') }}</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2" x-data="{ count: 0 }" x-init="$nextTick(() => { let target = {{ $totalFiles }}; let increment = target / 40; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 25); });" x-text="Math.floor(count).toLocaleString()">{{ number_format($totalFiles) }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.this_month') }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Enhanced Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Modern Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Hidrologi Jobs Growth Chart -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                        <i class="fas fa-chart-line text-cyan-600 mr-3"></i>
-                        {{ __('messages.hydrology_growth') }}
-                    </h3>
-                    <p class="text-sm text-gray-500 mt-1">{{ __('messages.hydrology_growth_desc') }}</p>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-xs font-semibold">{{ __('messages.last_7_months') }}</span>
-                    <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh Chart">
-                        <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
-                    </button>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="bg-gradient-to-r from-cyan-50 to-blue-50 px-6 py-5 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ __('messages.hydrology_growth') }}</h3>
+                            <p class="text-xs text-gray-500">{{ __('messages.hydrology_growth_desc') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1.5 bg-white text-cyan-700 rounded-xl text-xs font-semibold shadow-sm border border-cyan-100">{{ __('messages.last_7_months') }}</span>
+                    </div>
                 </div>
             </div>
-            <div class="relative h-72 bg-gradient-to-br from-cyan-50 to-transparent rounded-xl p-4">
-                <canvas id="hidrologiGrowthChart"></canvas>
+            <div class="p-6">
+                <div class="relative h-72 bg-gradient-to-br from-cyan-50/30 to-transparent rounded-xl p-4">
+                    <canvas id="hidrologiGrowthChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Job Status Statistics -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                        <i class="fas fa-chart-bar text-green-600 mr-3"></i>
-                        {{ __('messages.analysis_status') }}
-                    </h3>
-                    <p class="text-sm text-gray-500 mt-1">{{ __('messages.analysis_status_desc') }}</p>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-semibold">{{ __('messages.last_7_days') }}</span>
-                    <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh Chart">
-                        <i class="fas fa-sync-alt text-gray-400 hover:text-gray-600"></i>
-                    </button>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-5 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-chart-bar text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ __('messages.analysis_status') }}</h3>
+                            <p class="text-xs text-gray-500">{{ __('messages.analysis_status_desc') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1.5 bg-white text-green-700 rounded-xl text-xs font-semibold shadow-sm border border-green-100">{{ __('messages.last_7_days') }}</span>
+                    </div>
                 </div>
             </div>
-            <div class="relative h-72 bg-gradient-to-br from-green-50 to-transparent rounded-xl p-4">
-                <canvas id="jobStatusChart"></canvas>
+            <div class="p-6">
+                <div class="relative h-72 bg-gradient-to-br from-green-50/30 to-transparent rounded-xl p-4">
+                    <canvas id="jobStatusChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <!-- Enhanced Data Tables Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Modern Data Tables Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Recent Hidrologi Jobs -->
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-cyan-50 to-transparent">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="bg-gradient-to-r from-cyan-50 to-blue-50 px-6 py-5 border-b border-gray-100">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                            <i class="fas fa-water text-cyan-600 mr-3"></i>
-                            {{ __('messages.latest_analysis') }}
-                        </h3>
-                        <p class="text-sm text-gray-500 mt-1">{{ __('messages.latest_analysis_desc') }}</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-water text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ __('messages.latest_analysis') }}</h3>
+                            <p class="text-xs text-gray-500">{{ __('messages.latest_analysis_desc') }}</p>
+                        </div>
                     </div>
-                    <a href="{{ route('hidrologi.index') }}" class="inline-flex items-center px-4 py-2 bg-cyan-600 text-white text-sm font-semibold rounded-lg hover:bg-cyan-700 transition-colors shadow-md hover:shadow-lg">
+                    <a href="{{ route('hidrologi.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
                         <span>{{ __('messages.view_all') }}</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
+                        <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
             </div>
             <div class="p-6">
-                <div class="space-y-3">
+                <div class="space-y-2">
                     @forelse($recentJobs as $job)
-                    <div class="group flex items-center space-x-4 p-4 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-transparent rounded-xl transition-all duration-300 cursor-pointer border border-transparent hover:border-cyan-100">
-                        <div class="relative">
-                            @php
-                                $statusColor = '';
-                                $statusIcon = '';
-                                switch($job->status) {
-                                    case 'completed':
-                                        $statusColor = 'from-green-500 to-emerald-600';
-                                        $statusIcon = 'fa-check-circle';
-                                        break;
-                                    case 'failed':
-                                        $statusColor = 'from-red-500 to-red-600';
-                                        $statusIcon = 'fa-times-circle';
-                                        break;
-                                    case 'running':
-                                    case 'processing':
-                                        $statusColor = 'from-amber-500 to-orange-600';
-                                        $statusIcon = 'fa-spinner fa-spin';
-                                        break;
-                                    default:
-                                        $statusColor = 'from-gray-500 to-gray-600';
-                                        $statusIcon = 'fa-clock';
-                                }
-                            @endphp
-                            <div class="w-12 h-12 bg-gradient-to-br {{ $statusColor }} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas {{ $statusIcon }} text-white text-lg"></i>
+                    <div class="group flex items-center gap-4 p-4 bg-gray-50/50 hover:bg-cyan-50/50 rounded-2xl transition-all duration-300 cursor-pointer border border-transparent hover:border-cyan-200 hover:shadow-md">
+                        @php
+                            $statusColor = '';
+                            $statusIcon = '';
+                            $statusBg = '';
+                            switch($job->status) {
+                                case 'completed':
+                                    $statusColor = 'from-green-500 to-emerald-600';
+                                    $statusIcon = 'fa-check-circle';
+                                    $statusBg = 'bg-green-500';
+                                    break;
+                                case 'failed':
+                                    $statusColor = 'from-red-500 to-red-600';
+                                    $statusIcon = 'fa-times-circle';
+                                    $statusBg = 'bg-red-500';
+                                    break;
+                                case 'running':
+                                case 'processing':
+                                    $statusColor = 'from-amber-500 to-orange-600';
+                                    $statusIcon = 'fa-spinner fa-spin';
+                                    $statusBg = 'bg-amber-500';
+                                    break;
+                                default:
+                                    $statusColor = 'from-gray-500 to-gray-600';
+                                    $statusIcon = 'fa-clock';
+                                    $statusBg = 'bg-gray-500';
+                            }
+                        @endphp
+                        <div class="relative shrink-0">
+                            <div class="w-12 h-12 bg-gradient-to-br {{ $statusColor }} rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas {{ $statusIcon }} text-white"></i>
                             </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-cyan-600 transition-colors">
+                            <p class="text-sm font-bold text-gray-900 truncate mb-1">
                                 {{ $job->location_name ?? 'Analisis #' . $job->job_id }}
                             </p>
-                            <p class="text-sm text-gray-500 truncate">
-                                {{ $job->user->name ?? 'Unknown' }} • {{ $job->latitude }}, {{ $job->longitude }}
-                            </p>
+                            <div class="flex items-center gap-2 text-xs text-gray-500">
+                                <i class="fas fa-user"></i>
+                                <span>{{ $job->user->name ?? 'Unknown' }}</span>
+                                <span>•</span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{ $job->latitude }}, {{ $job->longitude }}</span>
+                            </div>
                         </div>
-                        <div class="text-right">
+                        <div class="text-right shrink-0">
                             @php
                                 $statusBadgeClass = '';
                                 $statusText = '';
                                 switch($job->status) {
                                     case 'completed':
-                                        $statusBadgeClass = 'bg-green-100 text-green-800';
+                                        $statusBadgeClass = 'bg-green-100 text-green-700 border-green-200';
                                         $statusText = 'Selesai';
                                         break;
                                     case 'failed':
-                                        $statusBadgeClass = 'bg-red-100 text-red-800';
+                                        $statusBadgeClass = 'bg-red-100 text-red-700 border-red-200';
                                         $statusText = 'Gagal';
                                         break;
                                     case 'running':
                                     case 'processing':
-                                        $statusBadgeClass = 'bg-amber-100 text-amber-800';
+                                        $statusBadgeClass = 'bg-amber-100 text-amber-700 border-amber-200';
                                         $statusText = 'Berjalan';
                                         break;
                                     default:
-                                        $statusBadgeClass = 'bg-gray-100 text-gray-800';
+                                        $statusBadgeClass = 'bg-gray-100 text-gray-700 border-gray-200';
                                         $statusText = 'Pending';
                                 }
                             @endphp
-                            <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {{ $statusBadgeClass }}">
+                            <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-xl border {{ $statusBadgeClass }}">
                                 {{ $statusText }}
                             </span>
-                            <p class="text-xs text-gray-500 mt-1">{{ $job->created_at->diffForHumans() }}</p>
+                            <p class="text-xs text-gray-400 mt-1.5">{{ $job->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
                     @empty
@@ -287,63 +303,65 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-transparent">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="bg-gradient-to-r from-purple-50 to-violet-50 px-6 py-5 border-b border-gray-100">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                            <i class="fas fa-history text-purple-600 mr-3"></i>
-                            {{ __('messages.recent_activity') }}
-                        </h3>
-                        <p class="text-sm text-gray-500 mt-1">{{ __('messages.recent_activity_desc') }}</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-history text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ __('messages.recent_activity') }}</h3>
+                            <p class="text-xs text-gray-500">{{ __('messages.recent_activity_desc') }}</p>
+                        </div>
                     </div>
-                    <a href="{{ route('audit.index') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg">
+                    <a href="{{ route('audit.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
                         <span>{{ __('messages.view_all') }}</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
+                        <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
             </div>
             <div class="p-6">
-                <div class="space-y-3">
+                <div class="space-y-2">
                     @forelse($recentActivity as $activity)
-                    <div class="group flex items-start space-x-4 p-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent rounded-xl transition-all duration-300 border border-transparent hover:border-purple-100">
-                        <div class="flex-shrink-0">
-                            @php
-                                $iconClass = '';
-                                $bgClass = '';
-                                $textClass = '';
-                                
-                                switch($activity->action) {
-                                    case 'Login':
-                                        $iconClass = 'fas fa-sign-in-alt';
-                                        $bgClass = 'bg-green-100';
-                                        $textClass = 'text-green-600';
-                                        break;
-                                    case 'Logout':
-                                        $iconClass = 'fas fa-sign-out-alt';
-                                        $bgClass = 'bg-red-100';
-                                        $textClass = 'text-red-600';
-                                        break;
-                                    default:
-                                        $iconClass = 'fas fa-cog';
-                                        $bgClass = 'bg-blue-100';
-                                        $textClass = 'text-blue-600';
-                                }
-                            @endphp
-                            <div class="w-10 h-10 {{ $bgClass }} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                    <div class="group flex items-center gap-4 p-4 bg-gray-50/50 hover:bg-purple-50/50 rounded-2xl transition-all duration-300 border border-transparent hover:border-purple-200 hover:shadow-md">
+                        @php
+                            $iconClass = '';
+                            $bgClass = '';
+                            $textClass = '';
+                            
+                            switch($activity->action) {
+                                case 'Login':
+                                    $iconClass = 'fas fa-sign-in-alt';
+                                    $bgClass = 'bg-green-500';
+                                    $textClass = 'text-white';
+                                    break;
+                                case 'Logout':
+                                    $iconClass = 'fas fa-sign-out-alt';
+                                    $bgClass = 'bg-red-500';
+                                    $textClass = 'text-white';
+                                    break;
+                                default:
+                                    $iconClass = 'fas fa-cog';
+                                    $bgClass = 'bg-blue-500';
+                                    $textClass = 'text-white';
+                            }
+                        @endphp
+                        <div class="shrink-0">
+                            <div class="w-12 h-12 {{ $bgClass }} rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
                                 <i class="{{ $iconClass }} {{ $textClass }}"></i>
                             </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between">
-                                <p class="text-sm font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <p class="text-sm font-bold text-gray-900">
                                     {{ $activity->user ? $activity->user->name : 'Unknown User' }}
                                 </p>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                                <span class="px-3 py-1 bg-white border border-gray-200 text-gray-700 text-xs rounded-xl font-semibold">
                                     {{ $activity->action }}
                                 </span>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">{{ $activity->created_at->diffForHumans() }}</p>
+                            <p class="text-xs text-gray-400">{{ $activity->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
                     @empty

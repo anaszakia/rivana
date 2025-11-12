@@ -41,101 +41,108 @@
 @endpush
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <!-- Header dengan Gradient Modern -->
-    <div class="mb-8">
-        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 shadow-2xl">
-            <!-- Background Pattern -->
+<div class="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+    <!-- Modern Header Banner -->
+    <div class="mb-6">
+        <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl">
+            <!-- Animated Background Circles -->
             <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32"></div>
-                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full -ml-24 -mb-24"></div>
+                <div class="absolute w-96 h-96 -top-48 -right-48 bg-white rounded-full animate-pulse"></div>
+                <div class="absolute w-64 h-64 -bottom-32 -left-32 bg-white rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+                <div class="absolute w-40 h-40 top-1/2 left-1/3 bg-white rounded-full animate-pulse" style="animation-delay: 2s;"></div>
             </div>
             
-            <div class="relative z-10">
+            <div class="relative z-10 p-6 sm:p-8">
                 <!-- Breadcrumb -->
-                <div class="flex items-center space-x-2 text-blue-200 mb-4">
-                    <a href="{{ route('hidrologi.index') }}" class="hover:text-white transition-colors">
-                        <i class="fas fa-water mr-1"></i>
-                        {{ __('messages.hydrology') }}
+                <div class="flex items-center gap-2 text-blue-100 mb-4 text-xs sm:text-sm flex-wrap">
+                    <a href="{{ route('hidrologi.index') }}" class="flex items-center gap-1 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-lg">
+                        <i class="fas fa-water"></i>
+                        <span class="hidden sm:inline">{{ __('messages.hydrology') }}</span>
                     </a>
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-white font-semibold">{{ __('messages.create_new_analysis') }}</span>
+                    <span class="text-white font-bold bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">{{ __('messages.create_new_analysis') }}</span>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-plus-circle text-3xl text-white"></i>
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-plus-circle text-2xl sm:text-3xl text-white"></i>
                     </div>
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{{ __('messages.create_new_hydrology_analysis') }}</h1>
-                        <p class="text-blue-100 text-lg">{{ __('messages.submit_new_job_for_analysis') }}</p>
+                    <div class="min-w-0">
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight">{{ __('messages.create_new_hydrology_analysis') }}</h1>
+                        <p class="text-blue-100 text-sm sm:text-base lg:text-lg">{{ __('messages.submit_new_job_for_analysis') }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
         <!-- Form -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 lg:p-8 border border-gray-100">
                 <form id="hidrologiForm" action="{{ route('hidrologi.submit') }}" method="POST">
                     @csrf
 
                     <!-- Location Information -->
                     <div class="mb-8">
-                        <div class="flex items-center space-x-3 mb-6">
-                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-map-marker-alt text-blue-600 text-lg"></i>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-map-marker-alt text-white text-lg sm:text-xl"></i>
                             </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800">{{ __('messages.location_information') }}</h3>
-                                <p class="text-sm text-gray-500">{{ __('messages.select_location_on_map_or_enter_coordinates') }}</p>
+                            <div class="min-w-0">
+                                <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">{{ __('messages.location_information') }}</h3>
+                                <p class="text-xs sm:text-sm text-gray-600">{{ __('messages.select_location_on_map_or_enter_coordinates') }}</p>
                             </div>
                         </div>
 
                         <!-- Interactive Map -->
                         <div class="mb-6">
-                            <label class="block text-sm font-semibold text-gray-700 mb-3">
-                                <i class="fas fa-map text-blue-600 mr-2"></i>
+                            <label class="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-map text-blue-600 text-xs"></i>
+                                </div>
                                 {{ __('messages.select_location_on_map') }}
                             </label>
-                            <div id="map" class="border-4 border-blue-100"></div>
-                            <div class="mt-3 p-3 bg-blue-50 rounded-lg">
-                                <p class="text-sm text-blue-800">
-                                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                                    {!! __('messages.map_tips') !!}
+                            <div id="map" class="border-4 border-blue-200 shadow-lg"></div>
+                            <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
+                                <p class="text-sm text-blue-900 flex items-start gap-2">
+                                    <i class="fas fa-info-circle text-blue-600 mt-0.5 shrink-0"></i>
+                                    <span>{!! __('messages.map_tips') !!}</span>
                                 </p>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Longitude -->
                             <div>
-                                <label for="longitude" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-globe text-blue-500 mr-1"></i>
-                                    {{ __('messages.longitude') }} <span class="text-red-500">*</span>
+                                <label for="longitude" class="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-globe text-blue-600 text-xs"></i>
+                                    </div>
+                                    {{ __('messages.longitude') }} <span class="text-red-600">*</span>
                                 </label>
                                 <input type="number" step="0.000001" name="longitude" id="longitude" 
-                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
                                     placeholder="{{ __('messages.example') }}: 106.845599" required min="-180" max="180">
-                                <p class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <i class="fas fa-arrow-right text-gray-400 mr-1"></i>
+                                <p class="mt-2 text-xs text-gray-600 flex items-center gap-1">
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
                                     {{ __('messages.range') }}: -180 {{ __('messages.to_lowercase') }} 180
                                 </p>
                             </div>
 
                             <!-- Latitude -->
                             <div>
-                                <label for="latitude" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-globe text-green-500 mr-1"></i>
-                                    {{ __('messages.latitude') }} <span class="text-red-500">*</span>
+                                <label for="latitude" class="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-globe text-green-600 text-xs"></i>
+                                    </div>
+                                    {{ __('messages.latitude') }} <span class="text-red-600">*</span>
                                 </label>
                                 <input type="number" step="0.000001" name="latitude" id="latitude"
-                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
                                     placeholder="{{ __('messages.example') }}: -6.208763" required min="-90" max="90">
-                                <p class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <i class="fas fa-arrow-right text-gray-400 mr-1"></i>
+                                <p class="mt-2 text-xs text-gray-600 flex items-center gap-1">
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
                                     {{ __('messages.range') }}: -90 {{ __('messages.to_lowercase') }} 90
                                 </p>
                             </div>
@@ -176,59 +183,63 @@
                     </div>
 
                     <!-- Date Range -->
-                    <div class="mb-8 border-t-2 border-gray-100 pt-8">
-                        <div class="flex items-center space-x-3 mb-6">
-                            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-calendar-alt text-purple-600 text-lg"></i>
+                    <div class="mb-8 border-t-2 border-gray-200 pt-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
                             </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800">{{ __('messages.analysis_period') }}</h3>
-                                <p class="text-sm text-gray-500">{{ __('messages.determine_time_range_for_analysis') }}</p>
+                            <div class="min-w-0">
+                                <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">{{ __('messages.analysis_period') }}</h3>
+                                <p class="text-xs sm:text-sm text-gray-600">{{ __('messages.determine_time_range_for_analysis') }}</p>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Start Date -->
                             <div>
-                                <label for="start_date" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-calendar-check text-green-500 mr-1"></i>
-                                    {{ __('messages.start_date') }} <span class="text-red-500">*</span>
+                                <label for="start_date" class="flex items-center gap-2 text-sm font-bold text-gray-800 mb-2">
+                                    <div class="w-5 h-5 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-calendar-check text-green-600 text-xs"></i>
+                                    </div>
+                                    {{ __('messages.start_date') }} <span class="text-red-600">*</span>
                                 </label>
                                 <input type="date" name="start_date" id="start_date"
-                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
                                     required>
                             </div>
 
                             <!-- End Date -->
                             <div>
-                                <label for="end_date" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-calendar-times text-red-500 mr-1"></i>
-                                    {{ __('messages.end_date') }} <span class="text-red-500">*</span>
+                                <label for="end_date" class="flex items-center gap-2 text-sm font-bold text-gray-800 mb-2">
+                                    <div class="w-5 h-5 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-calendar-times text-red-600 text-xs"></i>
+                                    </div>
+                                    {{ __('messages.end_date') }} <span class="text-red-600">*</span>
                                 </label>
                                 <input type="date" name="end_date" id="end_date"
-                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
                                     required max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-                        <div class="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
-                            <p class="text-sm text-yellow-800 flex items-start">
-                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2 mt-0.5"></i>
+                        <div class="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border-2 border-yellow-200">
+                            <p class="text-sm text-yellow-900 flex items-start gap-2 font-medium">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 mt-0.5 shrink-0"></i>
                                 <span>{!! __('messages.date_validation_important') !!}</span>
                             </p>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
-                    <div class="flex items-center justify-between border-t-2 border-gray-100 pt-8">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t-2 border-gray-200 pt-8">
                         <a href="{{ route('hidrologi.index') }}" 
-                           class="inline-flex items-center px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-all duration-200 transform hover:scale-105">
-                            <i class="fas fa-arrow-left mr-2"></i>
-                            {{ __('messages.back') }}
+                           class="inline-flex items-center justify-center gap-2 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-bold rounded-2xl transition-all duration-200 transform hover:scale-105">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>{{ __('messages.back') }}</span>
                         </a>
                         <button type="submit" id="submitBtn"
-                            class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            {{ __('messages.create_analysis') }}
+                            class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-700 text-white font-extrabold rounded-2xl transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>{{ __('messages.create_analysis') }}</span>
                         </button>
                     </div>
                 </form>
@@ -236,75 +247,75 @@
         </div>
 
         <!-- Info Sidebar -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="lg:col-span-1 space-y-5 sm:space-y-6">
             <!-- Cara Kerja Card -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-lg info-card border border-blue-200">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-5 sm:p-6 shadow-xl info-card border-2 border-blue-200">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-info-circle text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-blue-900">{{ __('messages.how_it_works') }}</h3>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-blue-900">{{ __('messages.how_it_works') }}</h3>
                 </div>
-                <ol class="space-y-4 text-sm text-blue-900">
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">1</span>
-                        <span class="pt-1">{!! __('messages.step_select_location') !!}</span>
+                <ol class="space-y-3 text-sm text-blue-900">
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-extrabold mr-3 shrink-0 shadow-md">1</span>
+                        <span class="pt-1 font-medium">{!! __('messages.step_select_location') !!}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">2</span>
-                        <span class="pt-1">{!! __('messages.step_submit_job') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-extrabold mr-3 shrink-0 shadow-md">2</span>
+                        <span class="pt-1 font-medium">{!! __('messages.step_submit_job') !!}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">3</span>
-                        <span class="pt-1">{!! __('messages.step_monitor_progress') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-extrabold mr-3 shrink-0 shadow-md">3</span>
+                        <span class="pt-1 font-medium">{!! __('messages.step_monitor_progress') !!}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold mr-3 flex-shrink-0 shadow-md">4</span>
-                        <span class="pt-1">{!! __('messages.step_download_results') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-extrabold mr-3 shrink-0 shadow-md">4</span>
+                        <span class="pt-1 font-medium">{!! __('messages.step_download_results') !!}</span>
                     </li>
                 </ol>
             </div>
 
             <!-- Catatan Penting Card -->
-            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-lg info-card border border-yellow-200">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-yellow-600 rounded-xl flex items-center justify-center">
+            <div class="bg-gradient-to-br from-yellow-50 to-orange-100 rounded-3xl p-5 sm:p-6 shadow-xl info-card border-2 border-yellow-200">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-11 h-11 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-exclamation-triangle text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-yellow-900">{{ __('messages.important_notes') }}</h3>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-yellow-900">{{ __('messages.important_notes') }}</h3>
                 </div>
                 <ul class="space-y-3 text-sm text-yellow-900">
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <i class="fas fa-clock text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>{!! __('messages.processing_time') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-clock text-yellow-600 mr-3 mt-1 shrink-0"></i>
+                        <span class="font-medium">{!! __('messages.processing_time') !!}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <i class="fas fa-bell text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>{!! __('messages.notification') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-bell text-yellow-600 mr-3 mt-1 shrink-0"></i>
+                        <span class="font-medium">{!! __('messages.notification') !!}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <i class="fas fa-save text-yellow-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>{!! __('messages.storage') !!}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-save text-yellow-600 mr-3 mt-1 shrink-0"></i>
+                        <span class="font-medium">{!! __('messages.storage') !!}</span>
                     </li>
                 </ul>
             </div>
 
             <!-- Tips Card -->
-            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 shadow-lg info-card border border-green-200">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
+            <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl p-5 sm:p-6 shadow-xl info-card border-2 border-green-200">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-11 h-11 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-lightbulb text-white text-lg"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-green-900">{{ __('messages.tips') }}</h3>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-green-900">{{ __('messages.tips') }}</h3>
                 </div>
                 <ul class="space-y-3 text-sm text-green-900">
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <i class="fas fa-map text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>{{ __('messages.use_search_feature') }}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-map text-green-600 mr-3 mt-1 shrink-0"></i>
+                        <span class="font-medium">{{ __('messages.use_search_feature') }}</span>
                     </li>
-                    <li class="flex items-start p-3 bg-white bg-opacity-50 rounded-xl">
-                        <i class="fas fa-calendar text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                        <span>{{ __('messages.choose_appropriate_date_range') }}</span>
+                    <li class="flex items-start p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-calendar text-green-600 mr-3 mt-1 shrink-0"></i>
+                        <span class="font-medium">{{ __('messages.choose_appropriate_date_range') }}</span>
                     </li>
                 </ul>
             </div>
