@@ -1,89 +1,84 @@
-name: Deploy to Server
+name: Deploy to Production Server
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
+      - main  # Ubah ke branch yang Anda gunakan (bisa juga 'master')
 
 jobs:
   deploy:
+    name: Deploy Application
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup Node.js untuk build assets (jika ada Vite/NPM)
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      # Build frontend assets (jika menggunakan Vite)
-      - name: Install NPM dependencies and build
-        run: |
-          npm ci
-          npm run build
-
-      # Upload project ke server via SCP (exclude files yang tidak perlu)
-      - name: Deploy via SCP (upload ke server)
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          source: ".,!node_modules,!.git,!.github,!vendor,!storage/logs/*,!storage/framework/cache/*,!storage/framework/sessions/*,!storage/framework/views/*,!.env,!.env.example"
-          target: "/usr/share/nginx/rivana.cloud/public_html/rivana"
-          strip_components: 0
-          overwrite: true
-          rm: false
-
-      # Jalankan perintah setelah upload
-      - name: Run post-deploy commands
+      - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.KEY }}
-          port: 22
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /usr/share/nginx/rivana.cloud/public_html/rivana
-
-            # Backup .env jika sudah ada (jangan overwrite)
-            if [ -f .env ]; then
-              echo "✅ .env sudah ada, tidak akan diubah"
-            else
-              echo "⚠️  .env belum ada, copy dari .env.example"
-              cp .env.example .env
-              php artisan key:generate --force
+            echo "🚀 Starting deployment..."
+            
+            # Masuk ke directory project
+            cd ${{ secrets.SERVER_PATH }}
+            
+            # Pull perubahan terbaru dari GitHub
+            echo "📥 Pulling latest changes..."
+            git pull origin main
+            
+            # Copy .env jika belum ada
+            if [ ! -f .env ]; then
+                echo "📝 Creating .env file..."
+                cp .env.example .env
+                php artisan key:generate
             fi
-
-            # Install composer dependencies
+            
+            # Install/Update Composer dependencies
             echo "📦 Installing Composer dependencies..."
-            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-progress
-
-            # Run migrations (jika ada perubahan database)
-            echo "🗄️  Running migrations..."
-            php artisan migrate --force
-
-            # Set permissions (tanpa sudo jika user sudah owner)
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            
+            # Set permissions untuk storage dan cache
             echo "🔐 Setting permissions..."
-            chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || chown -R $USER:$USER storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
-
-            # Clear dan cache Laravel
-            echo "🚀 Optimizing Laravel..."
-            php artisan optimize:clear
+            chown -R www-data:www-data storage bootstrap/cache
+            
+            # Create storage link jika belum ada
+            echo "🔗 Creating storage link..."
+            php artisan storage:link
+            
+            # Clear all cache
+            echo "🧹 Clearing cache..."
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            
+            # Run database migrations
+            echo "🗄️ Running migrations..."
+            php artisan migrate --force
+            
+            # Optimize application
+            echo "⚡ Optimizing application..."
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            php artisan optimize
             
-            # Restart queue workers jika ada
-            if [ -f artisan ]; then
-              php artisan queue:restart 2>/dev/null || echo "⚠️  No queue workers to restart"
-            fi
+            # Restart queue workers if exists
+            echo "🔄 Restarting queue workers..."
+            php artisan queue:restart || true
+            
+            echo "✅ Deployment completed successfully!"
 
-            echo "✅ Deployment selesai!"
-            echo "📅 Deployed at: $(date)"
+      - name: Deployment Success Notification
+        if: success()
+        run: echo "✅ Deployment berhasil!"
+
+      - name: Deployment Failed Notification
+        if: failure()
+        run: echo "❌ Deployment gagal! Cek logs untuk detail."
