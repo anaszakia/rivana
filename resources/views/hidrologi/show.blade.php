@@ -889,6 +889,421 @@
 
                     <!-- ⭐⭐⭐ NEW COMPREHENSIVE SECTIONS ⭐⭐⭐ -->
 
+                    <!-- 🌊 BAGIAN TWI: ANALISIS RISIKO BANJIR & REKOMENDASI RUANG HIJAU -->
+                    @if(isset($summary['twi_analysis']) && !isset($summary['twi_analysis']['status']))
+                        <div class="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-lg p-4 mt-4 shadow-md border-2 border-cyan-300">
+                            <!-- Header dengan Penjelasan Sederhana -->
+                            <div class="bg-white rounded-lg p-4 mb-4 border-l-4 border-cyan-500">
+                                <h4 class="font-bold text-cyan-900 text-lg mb-2 flex items-center">
+                                    <i class="fas fa-water mr-2 text-cyan-600"></i>
+                                    <span>🌊 Analisis Risiko Banjir & Genangan Air</span>
+                                </h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    <strong>Apa itu TWI?</strong> Topographic Wetness Index (TWI) adalah indeks yang mengukur <strong>seberapa mudah air berkumpul</strong> di suatu lokasi berdasarkan topografi/kontur tanah. 
+                                    Semakin tinggi nilai TWI, semakin besar kemungkinan area tersebut <strong class="text-red-600">tergenang air atau banjir</strong> saat hujan.
+                                </p>
+                            </div>
+                            
+                            <!-- Status Risiko dengan Visual Jelas -->
+                            <div class="bg-white rounded-lg p-5 mb-4 shadow-sm">
+                                <h5 class="font-bold text-gray-800 mb-4 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                    Status Risiko Lokasi Anda
+                                </h5>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Nilai TWI dengan Penjelasan -->
+                                    <div class="bg-gradient-to-br from-cyan-50 to-blue-100 rounded-lg p-4 border-2 border-cyan-300">
+                                        <div class="text-sm text-gray-600 mb-1">📊 Indeks Kelembaban Wilayah (TWI)</div>
+                                        <div class="font-bold text-4xl text-cyan-700 mb-2">{{ $summary['twi_analysis']['twi_enhanced'] ?? 'N/A' }}</div>
+                                        <div class="text-xs text-gray-600 bg-white/50 rounded p-2">
+                                            <strong>Hasil Analisis:</strong> Nilai TWI {{ $summary['twi_analysis']['twi_physics'] ?? 'N/A' }} 
+                                            ditingkatkan {{ $summary['twi_analysis']['ml_correction_factor'] ?? 'N/A' }} oleh Machine Learning untuk akurasi lebih baik
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Risk Level dengan Warna -->
+                                    <div class="rounded-lg p-4 border-2 {{ 
+                                        ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-400' : 
+                                        (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-400' : 
+                                        (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-400' : 
+                                        'bg-gradient-to-br from-green-50 to-green-100 border-green-400')) 
+                                    }}">
+                                        <div class="text-sm text-gray-600 mb-1">🚨 Tingkat Risiko Banjir</div>
+                                        <div class="font-bold text-3xl mb-2 {{ 
+                                            ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'text-red-700' : 
+                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'text-orange-700' : 
+                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'text-yellow-700' : 'text-green-700')) 
+                                        }}">
+                                            @if(($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH')
+                                                SANGAT TINGGI
+                                            @elseif(($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH')
+                                                TINGGI
+                                            @elseif(($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE')
+                                                SEDANG
+                                            @else
+                                                RENDAH
+                                            @endif
+                                        </div>
+                                        <div class="text-sm {{ 
+                                            ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'text-red-800' : 
+                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'text-orange-800' : 
+                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'text-yellow-800' : 'text-green-800')) 
+                                        }} bg-white/70 rounded p-2">
+                                            <strong>Artinya:</strong> {{ $summary['twi_analysis']['interpretation']['risk'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zona Rawan Banjir -->
+                            @if(isset($summary['twi_analysis']['flood_zones']))
+                                <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border-l-4 border-red-500">
+                                    <h5 class="font-bold text-red-800 mb-3 flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+                                        🚨 Titik Rawan Banjir yang Terdeteksi
+                                    </h5>
+                                    
+                                    <p class="text-sm text-gray-700 mb-3">
+                                        Sistem Machine Learning kami menemukan <strong class="text-red-600">{{ $summary['twi_analysis']['flood_zones']['total'] ?? 0 }} zona</strong> 
+                                        yang berpotensi mengalami genangan air atau banjir saat hujan lebat.
+                                    </p>
+                                    
+                                    <!-- Ringkasan Risiko -->
+                                    <div class="grid grid-cols-3 gap-3 mb-4">
+                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
+                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['high_risk'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">⚠️ Risiko Tinggi</div>
+                                            <div class="text-xs text-red-600 mt-1">Prioritas Utama</div>
+                                        </div>
+                                        <div class="bg-orange-50 rounded-lg p-3 text-center border-2 border-orange-200">
+                                            <div class="text-3xl font-bold text-orange-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['moderate_risk'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">⚡ Risiko Sedang</div>
+                                            <div class="text-xs text-orange-600 mt-1">Perlu Monitoring</div>
+                                        </div>
+                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
+                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['low_risk'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">💧 Risiko Rendah</div>
+                                            <div class="text-xs text-yellow-600 mt-1">Waspada Saja</div>
+                                        </div>
+                                    </div>
+
+                                    @if(isset($summary['twi_analysis']['flood_zones']['zones_detail']) && count($summary['twi_analysis']['flood_zones']['zones_detail']) > 0)
+                                        <div class="bg-gray-50 rounded-lg p-3">
+                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Detail Lokasi Zona Banjir:</h6>
+                                            <div class="space-y-2 max-h-64 overflow-y-auto">
+                                                @foreach($summary['twi_analysis']['flood_zones']['zones_detail'] as $index => $zone)
+                                                    <div class="bg-white rounded-lg p-3 border-l-4 {{ 
+                                                        ($zone['risk'] ?? '') === 'HIGH' ? 'border-red-500' : 
+                                                        (($zone['risk'] ?? '') === 'MODERATE' ? 'border-orange-500' : 'border-yellow-500') 
+                                                    }} shadow-sm hover:shadow-md transition-shadow">
+                                                        <div class="flex justify-between items-start mb-2">
+                                                            <span class="font-bold text-gray-800">Zona {{ $index + 1 }}</span>
+                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
+                                                                ($zone['risk'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : 
+                                                                (($zone['risk'] ?? '') === 'MODERATE' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800') 
+                                                            }}">
+                                                                {{ ($zone['risk'] ?? '') === 'HIGH' ? '⚠️ PRIORITAS' : (($zone['risk'] ?? '') === 'MODERATE' ? '⚡ AWASI' : '💧 PANTAU') }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                                                            <div>
+                                                                <span class="font-semibold">Indeks TWI:</span>
+                                                                <span class="font-bold text-gray-800">{{ number_format($zone['twi_value'] ?? 0, 1) }}</span>
+                                                            </div>
+                                                            <div>
+                                                                <span class="font-semibold">Luas Area:</span>
+                                                                <span class="font-bold text-gray-800">{{ number_format($zone['area_ha'] ?? 0, 2) }} ha</span>
+                                                            </div>
+                                                            <div class="col-span-2">
+                                                                <span class="font-semibold">Koordinat:</span>
+                                                                <span class="font-mono text-blue-600">{{ number_format($zone['lat'] ?? 0, 5) }}, {{ number_format($zone['lon'] ?? 0, 5) }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Rekomendasi Ruang Terbuka Hijau (RTH) -->
+                            @if(isset($summary['twi_analysis']['rtho_recommendations']))
+                                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-green-500">
+                                    <h5 class="font-bold text-green-800 mb-3 flex items-center">
+                                        <i class="fas fa-tree text-green-600 mr-2"></i>
+                                        🌳 Rekomendasi Ruang Terbuka Hijau (RTH)
+                                    </h5>
+                                    
+                                    <p class="text-sm text-gray-700 mb-3">
+                                        Untuk mengurangi risiko banjir, sistem Machine Learning merekomendasikan pembuatan <strong class="text-green-600">{{ $summary['twi_analysis']['rtho_recommendations']['total'] ?? 0 }} lokasi RTH</strong> 
+                                        seperti taman, hutan kota, atau area resapan air.
+                                    </p>
+                                    
+                                    <!-- Ringkasan RTH -->
+                                    <div class="grid grid-cols-3 gap-3 mb-4">
+                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
+                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['rtho_recommendations']['high_priority'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">🔥 Prioritas Tinggi</div>
+                                            <div class="text-xs text-red-600 mt-1">Segera Dibangun</div>
+                                        </div>
+                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
+                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['rtho_recommendations']['moderate_priority'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">⭐ Prioritas Sedang</div>
+                                            <div class="text-xs text-yellow-600 mt-1">Rencana Jangka Menengah</div>
+                                        </div>
+                                        <div class="bg-green-50 rounded-lg p-3 text-center border-2 border-green-200">
+                                            <div class="text-3xl font-bold text-green-700 mb-1">{{ number_format($summary['twi_analysis']['rtho_recommendations']['total_area_ha'] ?? 0, 1) }}</div>
+                                            <div class="text-xs text-gray-600">📏 Total Luas</div>
+                                            <div class="text-xs text-green-600 mt-1">Hektar (ha)</div>
+                                        </div>
+                                    </div>
+
+                                    @if(isset($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) > 0)
+                                        <div class="bg-green-50 rounded-lg p-3">
+                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Lokasi yang Direkomendasikan:</h6>
+                                            <div class="space-y-2 max-h-64 overflow-y-auto">
+                                                @foreach($summary['twi_analysis']['rtho_recommendations']['recommendations_detail'] as $index => $rec)
+                                                    <div class="bg-white rounded-lg p-3 border-l-4 {{ 
+                                                        ($rec['priority'] ?? '') === 'HIGH' ? 'border-red-500' : 'border-green-500' 
+                                                    }} shadow-sm hover:shadow-md transition-shadow">
+                                                        <div class="flex justify-between items-start mb-2">
+                                                            <span class="font-bold text-gray-800">Lokasi RTH {{ $index + 1 }}</span>
+                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
+                                                                ($rec['priority'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' 
+                                                            }}">
+                                                                {{ ($rec['priority'] ?? '') === 'HIGH' ? '🔥 URGENT' : '⭐ RENCANA' }}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        <div class="grid grid-cols-2 gap-2 mb-2 text-xs text-gray-600">
+                                                            <div>
+                                                                <span class="font-semibold">Luas Estimasi:</span>
+                                                                <span class="font-bold text-gray-800">{{ number_format($rec['estimated_area_ha'] ?? 0, 2) }} ha</span>
+                                                            </div>
+                                                            <div>
+                                                                <span class="font-semibold">Koordinat:</span>
+                                                                <span class="font-mono text-blue-600 text-xs">{{ number_format($rec['lat'] ?? 0, 5) }}, {{ number_format($rec['lon'] ?? 0, 5) }}</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        @if(!empty($rec['reason']) && $rec['reason'] !== 'N/A')
+                                                            <div class="bg-gray-50 rounded p-2 text-xs">
+                                                                <span class="font-semibold text-gray-700">💡 Alasan:</span>
+                                                                <p class="text-gray-600 mt-1">{{ $rec['reason'] }}</p>
+                                                            </div>
+                                                        @else
+                                                            <div class="bg-blue-50 rounded p-2 text-xs">
+                                                                <span class="font-semibold text-blue-700">ℹ️ Keterangan:</span>
+                                                                <p class="text-blue-600 mt-1">Lokasi strategis untuk menampung air hujan dan mengurangi risiko genangan</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Rekomendasi Sistem Drainase -->
+                            @if(isset($summary['twi_analysis']['drainage_recommendations']))
+                                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-blue-500 mt-4">
+                                    <h5 class="font-bold text-blue-800 mb-3 flex items-center">
+                                        <i class="fas fa-water text-blue-600 mr-2"></i>
+                                        🚰 Rekomendasi Sistem Drainase
+                                    </h5>
+                                    
+                                    <p class="text-sm text-gray-700 mb-3">
+                                        Untuk mengendalikan aliran air dan mencegah genangan, sistem merekomendasikan pembangunan <strong class="text-blue-600">{{ $summary['twi_analysis']['drainage_recommendations']['total'] ?? 0 }} saluran drainase</strong> 
+                                        di lokasi-lokasi strategis.
+                                    </p>
+                                    
+                                    <!-- Ringkasan Drainase -->
+                                    <div class="grid grid-cols-3 gap-3 mb-4">
+                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
+                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['drainage_recommendations']['high_priority'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">🔥 Prioritas Tinggi</div>
+                                            <div class="text-xs text-red-600 mt-1">Segera Dibangun</div>
+                                        </div>
+                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
+                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['drainage_recommendations']['medium_priority'] ?? 0 }}</div>
+                                            <div class="text-xs text-gray-600">⭐ Prioritas Sedang</div>
+                                            <div class="text-xs text-yellow-600 mt-1">Rencana Jangka Menengah</div>
+                                        </div>
+                                        <div class="bg-blue-50 rounded-lg p-3 text-center border-2 border-blue-200">
+                                            <div class="text-3xl font-bold text-blue-700 mb-1">{{ number_format($summary['twi_analysis']['drainage_recommendations']['total_capacity_m3_per_hour'] ?? 0, 0) }}</div>
+                                            <div class="text-xs text-gray-600">⚡ Kapasitas Total</div>
+                                            <div class="text-xs text-blue-600 mt-1">m³/jam</div>
+                                        </div>
+                                    </div>
+
+                                    @if(isset($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) > 0)
+                                        <div class="bg-blue-50 rounded-lg p-3">
+                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Detail Lokasi Drainase:</h6>
+                                            <div class="space-y-3 max-h-96 overflow-y-auto">
+                                                @foreach($summary['twi_analysis']['drainage_recommendations']['recommendations_detail'] as $index => $drain)
+                                                    <div class="bg-white rounded-lg p-4 border-l-4 {{ 
+                                                        ($drain['priority'] ?? '') === 'HIGH' ? 'border-red-500' : (($drain['priority'] ?? '') === 'MEDIUM' ? 'border-yellow-500' : 'border-blue-500')
+                                                    }} shadow-sm hover:shadow-md transition-shadow">
+                                                        <div class="flex justify-between items-start mb-2">
+                                                            <span class="font-bold text-gray-800">{{ $drain['location_id'] ?? 'DRAIN_' . ($index + 1) }}</span>
+                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
+                                                                ($drain['priority'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : (($drain['priority'] ?? '') === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800')
+                                                            }}">
+                                                                {{ ($drain['priority'] ?? '') === 'HIGH' ? '🔥 URGENT' : (($drain['priority'] ?? '') === 'MEDIUM' ? '⭐ SEDANG' : '📋 RENDAH') }}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        <div class="text-xs text-gray-600 mb-2">
+                                                            <span class="font-semibold">Tipe:</span>
+                                                            <span class="text-gray-800">{{ $drain['drainage_type'] ?? 'Primary Drainage Channel' }}</span>
+                                                        </div>
+                                                        
+                                                        <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+                                                            <div class="bg-gray-50 rounded p-2">
+                                                                <span class="text-gray-600 block">📍 Koordinat:</span>
+                                                                <span class="font-mono text-blue-600 text-xs">{{ number_format($drain['coordinates']['lat'] ?? 0, 5) }}, {{ number_format($drain['coordinates']['lon'] ?? 0, 5) }}</span>
+                                                            </div>
+                                                            <div class="bg-gray-50 rounded p-2">
+                                                                <span class="text-gray-600 block">⚡ Kapasitas:</span>
+                                                                <span class="font-bold text-blue-700">{{ number_format($drain['capacity']['design_capacity_m3_per_hour'] ?? 0, 0) }} m³/jam</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- Spesifikasi Teknis -->
+                                                        @if(isset($drain['specifications']))
+                                                            <div class="bg-indigo-50 rounded p-2 mb-2">
+                                                                <h6 class="text-xs font-bold text-indigo-800 mb-1">🔧 Spesifikasi Teknis:</h6>
+                                                                <div class="grid grid-cols-2 gap-1 text-xs text-gray-700">
+                                                                    <div><span class="font-semibold">Lebar:</span> {{ $drain['specifications']['channel_width_m'] ?? 'N/A' }} m</div>
+                                                                    <div><span class="font-semibold">Kedalaman:</span> {{ $drain['specifications']['channel_depth_m'] ?? 'N/A' }} m</div>
+                                                                    <div><span class="font-semibold">Kemiringan:</span> {{ $drain['specifications']['channel_slope_percent'] ?? 'N/A' }}%</div>
+                                                                    <div><span class="font-semibold">Material:</span> {{ $drain['specifications']['lining_type'] ?? 'N/A' }}</div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        
+                                                        <!-- Manfaat yang Diharapkan -->
+                                                        @if(isset($drain['expected_benefits']))
+                                                            <div class="bg-green-50 rounded p-2 mb-2">
+                                                                <h6 class="text-xs font-bold text-green-800 mb-1">✨ Manfaat yang Diharapkan:</h6>
+                                                                <div class="space-y-1 text-xs text-gray-700">
+                                                                    <div>🛡️ Pengurangan banjir: <strong class="text-green-700">{{ $drain['expected_benefits']['flood_reduction_percent'] ?? 0 }}%</strong></div>
+                                                                    <div>⏱️ Pengurangan waktu genangan: <strong class="text-blue-700">{{ $drain['expected_benefits']['ponding_time_reduction_hours'] ?? 0 }} jam</strong></div>
+                                                                    <div>📏 Area terlindungi: <strong class="text-purple-700">{{ $drain['expected_benefits']['affected_area_ha'] ?? 0 }} ha</strong></div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        
+                                                        <!-- Maintenance Requirements -->
+                                                        @if(isset($drain['maintenance_requirements']))
+                                                            <div class="bg-orange-50 rounded p-2 mb-2">
+                                                                <h6 class="text-xs font-bold text-orange-800 mb-1">🔧 Kebutuhan Perawatan:</h6>
+                                                                <div class="space-y-1 text-xs text-gray-700">
+                                                                    <div>🧹 Pembersihan: {{ $drain['maintenance_requirements']['cleaning_frequency'] ?? 'N/A' }}</div>
+                                                                    <div>🔍 Inspeksi: {{ $drain['maintenance_requirements']['inspection_frequency'] ?? 'N/A' }}</div>
+                                                                    <div>💰 Biaya tahunan: <strong class="text-orange-700">Rp {{ number_format(($drain['maintenance_requirements']['estimated_annual_cost_million_idr'] ?? 0) * 1000000, 0, ',', '.') }}</strong></div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        
+                                                        <!-- Alasan/Necessity -->
+                                                        @if(isset($drain['reasons']) && is_array($drain['reasons']) && count($drain['reasons']) > 0)
+                                                            <div class="bg-gray-50 rounded p-2 text-xs">
+                                                                <span class="font-semibold text-gray-700">💡 Alasan Pembangunan:</span>
+                                                                <ul class="list-disc list-inside text-gray-600 mt-1 space-y-0.5">
+                                                                    @foreach($drain['reasons'] as $reason)
+                                                                        <li>{{ $reason }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Ringkasan & Tindakan -->
+                            @if(isset($summary['twi_analysis']['interpretation']) || isset($summary['twi_analysis']['flood_zones']) || isset($summary['twi_analysis']['rtho_recommendations']) || isset($summary['twi_analysis']['drainage_recommendations']))
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mt-4 border-l-4 border-blue-500 shadow-sm">
+                                    <div class="flex items-start">
+                                        <i class="fas fa-clipboard-check text-blue-600 text-2xl mr-3 mt-1"></i>
+                                        <div class="flex-1">
+                                            <h6 class="font-bold text-blue-900 mb-3 text-lg">⚡ Tindakan yang Perlu Dilakukan:</h6>
+                                            
+                                            @if(isset($summary['twi_analysis']['interpretation']['action']) && !empty($summary['twi_analysis']['interpretation']['action']))
+                                                <p class="text-sm text-blue-800 mb-3 leading-relaxed">{{ $summary['twi_analysis']['interpretation']['action'] }}</p>
+                                            @endif
+                                            
+                                            <div class="bg-white rounded-lg p-3 space-y-2">
+                                                <div class="text-sm text-gray-800">
+                                                    <span class="font-bold text-blue-700">📋 Rekomendasi Prioritas:</span>
+                                                </div>
+                                                
+                                                @php
+                                                    $highRiskZones = isset($summary['twi_analysis']['flood_zones']['high_risk']) ? $summary['twi_analysis']['flood_zones']['high_risk'] : 0;
+                                                    $highPriorityRTH = isset($summary['twi_analysis']['rtho_recommendations']['high_priority']) ? $summary['twi_analysis']['rtho_recommendations']['high_priority'] : 0;
+                                                    $totalRTH = isset($summary['twi_analysis']['rtho_recommendations']['total']) ? $summary['twi_analysis']['rtho_recommendations']['total'] : 0;
+                                                    $highPriorityDrainage = isset($summary['twi_analysis']['drainage_recommendations']['high_priority']) ? $summary['twi_analysis']['drainage_recommendations']['high_priority'] : 0;
+                                                    $totalDrainage = isset($summary['twi_analysis']['drainage_recommendations']['total']) ? $summary['twi_analysis']['drainage_recommendations']['total'] : 0;
+                                                @endphp
+                                                
+                                                <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                                    @if($highRiskZones > 0)
+                                                        <li class="bg-red-50 p-2 rounded border-l-2 border-red-400">
+                                                            <strong>Prioritas Utama:</strong> Segera tinjau dan beri perhatian khusus pada <strong class="text-red-700">{{ $highRiskZones }} zona risiko tinggi</strong> yang terdeteksi
+                                                        </li>
+                                                    @endif
+                                                    
+                                                    @if($highPriorityDrainage > 0)
+                                                        <li class="bg-blue-50 p-2 rounded border-l-2 border-blue-400">
+                                                            <strong>Pembangunan Drainase:</strong> Bangun <strong class="text-blue-700">{{ $highPriorityDrainage }} saluran drainase prioritas tinggi</strong> untuk mengalirkan air hujan
+                                                        </li>
+                                                    @endif
+                                                    
+                                                    @if($highPriorityRTH > 0)
+                                                        <li class="bg-orange-50 p-2 rounded border-l-2 border-orange-400">
+                                                            <strong>Pembangunan RTH:</strong> Bangun <strong class="text-orange-700">{{ $highPriorityRTH }} lokasi RTH prioritas tinggi</strong> untuk menyerap air hujan
+                                                        </li>
+                                                    @endif
+                                                    
+                                                    @if(($totalRTH > $highPriorityRTH) || ($totalDrainage > $highPriorityDrainage))
+                                                        <li class="bg-yellow-50 p-2 rounded border-l-2 border-yellow-400">
+                                                            <strong>Perencanaan Jangka Menengah:</strong> Rencanakan 
+                                                            @if($totalDrainage > $highPriorityDrainage)
+                                                                {{ $totalDrainage - $highPriorityDrainage }} saluran drainase tambahan
+                                                            @endif
+                                                            @if(($totalRTH > $highPriorityRTH) && ($totalDrainage > $highPriorityDrainage))
+                                                                dan 
+                                                            @endif
+                                                            @if($totalRTH > $highPriorityRTH)
+                                                                {{ $totalRTH - $highPriorityRTH }} lokasi RTH tambahan
+                                                            @endif
+                                                            dalam 1-2 tahun ke depan
+                                                        </li>
+                                                    @endif
+                                                    
+                                                    <li class="bg-purple-50 p-2 rounded border-l-2 border-purple-400">
+                                                        <strong>Monitoring Berkala:</strong> Lakukan pemantauan rutin saat musim hujan untuk antisipasi dini
+                                                    </li>
+                                                    
+                                                    <li class="bg-green-50 p-2 rounded border-l-2 border-green-400">
+                                                        <strong>Koordinasi:</strong> Libatkan Dinas Pekerjaan Umum dan masyarakat dalam implementasi solusi
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
                     <!-- BAGIAN 6: PREDIKSI HUJAN 30 HARI -->
                     @if(isset($summary['prediksi_30_hari']))
                         <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-sky-300">
