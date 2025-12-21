@@ -1303,6 +1303,51 @@
                             @endif
                         </div>
                     @endif
+                    
+                    @if(isset($summary['twi_analysis']['status']))
+                        <!-- 🐛 DEBUG: Show why TWI analysis is not available -->
+                        <div class="bg-yellow-50 rounded-xl border-2 border-yellow-300 p-5 mt-6 shadow-md">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-yellow-900 text-lg mb-2">⚠️ TWI Analysis Tidak Tersedia</h4>
+                                    <div class="bg-white rounded-lg p-3 mb-3 border border-yellow-200">
+                                        <p class="text-sm text-yellow-800 font-semibold mb-1">Status:</p>
+                                        <p class="text-sm text-gray-700">{{ $summary['twi_analysis']['status'] ?? 'Unknown' }}</p>
+                                    </div>
+                                    
+                                    @if(isset($summary['twi_analysis']['error']))
+                                        <div class="bg-red-50 rounded-lg p-3 mb-3 border border-red-200">
+                                            <p class="text-sm text-red-800 font-semibold mb-1">🐛 Error Detail:</p>
+                                            <p class="text-xs text-red-700 font-mono">{{ $summary['twi_analysis']['error'] }}</p>
+                                        </div>
+                                    @endif
+                                    
+                                    <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                                        <p class="text-sm text-blue-800 font-semibold mb-2">💡 Kemungkinan Penyebab:</p>
+                                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                            <li>File <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code> tidak ter-generate oleh API server</li>
+                                            <li>Proses TWI analysis gagal atau timeout saat eksekusi</li>
+                                            <li>Error saat membaca atau parsing file JSON</li>
+                                            <li>Data morfologi tidak mencukupi untuk analisis TWI</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-3 mt-3 border border-gray-200">
+                                        <p class="text-sm text-gray-800 font-semibold mb-2">🔍 Langkah Debugging:</p>
+                                        <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
+                                            <li>Cek apakah file <strong>RIVANA_TWI_Dashboard.png</strong> ter-generate (jika Ya, berarti TWI calculation berjalan)</li>
+                                            <li>Periksa file log lengkap untuk melihat error message</li>
+                                            <li>Pastikan API server v2 sudah menggunakan kode terbaru</li>
+                                            <li>Coba jalankan ulang analysis dengan parameter yang sama</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- BAGIAN 6: PREDIKSI HUJAN 30 HARI -->
                     @if(isset($summary['prediksi_30_hari']))
