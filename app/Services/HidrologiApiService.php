@@ -260,16 +260,44 @@ class HidrologiApiService
     public function getSummary($jobId)
     {
         try {
+            $url = "{$this->apiUrl}/summary/{$jobId}";
+            
+            Log::info('Fetching summary from API', [
+                'job_id' => $jobId,
+                'url' => $url
+            ]);
+            
             $response = Http::timeout(10)
                 ->withHeaders($this->getHeaders())
-                ->get("{$this->apiUrl}/summary/{$jobId}");
+                ->get($url);
 
             if ($response->successful()) {
+                $data = $response->json();
+                
+                // Log khusus untuk TWI analysis
+                Log::info('Summary API Response - TWI Check', [
+                    'job_id' => $jobId,
+                    'has_twi_analysis' => isset($data['twi_analysis']),
+                    'twi_analysis_type' => isset($data['twi_analysis']) ? gettype($data['twi_analysis']) : 'not_set',
+                    'twi_keys' => isset($data['twi_analysis']) && is_array($data['twi_analysis']) ? array_keys($data['twi_analysis']) : [],
+                    'twi_status' => isset($data['twi_analysis']['status']) ? $data['twi_analysis']['status'] : 'no_status',
+                    'twi_enhanced' => isset($data['twi_analysis']['twi_enhanced']) ? $data['twi_analysis']['twi_enhanced'] : 'not_found',
+                    'twi_risk_level' => isset($data['twi_analysis']['risk_level']) ? $data['twi_analysis']['risk_level'] : 'not_found',
+                    'response_size' => strlen($response->body()),
+                    'top_level_keys' => array_keys($data)
+                ]);
+                
                 return [
                     'success' => true,
-                    'data' => $response->json()
+                    'data' => $data
                 ];
             }
+
+            Log::warning('Summary API returned non-successful response', [
+                'job_id' => $jobId,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
 
             return [
                 'success' => false,
@@ -277,7 +305,10 @@ class HidrologiApiService
             ];
 
         } catch (Exception $e) {
-            Log::error('Hidrologi API Get Summary Error: ' . $e->getMessage());
+            Log::error('Hidrologi API Get Summary Error: ' . $e->getMessage(), [
+                'job_id' => $jobId,
+                'exception' => $e->getTraceAsString()
+            ]);
             return [
                 'success' => false,
                 'error' => $e->getMessage()

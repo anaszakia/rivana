@@ -288,11 +288,41 @@ class HidrologiJobController extends Controller
         // Ambil text summary dari API (prioritas: summary terstruktur, fallback ke logs lengkap)
         $summary = null;
         $fullLogs = null;
+        
+        Log::info('Loading job detail page', [
+            'job_id' => $job->id,
+            'job_uuid' => $job->job_id,
+            'status' => $job->status
+        ]);
+        
         if (in_array($job->status, ['completed', 'completed_with_warning'])) {
             // Ambil summary terstruktur langsung dari API (English keys)
             $summaryResult = $this->apiService->getSummary($job->job_id);
             if ($summaryResult['success']) {
                 $summary = $summaryResult['data']['summary'] ?? null;
+                
+                // 🐛 DEBUG: Log TWI analysis data structure untuk debugging VPS vs Lokal
+                Log::info('Summary TWI Analysis Debug - Controller Level', [
+                    'job_id' => $job->id,
+                    'job_uuid' => $job->job_id,
+                    'summary_has_twi' => isset($summary['twi_analysis']),
+                    'twi_is_array' => isset($summary['twi_analysis']) && is_array($summary['twi_analysis']),
+                    'twi_keys' => isset($summary['twi_analysis']) ? array_keys($summary['twi_analysis']) : null,
+                    'twi_status' => $summary['twi_analysis']['status'] ?? 'no_status_key',
+                    'twi_enhanced' => $summary['twi_analysis']['twi_enhanced'] ?? 'not_found',
+                    'twi_risk_level' => $summary['twi_analysis']['risk_level'] ?? 'not_found',
+                    'twi_has_flood_zones' => isset($summary['twi_analysis']['flood_zones']),
+                    'twi_has_rtho' => isset($summary['twi_analysis']['rtho_recommendations']),
+                    'full_twi_structure' => isset($summary['twi_analysis']) ? json_encode($summary['twi_analysis'], JSON_PRETTY_PRINT) : 'TWI data not found in summary',
+                    'api_result_keys' => isset($summaryResult['data']) ? array_keys($summaryResult['data']) : [],
+                    'summary_top_level_keys' => isset($summary) ? array_keys($summary) : []
+                ]);
+            } else {
+                Log::warning('Failed to get summary from API', [
+                    'job_id' => $job->id,
+                    'job_uuid' => $job->job_id,
+                    'error' => $summaryResult['error'] ?? 'Unknown error'
+                ]);
             }
             
             // Ambil juga full logs untuk detail lengkap

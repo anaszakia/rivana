@@ -201,6 +201,18 @@
 
             <!-- Analysis Summary - STRUCTURED (Ringkasan Terstruktur) -->
             @if($summary)
+                @php
+                    // DEBUG: Log TWI analysis availability untuk debugging di VPS
+                    \Log::info('TWI Analysis Debug', [
+                        'job_id' => $job->id ?? 'unknown',
+                        'has_twi_analysis' => isset($summary['twi_analysis']),
+                        'twi_is_array' => isset($summary['twi_analysis']) && is_array($summary['twi_analysis']),
+                        'twi_status' => $summary['twi_analysis']['status'] ?? 'no_status_key',
+                        'twi_keys' => isset($summary['twi_analysis']) ? array_keys($summary['twi_analysis']) : [],
+                        'twi_enhanced_value' => $summary['twi_analysis']['twi_enhanced'] ?? 'not_found',
+                        'twi_risk_level' => $summary['twi_analysis']['risk_level'] ?? 'not_found',
+                    ]);
+                @endphp
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border border-blue-200">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-blue-900 flex items-center">
@@ -890,7 +902,10 @@
                     <!-- ⭐⭐⭐ NEW COMPREHENSIVE SECTIONS ⭐⭐⭐ -->
 
                     <!-- 🌊 BAGIAN TWI: ANALISIS RISIKO BANJIR & REKOMENDASI RUANG HIJAU -->
-                    @if(isset($summary['twi_analysis']) && !isset($summary['twi_analysis']['status']))
+                    @if(isset($summary['twi_analysis']) && 
+                        is_array($summary['twi_analysis']) && 
+                        (!isset($summary['twi_analysis']['status']) || 
+                         (isset($summary['twi_analysis']['status']) && $summary['twi_analysis']['status'] !== 'error' && $summary['twi_analysis']['status'] !== 'not_available')))
                         <div class="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-lg p-4 mt-4 shadow-md border-2 border-cyan-300">
                             <!-- Header dengan Penjelasan Sederhana -->
                             <div class="bg-white rounded-lg p-4 mb-4 border-l-4 border-cyan-500">
@@ -1304,7 +1319,9 @@
                         </div>
                     @endif
                     
-                    @if(isset($summary['twi_analysis']['status']))
+                    @if(isset($summary['twi_analysis']['status']) && 
+                        ($summary['twi_analysis']['status'] === 'error' || 
+                         $summary['twi_analysis']['status'] === 'not_available'))
                         <!-- 🐛 DEBUG: Show why TWI analysis is not available -->
                         <div class="bg-yellow-50 rounded-xl border-2 border-yellow-300 p-5 mt-6 shadow-md">
                             <div class="flex items-start gap-4">
@@ -1343,6 +1360,54 @@
                                             <li>Pastikan API server v2 sudah menggunakan kode terbaru</li>
                                             <li>Coba jalankan ulang analysis dengan parameter yang sama</li>
                                         </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(!isset($summary['twi_analysis']))
+                        <!-- 🐛 DEBUG: TWI data tidak ada sama sekali -->
+                        <div class="bg-red-50 rounded-xl border-2 border-red-300 p-5 mt-6 shadow-md">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0">
+                                    <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-red-900 text-lg mb-2">❌ TWI Analysis Data Tidak Ditemukan</h4>
+                                    <p class="text-sm text-red-700 mb-3">
+                                        Key <code class="bg-gray-200 px-2 py-1 rounded text-xs font-mono">twi_analysis</code> tidak ada dalam data summary.
+                                    </p>
+                                    
+                                    <div class="bg-white rounded-lg p-3 mb-3 border border-red-200">
+                                        <p class="text-sm text-red-800 font-semibold mb-2">🔍 Kemungkinan Penyebab:</p>
+                                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                            <li><strong>File RIVANA_TWI_Analysis.json tidak ter-generate</strong> oleh API Python</li>
+                                            <li><strong>Controller Laravel gagal membaca/parse file TWI JSON</strong></li>
+                                            <li><strong>Path file TWI tidak sesuai</strong> antara lokal dan VPS</li>
+                                            <li><strong>Permission issue</strong> pada direktori results di VPS</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+                                        <p class="text-sm text-yellow-800 font-semibold mb-2">🛠️ Cara Debugging:</p>
+                                        <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
+                                            <li>SSH ke VPS, cek direktori: <code class="bg-gray-200 px-1 rounded">results/{{ $job->job_id }}/</code></li>
+                                            <li>Cari file: <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code> apakah ada?</li>
+                                            <li>Jika ada, cek isi file: <code class="bg-gray-200 px-1 rounded">cat RIVANA_TWI_Analysis.json | head -20</code></li>
+                                            <li>Cek Laravel log: <code class="bg-gray-200 px-1 rounded">tail -100 storage/logs/laravel.log</code></li>
+                                            <li>Cek Python API log untuk error TWI calculation</li>
+                                        </ol>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 rounded-lg p-3 mt-3 border border-blue-200">
+                                        <p class="text-sm text-blue-800 font-semibold mb-2">💡 Perbedaan Lokal vs VPS:</p>
+                                        <ul class="list-disc list-inside text-xs text-gray-600 space-y-1">
+                                            <li><strong>Path absolut berbeda:</strong> Lokal (E:\laragon\...) vs VPS (/var/www/...)</li>
+                                            <li><strong>Python environment berbeda:</strong> Pastikan semua dependencies terinstall di VPS</li>
+                                            <li><strong>File permissions:</strong> VPS perlu proper chmod/chown untuk direktori results</li>
+                                            <li><strong>Memory/timeout:</strong> VPS mungkin memiliki limit lebih ketat</li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
