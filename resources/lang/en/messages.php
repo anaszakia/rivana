@@ -537,4 +537,6 @@ return [
     'storage'                           => 'Results are <strong>saved</strong> and can be accessed anytime.',
     'use_search_feature'                => 'Use the search feature on the map to find locations faster.',
     'choose_appropriate_date_range'     => 'Choose an appropriate date range — longer periods give more accurate results.',
+    'total_jobs_recorded' => ':count jobs recorded',
+    'all_status'          => 'All Status',
 ];
