@@ -831,15 +831,26 @@
                                 {{ strtoupper(__('messages.river_environment')) }}
                             </h4>
                             
-                            @if(isset($summary['analysis_results']['morfologi']))
+                           @if(isset($summary['analysis_results']['morfologi']))
                                 <div class="bg-gray-50 rounded p-3 mb-3">
                                     <div class="font-medium text-gray-800 mb-2 flex items-center">
                                         <i class="fas fa-layer-group text-amber-600 mr-2"></i>
                                         {{ __('messages.river_morphology') }}
                                     </div>
                                     <div class="grid grid-cols-2 gap-2 text-xs pl-6">
+                                        @php
+                                            $morfologiLabels = [
+                                                'lebar_sungai'     => __('messages.river_width'),
+                                                'kemiringan'       => __('messages.slope'),
+                                                'beban_sediment'   => __('messages.sediment_load'),
+                                                'erosion_rata_rata'=> __('messages.average_erosion'),
+                                            ];
+                                        @endphp
                                         @foreach($summary['analysis_results']['morfologi'] as $param => $nilai)
-                                            <div><span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $param)) }}:</span> <span class="font-bold">{{ $nilai }}</span></div>
+                                            <div>
+                                                <span class="text-gray-600">{{ $morfologiLabels[$param] ?? ucwords(str_replace('_', ' ', $param)) }}:</span>
+                                                <span class="font-bold">{{ $nilai }}</span>
+                                            </div>
                                         @endforeach
                                     </div>
                                 </div>
@@ -899,605 +910,626 @@
                         </div>
                     @endif
 
-                    <!-- ⭐⭐⭐ NEW COMPREHENSIVE SECTIONS ⭐⭐⭐ -->
-
-                    <!-- 🌊 BAGIAN TWI: ANALISIS RISIKO BANJIR & REKOMENDASI RUANG HIJAU -->
+                    <!-- ⭐ TWI: FLOOD RISK ANALYSIS & GREEN SPACE RECOMMENDATIONS -->
                     @if(isset($summary['twi_analysis']) && 
                         is_array($summary['twi_analysis']) && 
                         (!isset($summary['twi_analysis']['status']) || 
-                         (isset($summary['twi_analysis']['status']) && $summary['twi_analysis']['status'] !== 'error' && $summary['twi_analysis']['status'] !== 'not_available')))
-                        <div class="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-lg p-4 mt-4 shadow-md border-2 border-cyan-300">
-                            <!-- Header dengan Penjelasan Sederhana -->
-                            <div class="bg-white rounded-lg p-4 mb-4 border-l-4 border-cyan-500">
-                                <h4 class="font-bold text-cyan-900 text-lg mb-2 flex items-center">
-                                    <i class="fas fa-water mr-2 text-cyan-600"></i>
-                                    <span>🌊 Analisis Risiko Banjir & Genangan Air</span>
+                        (isset($summary['twi_analysis']['status']) && $summary['twi_analysis']['status'] !== 'error' && $summary['twi_analysis']['status'] !== 'not_available')))
+                        <div class="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-xl p-5 mt-4 shadow-md border-2 border-cyan-300">
+
+                            {{-- HEADER --}}
+                            <div class="bg-white rounded-xl p-4 mb-4 border-l-4 border-cyan-500 shadow-sm">
+                                <h4 class="font-bold text-cyan-900 text-lg mb-2 flex items-center gap-2">
+                                    <i class="fas fa-water text-cyan-600"></i>
+                                    🌊 {{ __('messages.twi_analysis_title') }}
                                 </h4>
                                 <p class="text-sm text-gray-700 leading-relaxed">
-                                    <strong>Apa itu TWI?</strong> Topographic Wetness Index (TWI) adalah indeks yang mengukur <strong>seberapa mudah air berkumpul</strong> di suatu lokasi berdasarkan topografi/kontur tanah. 
-                                    Semakin tinggi nilai TWI, semakin besar kemungkinan area tersebut <strong class="text-red-600">tergenang air atau banjir</strong> saat hujan.
+                                    <strong>{{ __('messages.twi_what_is') }}</strong>&nbsp;{!! __('messages.twi_explanation') !!}
                                 </p>
                             </div>
-                            
-                            <!-- Status Risiko dengan Visual Jelas -->
-                            <div class="bg-white rounded-lg p-5 mb-4 shadow-sm">
-                                <h5 class="font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-2"></i>
-                                    Status Risiko Lokasi Anda
+
+                            {{-- RISK STATUS CARDS --}}
+                            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm">
+                                <h5 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-exclamation-circle text-gray-600"></i>
+                                    {{ __('messages.twi_location_risk_status') }}
                                 </h5>
-                                
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <!-- Nilai TWI dengan Penjelasan -->
-                                    <div class="bg-gradient-to-br from-cyan-50 to-blue-100 rounded-lg p-4 border-2 border-cyan-300">
-                                        <div class="text-sm text-gray-600 mb-1">📊 Indeks Kelembaban Wilayah (TWI)</div>
-                                        <div class="font-bold text-4xl text-cyan-700 mb-2">{{ $summary['twi_analysis']['twi_enhanced'] ?? 'N/A' }}</div>
-                                        <div class="text-xs text-gray-600 bg-white/50 rounded p-2">
-                                            <strong>Hasil Analisis:</strong> Nilai TWI {{ $summary['twi_analysis']['twi_physics'] ?? 'N/A' }} 
-                                            ditingkatkan {{ $summary['twi_analysis']['ml_correction_factor'] ?? 'N/A' }} oleh Machine Learning untuk akurasi lebih baik
+
+                                    {{-- TWI Value --}}
+                                    <div class="bg-gradient-to-br from-cyan-50 to-blue-100 rounded-xl p-4 border-2 border-cyan-300">
+                                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                            📊 {{ __('messages.twi_wetness_index') }}
+                                        </div>
+                                        <div class="font-black text-4xl text-cyan-700 mb-2 leading-none">
+                                            {{ $summary['twi_analysis']['twi_enhanced'] ?? 'N/A' }}
+                                        </div>
+                                        <div class="text-xs text-gray-600 bg-white/70 rounded-lg p-2 leading-relaxed">
+                                            <strong>{{ __('messages.twi_analysis_result') }}:</strong>
+                                            {{ __('messages.twi_value') }} {{ $summary['twi_analysis']['twi_physics'] ?? 'N/A' }},
+                                            {{ __('messages.twi_ml_enhanced') }} {{ $summary['twi_analysis']['ml_correction_factor'] ?? 'N/A' }}
                                         </div>
                                     </div>
-                                    
-                                    <!-- Risk Level dengan Warna -->
-                                    <div class="rounded-lg p-4 border-2 {{ 
-                                        ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-400' : 
-                                        (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-400' : 
-                                        (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-400' : 
-                                        'bg-gradient-to-br from-green-50 to-green-100 border-green-400')) 
-                                    }}">
-                                        <div class="text-sm text-gray-600 mb-1">🚨 Tingkat Risiko Banjir</div>
-                                        <div class="font-bold text-3xl mb-2 {{ 
-                                            ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'text-red-700' : 
-                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'text-orange-700' : 
-                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'text-yellow-700' : 'text-green-700')) 
-                                        }}">
-                                            @if(($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH')
-                                                SANGAT TINGGI
-                                            @elseif(($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH')
-                                                TINGGI
-                                            @elseif(($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE')
-                                                SEDANG
+
+                                    {{-- Risk Level --}}
+                                    @php
+                                        $riskLevel = $summary['twi_analysis']['risk_level'] ?? '';
+                                        $riskColorClass = match($riskLevel) {
+                                            'VERY_HIGH' => 'bg-gradient-to-br from-red-50 to-red-100 border-red-400',
+                                            'HIGH'      => 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-400',
+                                            'MODERATE'  => 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-400',
+                                            default     => 'bg-gradient-to-br from-green-50 to-green-100 border-green-400',
+                                        };
+                                        $riskTextClass = match($riskLevel) {
+                                            'VERY_HIGH' => 'text-red-700',
+                                            'HIGH'      => 'text-orange-700',
+                                            'MODERATE'  => 'text-yellow-700',
+                                            default     => 'text-green-700',
+                                        };
+                                        $riskLabel = match($riskLevel) {
+                                            'VERY_HIGH' => __('messages.twi_risk_very_high'),
+                                            'HIGH'      => __('messages.twi_risk_high'),
+                                            'MODERATE'  => __('messages.twi_risk_moderate'),
+                                            default     => __('messages.twi_risk_low'),
+                                        };
+                                    @endphp
+                                    <div class="rounded-xl p-4 border-2 {{ $riskColorClass }}">
+                                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                            🚨 {{ __('messages.twi_flood_risk_level') }}
+                                        </div>
+                                        <div class="font-black text-3xl mb-2 leading-none {{ $riskTextClass }}">
+                                            {{ $riskLabel }}
+                                        </div>
+                                        <div class="text-xs text-gray-700 bg-white/70 rounded-lg p-2 leading-relaxed">
+                                            <strong>{{ __('messages.twi_meaning') }}:</strong>
+                                            {{ $summary['twi_analysis']['interpretation']['risk'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            {{-- FLOOD ZONES --}}
+                            @if(isset($summary['twi_analysis']['flood_zones']))
+                            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm border-l-4 border-red-500">
+                                <h5 class="font-bold text-red-800 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-red-600"></i>
+                                    🚨 {{ __('messages.twi_flood_zones_title') }}
+                                </h5>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    {{ __('messages.twi_flood_zones_desc') }}
+                                    <strong class="text-red-600">{{ $summary['twi_analysis']['flood_zones']['total'] ?? 0 }} {{ __('messages.twi_zones') }}</strong>
+                                    {{ __('messages.twi_flood_zones_desc2') }}
+                                </p>
+
+                                {{-- Risk Summary Pills --}}
+                                <div class="grid grid-cols-3 gap-3 mb-4">
+                                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-red-700">{{ $summary['twi_analysis']['flood_zones']['high_risk'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">⚠️ {{ __('messages.twi_high_risk') }}</div>
+                                        <div class="text-xs font-semibold text-red-600 mt-0.5">{{ __('messages.twi_top_priority') }}</div>
+                                    </div>
+                                    <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-orange-700">{{ $summary['twi_analysis']['flood_zones']['moderate_risk'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">⚡ {{ __('messages.twi_moderate_risk') }}</div>
+                                        <div class="text-xs font-semibold text-orange-600 mt-0.5">{{ __('messages.twi_needs_monitoring') }}</div>
+                                    </div>
+                                    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-yellow-700">{{ $summary['twi_analysis']['flood_zones']['low_risk'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">💧 {{ __('messages.twi_low_risk') }}</div>
+                                        <div class="text-xs font-semibold text-yellow-600 mt-0.5">{{ __('messages.twi_stay_alert') }}</div>
+                                    </div>
+                                </div>
+
+                                {{-- Zone Detail List --}}
+                                @if(isset($summary['twi_analysis']['flood_zones']['zones_detail']) && count($summary['twi_analysis']['flood_zones']['zones_detail']) > 0)
+                                <div class="bg-gray-50 rounded-xl p-3">
+                                    <h6 class="text-sm font-bold text-gray-700 mb-2">
+                                        📍 {{ __('messages.twi_flood_zone_detail') }}
+                                    </h6>
+                                    <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                                        @foreach($summary['twi_analysis']['flood_zones']['zones_detail'] as $index => $zone)
+                                        @php
+                                            $zRisk = $zone['risk'] ?? '';
+                                            $zBorder = $zRisk === 'HIGH' ? 'border-red-500' : ($zRisk === 'MODERATE' ? 'border-orange-500' : 'border-yellow-500');
+                                            $zBadge  = $zRisk === 'HIGH' ? 'bg-red-100 text-red-800' : ($zRisk === 'MODERATE' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800');
+                                            $zLabel  = $zRisk === 'HIGH' ? '⚠️ '.__('messages.twi_priority_label') : ($zRisk === 'MODERATE' ? '⚡ '.__('messages.twi_watch_label') : '💧 '.__('messages.twi_monitor_label'));
+                                        @endphp
+                                        <div class="bg-white rounded-lg p-3 border-l-4 {{ $zBorder }} shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="font-bold text-sm text-gray-800">{{ __('messages.twi_zone') }} {{ $index + 1 }}</span>
+                                                <span class="px-2 py-0.5 rounded-full text-xs font-bold {{ $zBadge }}">{{ $zLabel }}</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600">
+                                                <div><span class="font-semibold">{{ __('messages.twi_twi_index') }}:</span> <span class="font-bold text-gray-800">{{ number_format($zone['twi_value'] ?? 0, 1) }}</span></div>
+                                                <div><span class="font-semibold">{{ __('messages.twi_area_size') }}:</span> <span class="font-bold text-gray-800">{{ number_format($zone['area_ha'] ?? 0, 2) }} ha</span></div>
+                                                <div class="col-span-2"><span class="font-semibold">{{ __('messages.twi_coordinates') }}:</span> <span class="font-mono text-blue-600">{{ number_format($zone['lat'] ?? 0, 5) }}, {{ number_format($zone['lon'] ?? 0, 5) }}</span></div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+
+                            {{-- RTH RECOMMENDATIONS --}}
+                            @if(isset($summary['twi_analysis']['rtho_recommendations']))
+                            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm border-l-4 border-green-500">
+                                <h5 class="font-bold text-green-800 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-tree text-green-600"></i>
+                                    🌳 {{ __('messages.twi_rth_title') }}
+                                </h5>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    {{ __('messages.twi_rth_desc') }}
+                                    <strong class="text-green-700">{{ $summary['twi_analysis']['rtho_recommendations']['total'] ?? 0 }} {{ __('messages.twi_rth_locations') }}</strong>
+                                    {{ __('messages.twi_rth_desc2') }}
+                                </p>
+
+                                {{-- RTH Summary --}}
+                                <div class="grid grid-cols-3 gap-3 mb-4">
+                                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-red-700">{{ $summary['twi_analysis']['rtho_recommendations']['high_priority'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">🔥 {{ __('messages.twi_high_priority') }}</div>
+                                        <div class="text-xs font-semibold text-red-600 mt-0.5">{{ __('messages.twi_immediately_build') }}</div>
+                                    </div>
+                                    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-yellow-700">{{ $summary['twi_analysis']['rtho_recommendations']['moderate_priority'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">⭐ {{ __('messages.twi_medium_priority') }}</div>
+                                        <div class="text-xs font-semibold text-yellow-600 mt-0.5">{{ __('messages.twi_medium_term_plan') }}</div>
+                                    </div>
+                                    <div class="bg-green-50 border-2 border-green-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-green-700">{{ number_format($summary['twi_analysis']['rtho_recommendations']['total_area_ha'] ?? 0, 1) }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">📏 {{ __('messages.twi_total_area') }}</div>
+                                        <div class="text-xs font-semibold text-green-600 mt-0.5">{{ __('messages.twi_hectares') }}</div>
+                                    </div>
+                                </div>
+
+                                {{-- RTH Detail List --}}
+                                @if(isset($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) > 0)
+                                <div class="bg-green-50 rounded-xl p-3">
+                                    <h6 class="text-sm font-bold text-gray-700 mb-2">
+                                        📍 {{ __('messages.twi_rth_locations') }}
+                                    </h6>
+                                    <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                                        @foreach($summary['twi_analysis']['rtho_recommendations']['recommendations_detail'] as $index => $rec)
+                                        @php
+                                            $rPriority = $rec['priority'] ?? '';
+                                            $rBorder   = $rPriority === 'HIGH' ? 'border-red-500' : 'border-green-500';
+                                            $rBadge    = $rPriority === 'HIGH' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
+                                            $rLabel    = $rPriority === 'HIGH' ? '🔥 '.__('messages.twi_urgent_label') : '⭐ '.__('messages.twi_plan_label');
+                                        @endphp
+                                        <div class="bg-white rounded-lg p-3 border-l-4 {{ $rBorder }} shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="font-bold text-sm text-gray-800">{{ __('messages.twi_rth_location') }} {{ $index + 1 }}</span>
+                                                <span class="px-2 py-0.5 rounded-full text-xs font-bold {{ $rBadge }}">{{ $rLabel }}</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 mb-2">
+                                                <div><span class="font-semibold">{{ __('messages.twi_estimated_area') }}:</span> <span class="font-bold text-gray-800">{{ number_format($rec['estimated_area_ha'] ?? 0, 2) }} ha</span></div>
+                                                <div><span class="font-semibold">{{ __('messages.twi_coordinates') }}:</span> <span class="font-mono text-blue-600">{{ number_format($rec['lat'] ?? 0, 5) }}, {{ number_format($rec['lon'] ?? 0, 5) }}</span></div>
+                                            </div>
+                                            @if(!empty($rec['reason']) && $rec['reason'] !== 'N/A')
+                                            <div class="bg-gray-50 rounded-lg p-2 text-xs">
+                                                <span class="font-semibold text-gray-700">💡 {{ __('messages.twi_reason') }}:</span>
+                                                <p class="text-gray-600 mt-0.5">{{ $rec['reason'] }}</p>
+                                            </div>
                                             @else
-                                                RENDAH
+                                            <div class="bg-blue-50 rounded-lg p-2 text-xs">
+                                                <span class="font-semibold text-blue-700">ℹ️ {{ __('messages.twi_reason') }}:</span>
+                                                <p class="text-blue-600 mt-0.5">{{ __('messages.twi_rth_default_reason') }}</p>
+                                            </div>
                                             @endif
                                         </div>
-                                        <div class="text-sm {{ 
-                                            ($summary['twi_analysis']['risk_level'] ?? '') === 'VERY_HIGH' ? 'text-red-800' : 
-                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'HIGH' ? 'text-orange-800' : 
-                                            (($summary['twi_analysis']['risk_level'] ?? '') === 'MODERATE' ? 'text-yellow-800' : 'text-green-800')) 
-                                        }} bg-white/70 rounded p-2">
-                                            <strong>Artinya:</strong> {{ $summary['twi_analysis']['interpretation']['risk'] ?? 'N/A' }}
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+
+                            {{-- DRAINAGE RECOMMENDATIONS --}}
+                            @if(isset($summary['twi_analysis']['drainage_recommendations']))
+                            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm border-l-4 border-blue-500">
+                                <h5 class="font-bold text-blue-800 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-water text-blue-600"></i>
+                                    🚰 {{ __('messages.twi_drainage_title') }}
+                                </h5>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    {{ __('messages.twi_drainage_desc') }}
+                                    <strong class="text-blue-700">{{ $summary['twi_analysis']['drainage_recommendations']['total'] ?? 0 }} {{ __('messages.twi_drainage_channels') }}</strong>
+                                    {{ __('messages.twi_drainage_desc2') }}
+                                </p>
+
+                                {{-- Drainage Summary --}}
+                                <div class="grid grid-cols-3 gap-3 mb-4">
+                                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-red-700">{{ $summary['twi_analysis']['drainage_recommendations']['high_priority'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">🔥 {{ __('messages.twi_high_priority') }}</div>
+                                        <div class="text-xs font-semibold text-red-600 mt-0.5">{{ __('messages.twi_immediately_build') }}</div>
+                                    </div>
+                                    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-yellow-700">{{ $summary['twi_analysis']['drainage_recommendations']['medium_priority'] ?? 0 }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">⭐ {{ __('messages.twi_medium_priority') }}</div>
+                                        <div class="text-xs font-semibold text-yellow-600 mt-0.5">{{ __('messages.twi_medium_term_plan') }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 text-center">
+                                        <div class="text-2xl font-black text-blue-700">{{ number_format($summary['twi_analysis']['drainage_recommendations']['total_capacity_m3_per_hour'] ?? 0, 0) }}</div>
+                                        <div class="text-xs text-gray-600 mt-1">⚡ {{ __('messages.twi_total_capacity') }}</div>
+                                        <div class="text-xs font-semibold text-blue-600 mt-0.5">m³/{{ __('messages.twi_hour') }}</div>
+                                    </div>
+                                </div>
+
+                                {{-- Drainage Detail List --}}
+                                @if(isset($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) > 0)
+                                <div class="bg-blue-50 rounded-xl p-3">
+                                    <h6 class="text-sm font-bold text-gray-700 mb-2">
+                                        📍 {{ __('messages.twi_drainage_locations') }}
+                                    </h6>
+                                    <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                                        @foreach($summary['twi_analysis']['drainage_recommendations']['recommendations_detail'] as $index => $drain)
+                                        @php
+                                            $dPriority = $drain['priority'] ?? '';
+                                            $dBorder   = $dPriority === 'HIGH' ? 'border-red-500' : ($dPriority === 'MEDIUM' ? 'border-yellow-500' : 'border-blue-500');
+                                            $dBadge    = $dPriority === 'HIGH' ? 'bg-red-100 text-red-800' : ($dPriority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800');
+                                            $dLabel    = $dPriority === 'HIGH' ? '🔥 '.__('messages.twi_urgent_label') : ($dPriority === 'MEDIUM' ? '⭐ '.__('messages.twi_medium_label') : '📋 '.__('messages.twi_low_label'));
+                                        @endphp
+                                        <div class="bg-white rounded-xl p-4 border-l-4 {{ $dBorder }} shadow-sm">
+
+                                            {{-- Header --}}
+                                            <div class="flex justify-between items-center mb-3">
+                                                <span class="font-bold text-sm text-gray-800">{{ $drain['location_id'] ?? 'DRAIN_'.($index+1) }}</span>
+                                                <span class="px-2 py-0.5 rounded-full text-xs font-bold {{ $dBadge }}">{{ $dLabel }}</span>
+                                            </div>
+
+                                            {{-- Type & Location --}}
+                                            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                                                <div class="bg-gray-50 rounded-lg p-2">
+                                                    <span class="text-gray-500 block mb-0.5">{{ __('messages.twi_drainage_type') }}</span>
+                                                    <span class="font-semibold text-gray-800">{{ $drain['drainage_type'] ?? 'Primary Drainage Channel' }}</span>
+                                                </div>
+                                                <div class="bg-gray-50 rounded-lg p-2">
+                                                    <span class="text-gray-500 block mb-0.5">📍 {{ __('messages.twi_coordinates') }}</span>
+                                                    <span class="font-mono text-blue-600 text-xs">{{ number_format($drain['coordinates']['lat'] ?? 0, 5) }}, {{ number_format($drain['coordinates']['lon'] ?? 0, 5) }}</span>
+                                                </div>
+                                                <div class="bg-gray-50 rounded-lg p-2 col-span-2">
+                                                    <span class="text-gray-500 block mb-0.5">⚡ {{ __('messages.twi_capacity') }}</span>
+                                                    <span class="font-bold text-blue-700">{{ number_format($drain['capacity']['design_capacity_m3_per_hour'] ?? 0, 0) }} m³/{{ __('messages.twi_hour') }}</span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Technical Specs --}}
+                                            @if(isset($drain['specifications']))
+                                            <div class="bg-indigo-50 rounded-lg p-3 mb-2">
+                                                <h6 class="text-xs font-bold text-indigo-800 mb-2">🔧 {{ __('messages.twi_tech_specs') }}</h6>
+                                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+                                                    <div><span class="font-semibold">{{ __('messages.twi_width') }}:</span> {{ $drain['specifications']['channel_width_m'] ?? 'N/A' }} m</div>
+                                                    <div><span class="font-semibold">{{ __('messages.twi_depth') }}:</span> {{ $drain['specifications']['channel_depth_m'] ?? 'N/A' }} m</div>
+                                                    <div><span class="font-semibold">{{ __('messages.twi_channel_slope') }}:</span> {{ $drain['specifications']['channel_slope_percent'] ?? 'N/A' }}%</div>
+                                                    <div><span class="font-semibold">{{ __('messages.twi_material') }}:</span> {{ $drain['specifications']['lining_type'] ?? 'N/A' }}</div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            {{-- Expected Benefits --}}
+                                            @if(isset($drain['expected_benefits']))
+                                            <div class="bg-green-50 rounded-lg p-3 mb-2">
+                                                <h6 class="text-xs font-bold text-green-800 mb-2">✨ {{ __('messages.twi_expected_benefits') }}</h6>
+                                                <div class="space-y-1 text-xs text-gray-700">
+                                                    <div>🛡️ {{ __('messages.twi_flood_reduction') }}: <strong class="text-green-700">{{ $drain['expected_benefits']['flood_reduction_percent'] ?? 0 }}%</strong></div>
+                                                    <div>⏱️ {{ __('messages.twi_ponding_time_reduction') }}: <strong class="text-blue-700">{{ $drain['expected_benefits']['ponding_time_reduction_hours'] ?? 0 }} {{ __('messages.twi_hours') }}</strong></div>
+                                                    <div>📏 {{ __('messages.twi_protected_area') }}: <strong class="text-purple-700">{{ $drain['expected_benefits']['affected_area_ha'] ?? 0 }} ha</strong></div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            {{-- Maintenance --}}
+                                            @if(isset($drain['maintenance_requirements']))
+                                            <div class="bg-orange-50 rounded-lg p-3 mb-2">
+                                                <h6 class="text-xs font-bold text-orange-800 mb-2">🔧 {{ __('messages.twi_maintenance') }}</h6>
+                                                <div class="space-y-1 text-xs text-gray-700">
+                                                    <div>🧹 {{ __('messages.twi_cleaning_freq') }}: {{ $drain['maintenance_requirements']['cleaning_frequency'] ?? 'N/A' }}</div>
+                                                    <div>🔍 {{ __('messages.twi_inspection_freq') }}: {{ $drain['maintenance_requirements']['inspection_frequency'] ?? 'N/A' }}</div>
+                                                    <div>💰 {{ __('messages.twi_annual_cost') }}: <strong class="text-orange-700">Rp {{ number_format(($drain['maintenance_requirements']['estimated_annual_cost_million_idr'] ?? 0) * 1000000, 0, ',', '.') }}</strong></div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            {{-- Build Reasons --}}
+                                            @if(isset($drain['reasons']) && is_array($drain['reasons']) && count($drain['reasons']) > 0)
+                                            <div class="bg-gray-50 rounded-lg p-3 text-xs">
+                                                <span class="font-semibold text-gray-700">💡 {{ __('messages.twi_build_reason') }}:</span>
+                                                <ul class="list-disc list-inside text-gray-600 mt-1 space-y-0.5">
+                                                    @foreach($drain['reasons'] as $reason)
+                                                    <li>{{ $reason }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            @endif
+
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+
+                            {{-- ACTIONS & RECOMMENDATIONS --}}
+                            @if(isset($summary['twi_analysis']['interpretation']) || isset($summary['twi_analysis']['flood_zones']) || isset($summary['twi_analysis']['rtho_recommendations']) || isset($summary['twi_analysis']['drainage_recommendations']))
+                            @php
+                                $highRiskZones       = $summary['twi_analysis']['flood_zones']['high_risk'] ?? 0;
+                                $highPriorityRTH     = $summary['twi_analysis']['rtho_recommendations']['high_priority'] ?? 0;
+                                $totalRTH            = $summary['twi_analysis']['rtho_recommendations']['total'] ?? 0;
+                                $highPriorityDrain   = $summary['twi_analysis']['drainage_recommendations']['high_priority'] ?? 0;
+                                $totalDrain          = $summary['twi_analysis']['drainage_recommendations']['total'] ?? 0;
+                            @endphp
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-l-4 border-blue-500 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-clipboard-check text-blue-600 text-2xl mt-1 shrink-0"></i>
+                                    <div class="flex-1">
+                                        <h6 class="font-bold text-blue-900 text-base mb-1">⚡ {{ __('messages.twi_actions_title') }}</h6>
+
+                                        @if(!empty($summary['twi_analysis']['interpretation']['action']))
+                                        <p class="text-sm text-blue-800 mb-3 leading-relaxed">{{ $summary['twi_analysis']['interpretation']['action'] }}</p>
+                                        @endif
+
+                                        <div class="bg-white rounded-xl p-3">
+                                            <div class="text-sm font-bold text-blue-700 mb-2">📋 {{ __('messages.twi_priority_recommendations') }}</div>
+                                            <ol class="space-y-2 text-sm text-gray-700">
+
+                                                @if($highRiskZones > 0)
+                                                <li class="flex gap-2 bg-red-50 p-2 rounded-lg border-l-2 border-red-400">
+                                                    <span class="shrink-0">1.</span>
+                                                    <div><strong>{{ __('messages.twi_main_priority') }}:</strong> {{ __('messages.twi_high_risk_zones_action') }} <strong class="text-red-700">{{ $highRiskZones }} {{ __('messages.twi_high_risk_zones_action2') }}</strong></div>
+                                                </li>
+                                                @endif
+
+                                                @if($highPriorityDrain > 0)
+                                                <li class="flex gap-2 bg-blue-50 p-2 rounded-lg border-l-2 border-blue-400">
+                                                    <span class="shrink-0">2.</span>
+                                                    <div><strong>{{ __('messages.twi_drainage_action') }}:</strong> {{ __('messages.twi_build_label') }} <strong class="text-blue-700">{{ $highPriorityDrain }} {{ __('messages.twi_drainage_action2') }}</strong></div>
+                                                </li>
+                                                @endif
+
+                                                @if($highPriorityRTH > 0)
+                                                <li class="flex gap-2 bg-orange-50 p-2 rounded-lg border-l-2 border-orange-400">
+                                                    <span class="shrink-0">3.</span>
+                                                    <div><strong>{{ __('messages.twi_rth_action') }}:</strong> {{ __('messages.twi_build_label') }} <strong class="text-orange-700">{{ $highPriorityRTH }} {{ __('messages.twi_rth_action2') }}</strong></div>
+                                                </li>
+                                                @endif
+
+                                                @if(($totalRTH > $highPriorityRTH) || ($totalDrain > $highPriorityDrain))
+                                                <li class="flex gap-2 bg-yellow-50 p-2 rounded-lg border-l-2 border-yellow-400">
+                                                    <span class="shrink-0">4.</span>
+                                                    <div>
+                                                        <strong>{{ __('messages.twi_medium_term') }}:</strong>
+                                                        {{ __('messages.twi_build_label') }}
+                                                        @if($totalDrain > $highPriorityDrain)
+                                                            {{ $totalDrain - $highPriorityDrain }} {{ __('messages.twi_additional_drainage') }}
+                                                        @endif
+                                                        @if(($totalRTH > $highPriorityRTH) && ($totalDrain > $highPriorityDrain))
+                                                            {{ __('messages.twi_and') }}
+                                                        @endif
+                                                        @if($totalRTH > $highPriorityRTH)
+                                                            {{ $totalRTH - $highPriorityRTH }} {{ __('messages.twi_additional_rth') }}
+                                                        @endif
+                                                        {{ __('messages.twi_medium_term_desc2') }}
+                                                    </div>
+                                                </li>
+                                                @endif
+
+                                                <li class="flex gap-2 bg-purple-50 p-2 rounded-lg border-l-2 border-purple-400">
+                                                    <span class="shrink-0">5.</span>
+                                                    <div><strong>{{ __('messages.twi_regular_monitoring') }}:</strong> {{ __('messages.twi_monitoring_desc') }}</div>
+                                                </li>
+
+                                                <li class="flex gap-2 bg-green-50 p-2 rounded-lg border-l-2 border-green-400">
+                                                    <span class="shrink-0">6.</span>
+                                                    <div><strong>{{ __('messages.twi_coordination') }}:</strong> {{ __('messages.twi_coordination_desc') }}</div>
+                                                </li>
+
+                                            </ol>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Zona Rawan Banjir -->
-                            @if(isset($summary['twi_analysis']['flood_zones']))
-                                <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border-l-4 border-red-500">
-                                    <h5 class="font-bold text-red-800 mb-3 flex items-center">
-                                        <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
-                                        🚨 Titik Rawan Banjir yang Terdeteksi
-                                    </h5>
-                                    
-                                    <p class="text-sm text-gray-700 mb-3">
-                                        Sistem Machine Learning kami menemukan <strong class="text-red-600">{{ $summary['twi_analysis']['flood_zones']['total'] ?? 0 }} zona</strong> 
-                                        yang berpotensi mengalami genangan air atau banjir saat hujan lebat.
-                                    </p>
-                                    
-                                    <!-- Ringkasan Risiko -->
-                                    <div class="grid grid-cols-3 gap-3 mb-4">
-                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
-                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['high_risk'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">⚠️ Risiko Tinggi</div>
-                                            <div class="text-xs text-red-600 mt-1">Prioritas Utama</div>
-                                        </div>
-                                        <div class="bg-orange-50 rounded-lg p-3 text-center border-2 border-orange-200">
-                                            <div class="text-3xl font-bold text-orange-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['moderate_risk'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">⚡ Risiko Sedang</div>
-                                            <div class="text-xs text-orange-600 mt-1">Perlu Monitoring</div>
-                                        </div>
-                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
-                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['flood_zones']['low_risk'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">💧 Risiko Rendah</div>
-                                            <div class="text-xs text-yellow-600 mt-1">Waspada Saja</div>
-                                        </div>
-                                    </div>
-
-                                    @if(isset($summary['twi_analysis']['flood_zones']['zones_detail']) && count($summary['twi_analysis']['flood_zones']['zones_detail']) > 0)
-                                        <div class="bg-gray-50 rounded-lg p-3">
-                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Detail Lokasi Zona Banjir:</h6>
-                                            <div class="space-y-2 max-h-64 overflow-y-auto">
-                                                @foreach($summary['twi_analysis']['flood_zones']['zones_detail'] as $index => $zone)
-                                                    <div class="bg-white rounded-lg p-3 border-l-4 {{ 
-                                                        ($zone['risk'] ?? '') === 'HIGH' ? 'border-red-500' : 
-                                                        (($zone['risk'] ?? '') === 'MODERATE' ? 'border-orange-500' : 'border-yellow-500') 
-                                                    }} shadow-sm hover:shadow-md transition-shadow">
-                                                        <div class="flex justify-between items-start mb-2">
-                                                            <span class="font-bold text-gray-800">Zona {{ $index + 1 }}</span>
-                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
-                                                                ($zone['risk'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : 
-                                                                (($zone['risk'] ?? '') === 'MODERATE' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800') 
-                                                            }}">
-                                                                {{ ($zone['risk'] ?? '') === 'HIGH' ? '⚠️ PRIORITAS' : (($zone['risk'] ?? '') === 'MODERATE' ? '⚡ AWASI' : '💧 PANTAU') }}
-                                                            </span>
-                                                        </div>
-                                                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                                            <div>
-                                                                <span class="font-semibold">Indeks TWI:</span>
-                                                                <span class="font-bold text-gray-800">{{ number_format($zone['twi_value'] ?? 0, 1) }}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span class="font-semibold">Luas Area:</span>
-                                                                <span class="font-bold text-gray-800">{{ number_format($zone['area_ha'] ?? 0, 2) }} ha</span>
-                                                            </div>
-                                                            <div class="col-span-2">
-                                                                <span class="font-semibold">Koordinat:</span>
-                                                                <span class="font-mono text-blue-600">{{ number_format($zone['lat'] ?? 0, 5) }}, {{ number_format($zone['lon'] ?? 0, 5) }}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
                             @endif
 
-                            <!-- Rekomendasi Ruang Terbuka Hijau (RTH) -->
-                            @if(isset($summary['twi_analysis']['rtho_recommendations']))
-                                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-green-500">
-                                    <h5 class="font-bold text-green-800 mb-3 flex items-center">
-                                        <i class="fas fa-tree text-green-600 mr-2"></i>
-                                        🌳 Rekomendasi Ruang Terbuka Hijau (RTH)
-                                    </h5>
-                                    
-                                    <p class="text-sm text-gray-700 mb-3">
-                                        Untuk mengurangi risiko banjir, sistem Machine Learning merekomendasikan pembuatan <strong class="text-green-600">{{ $summary['twi_analysis']['rtho_recommendations']['total'] ?? 0 }} lokasi RTH</strong> 
-                                        seperti taman, hutan kota, atau area resapan air.
-                                    </p>
-                                    
-                                    <!-- Ringkasan RTH -->
-                                    <div class="grid grid-cols-3 gap-3 mb-4">
-                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
-                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['rtho_recommendations']['high_priority'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">🔥 Prioritas Tinggi</div>
-                                            <div class="text-xs text-red-600 mt-1">Segera Dibangun</div>
-                                        </div>
-                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
-                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['rtho_recommendations']['moderate_priority'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">⭐ Prioritas Sedang</div>
-                                            <div class="text-xs text-yellow-600 mt-1">Rencana Jangka Menengah</div>
-                                        </div>
-                                        <div class="bg-green-50 rounded-lg p-3 text-center border-2 border-green-200">
-                                            <div class="text-3xl font-bold text-green-700 mb-1">{{ number_format($summary['twi_analysis']['rtho_recommendations']['total_area_ha'] ?? 0, 1) }}</div>
-                                            <div class="text-xs text-gray-600">📏 Total Luas</div>
-                                            <div class="text-xs text-green-600 mt-1">Hektar (ha)</div>
-                                        </div>
-                                    </div>
-
-                                    @if(isset($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['rtho_recommendations']['recommendations_detail']) > 0)
-                                        <div class="bg-green-50 rounded-lg p-3">
-                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Lokasi yang Direkomendasikan:</h6>
-                                            <div class="space-y-2 max-h-64 overflow-y-auto">
-                                                @foreach($summary['twi_analysis']['rtho_recommendations']['recommendations_detail'] as $index => $rec)
-                                                    <div class="bg-white rounded-lg p-3 border-l-4 {{ 
-                                                        ($rec['priority'] ?? '') === 'HIGH' ? 'border-red-500' : 'border-green-500' 
-                                                    }} shadow-sm hover:shadow-md transition-shadow">
-                                                        <div class="flex justify-between items-start mb-2">
-                                                            <span class="font-bold text-gray-800">Lokasi RTH {{ $index + 1 }}</span>
-                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
-                                                                ($rec['priority'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' 
-                                                            }}">
-                                                                {{ ($rec['priority'] ?? '') === 'HIGH' ? '🔥 URGENT' : '⭐ RENCANA' }}
-                                                            </span>
-                                                        </div>
-                                                        
-                                                        <div class="grid grid-cols-2 gap-2 mb-2 text-xs text-gray-600">
-                                                            <div>
-                                                                <span class="font-semibold">Luas Estimasi:</span>
-                                                                <span class="font-bold text-gray-800">{{ number_format($rec['estimated_area_ha'] ?? 0, 2) }} ha</span>
-                                                            </div>
-                                                            <div>
-                                                                <span class="font-semibold">Koordinat:</span>
-                                                                <span class="font-mono text-blue-600 text-xs">{{ number_format($rec['lat'] ?? 0, 5) }}, {{ number_format($rec['lon'] ?? 0, 5) }}</span>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        @if(!empty($rec['reason']) && $rec['reason'] !== 'N/A')
-                                                            <div class="bg-gray-50 rounded p-2 text-xs">
-                                                                <span class="font-semibold text-gray-700">💡 Alasan:</span>
-                                                                <p class="text-gray-600 mt-1">{{ $rec['reason'] }}</p>
-                                                            </div>
-                                                        @else
-                                                            <div class="bg-blue-50 rounded p-2 text-xs">
-                                                                <span class="font-semibold text-blue-700">ℹ️ Keterangan:</span>
-                                                                <p class="text-blue-600 mt-1">Lokasi strategis untuk menampung air hujan dan mengurangi risiko genangan</p>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
-
-                            <!-- Rekomendasi Sistem Drainase -->
-                            @if(isset($summary['twi_analysis']['drainage_recommendations']))
-                                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-blue-500 mt-4">
-                                    <h5 class="font-bold text-blue-800 mb-3 flex items-center">
-                                        <i class="fas fa-water text-blue-600 mr-2"></i>
-                                        🚰 Rekomendasi Sistem Drainase
-                                    </h5>
-                                    
-                                    <p class="text-sm text-gray-700 mb-3">
-                                        Untuk mengendalikan aliran air dan mencegah genangan, sistem merekomendasikan pembangunan <strong class="text-blue-600">{{ $summary['twi_analysis']['drainage_recommendations']['total'] ?? 0 }} saluran drainase</strong> 
-                                        di lokasi-lokasi strategis.
-                                    </p>
-                                    
-                                    <!-- Ringkasan Drainase -->
-                                    <div class="grid grid-cols-3 gap-3 mb-4">
-                                        <div class="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
-                                            <div class="text-3xl font-bold text-red-700 mb-1">{{ $summary['twi_analysis']['drainage_recommendations']['high_priority'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">🔥 Prioritas Tinggi</div>
-                                            <div class="text-xs text-red-600 mt-1">Segera Dibangun</div>
-                                        </div>
-                                        <div class="bg-yellow-50 rounded-lg p-3 text-center border-2 border-yellow-200">
-                                            <div class="text-3xl font-bold text-yellow-700 mb-1">{{ $summary['twi_analysis']['drainage_recommendations']['medium_priority'] ?? 0 }}</div>
-                                            <div class="text-xs text-gray-600">⭐ Prioritas Sedang</div>
-                                            <div class="text-xs text-yellow-600 mt-1">Rencana Jangka Menengah</div>
-                                        </div>
-                                        <div class="bg-blue-50 rounded-lg p-3 text-center border-2 border-blue-200">
-                                            <div class="text-3xl font-bold text-blue-700 mb-1">{{ number_format($summary['twi_analysis']['drainage_recommendations']['total_capacity_m3_per_hour'] ?? 0, 0) }}</div>
-                                            <div class="text-xs text-gray-600">⚡ Kapasitas Total</div>
-                                            <div class="text-xs text-blue-600 mt-1">m³/jam</div>
-                                        </div>
-                                    </div>
-
-                                    @if(isset($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) && count($summary['twi_analysis']['drainage_recommendations']['recommendations_detail']) > 0)
-                                        <div class="bg-blue-50 rounded-lg p-3">
-                                            <h6 class="text-sm font-bold text-gray-800 mb-2">📍 Detail Lokasi Drainase:</h6>
-                                            <div class="space-y-3 max-h-96 overflow-y-auto">
-                                                @foreach($summary['twi_analysis']['drainage_recommendations']['recommendations_detail'] as $index => $drain)
-                                                    <div class="bg-white rounded-lg p-4 border-l-4 {{ 
-                                                        ($drain['priority'] ?? '') === 'HIGH' ? 'border-red-500' : (($drain['priority'] ?? '') === 'MEDIUM' ? 'border-yellow-500' : 'border-blue-500')
-                                                    }} shadow-sm hover:shadow-md transition-shadow">
-                                                        <div class="flex justify-between items-start mb-2">
-                                                            <span class="font-bold text-gray-800">{{ $drain['location_id'] ?? 'DRAIN_' . ($index + 1) }}</span>
-                                                            <span class="px-2 py-1 rounded text-xs font-bold {{ 
-                                                                ($drain['priority'] ?? '') === 'HIGH' ? 'bg-red-100 text-red-800' : (($drain['priority'] ?? '') === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800')
-                                                            }}">
-                                                                {{ ($drain['priority'] ?? '') === 'HIGH' ? '🔥 URGENT' : (($drain['priority'] ?? '') === 'MEDIUM' ? '⭐ SEDANG' : '📋 RENDAH') }}
-                                                            </span>
-                                                        </div>
-                                                        
-                                                        <div class="text-xs text-gray-600 mb-2">
-                                                            <span class="font-semibold">Tipe:</span>
-                                                            <span class="text-gray-800">{{ $drain['drainage_type'] ?? 'Primary Drainage Channel' }}</span>
-                                                        </div>
-                                                        
-                                                        <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
-                                                            <div class="bg-gray-50 rounded p-2">
-                                                                <span class="text-gray-600 block">📍 Koordinat:</span>
-                                                                <span class="font-mono text-blue-600 text-xs">{{ number_format($drain['coordinates']['lat'] ?? 0, 5) }}, {{ number_format($drain['coordinates']['lon'] ?? 0, 5) }}</span>
-                                                            </div>
-                                                            <div class="bg-gray-50 rounded p-2">
-                                                                <span class="text-gray-600 block">⚡ Kapasitas:</span>
-                                                                <span class="font-bold text-blue-700">{{ number_format($drain['capacity']['design_capacity_m3_per_hour'] ?? 0, 0) }} m³/jam</span>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!-- Spesifikasi Teknis -->
-                                                        @if(isset($drain['specifications']))
-                                                            <div class="bg-indigo-50 rounded p-2 mb-2">
-                                                                <h6 class="text-xs font-bold text-indigo-800 mb-1">🔧 Spesifikasi Teknis:</h6>
-                                                                <div class="grid grid-cols-2 gap-1 text-xs text-gray-700">
-                                                                    <div><span class="font-semibold">Lebar:</span> {{ $drain['specifications']['channel_width_m'] ?? 'N/A' }} m</div>
-                                                                    <div><span class="font-semibold">Kedalaman:</span> {{ $drain['specifications']['channel_depth_m'] ?? 'N/A' }} m</div>
-                                                                    <div><span class="font-semibold">Kemiringan:</span> {{ $drain['specifications']['channel_slope_percent'] ?? 'N/A' }}%</div>
-                                                                    <div><span class="font-semibold">Material:</span> {{ $drain['specifications']['lining_type'] ?? 'N/A' }}</div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                        
-                                                        <!-- Manfaat yang Diharapkan -->
-                                                        @if(isset($drain['expected_benefits']))
-                                                            <div class="bg-green-50 rounded p-2 mb-2">
-                                                                <h6 class="text-xs font-bold text-green-800 mb-1">✨ Manfaat yang Diharapkan:</h6>
-                                                                <div class="space-y-1 text-xs text-gray-700">
-                                                                    <div>🛡️ Pengurangan banjir: <strong class="text-green-700">{{ $drain['expected_benefits']['flood_reduction_percent'] ?? 0 }}%</strong></div>
-                                                                    <div>⏱️ Pengurangan waktu genangan: <strong class="text-blue-700">{{ $drain['expected_benefits']['ponding_time_reduction_hours'] ?? 0 }} jam</strong></div>
-                                                                    <div>📏 Area terlindungi: <strong class="text-purple-700">{{ $drain['expected_benefits']['affected_area_ha'] ?? 0 }} ha</strong></div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                        
-                                                        <!-- Maintenance Requirements -->
-                                                        @if(isset($drain['maintenance_requirements']))
-                                                            <div class="bg-orange-50 rounded p-2 mb-2">
-                                                                <h6 class="text-xs font-bold text-orange-800 mb-1">🔧 Kebutuhan Perawatan:</h6>
-                                                                <div class="space-y-1 text-xs text-gray-700">
-                                                                    <div>🧹 Pembersihan: {{ $drain['maintenance_requirements']['cleaning_frequency'] ?? 'N/A' }}</div>
-                                                                    <div>🔍 Inspeksi: {{ $drain['maintenance_requirements']['inspection_frequency'] ?? 'N/A' }}</div>
-                                                                    <div>💰 Biaya tahunan: <strong class="text-orange-700">Rp {{ number_format(($drain['maintenance_requirements']['estimated_annual_cost_million_idr'] ?? 0) * 1000000, 0, ',', '.') }}</strong></div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                        
-                                                        <!-- Alasan/Necessity -->
-                                                        @if(isset($drain['reasons']) && is_array($drain['reasons']) && count($drain['reasons']) > 0)
-                                                            <div class="bg-gray-50 rounded p-2 text-xs">
-                                                                <span class="font-semibold text-gray-700">💡 Alasan Pembangunan:</span>
-                                                                <ul class="list-disc list-inside text-gray-600 mt-1 space-y-0.5">
-                                                                    @foreach($drain['reasons'] as $reason)
-                                                                        <li>{{ $reason }}</li>
-                                                                    @endforeach
-                                                                </ul>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
-
-                            <!-- Ringkasan & Tindakan -->
-                            @if(isset($summary['twi_analysis']['interpretation']) || isset($summary['twi_analysis']['flood_zones']) || isset($summary['twi_analysis']['rtho_recommendations']) || isset($summary['twi_analysis']['drainage_recommendations']))
-                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mt-4 border-l-4 border-blue-500 shadow-sm">
-                                    <div class="flex items-start">
-                                        <i class="fas fa-clipboard-check text-blue-600 text-2xl mr-3 mt-1"></i>
-                                        <div class="flex-1">
-                                            <h6 class="font-bold text-blue-900 mb-3 text-lg">⚡ Tindakan yang Perlu Dilakukan:</h6>
-                                            
-                                            @if(isset($summary['twi_analysis']['interpretation']['action']) && !empty($summary['twi_analysis']['interpretation']['action']))
-                                                <p class="text-sm text-blue-800 mb-3 leading-relaxed">{{ $summary['twi_analysis']['interpretation']['action'] }}</p>
-                                            @endif
-                                            
-                                            <div class="bg-white rounded-lg p-3 space-y-2">
-                                                <div class="text-sm text-gray-800">
-                                                    <span class="font-bold text-blue-700">📋 Rekomendasi Prioritas:</span>
-                                                </div>
-                                                
-                                                @php
-                                                    $highRiskZones = isset($summary['twi_analysis']['flood_zones']['high_risk']) ? $summary['twi_analysis']['flood_zones']['high_risk'] : 0;
-                                                    $highPriorityRTH = isset($summary['twi_analysis']['rtho_recommendations']['high_priority']) ? $summary['twi_analysis']['rtho_recommendations']['high_priority'] : 0;
-                                                    $totalRTH = isset($summary['twi_analysis']['rtho_recommendations']['total']) ? $summary['twi_analysis']['rtho_recommendations']['total'] : 0;
-                                                    $highPriorityDrainage = isset($summary['twi_analysis']['drainage_recommendations']['high_priority']) ? $summary['twi_analysis']['drainage_recommendations']['high_priority'] : 0;
-                                                    $totalDrainage = isset($summary['twi_analysis']['drainage_recommendations']['total']) ? $summary['twi_analysis']['drainage_recommendations']['total'] : 0;
-                                                @endphp
-                                                
-                                                <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                                                    @if($highRiskZones > 0)
-                                                        <li class="bg-red-50 p-2 rounded border-l-2 border-red-400">
-                                                            <strong>Prioritas Utama:</strong> Segera tinjau dan beri perhatian khusus pada <strong class="text-red-700">{{ $highRiskZones }} zona risiko tinggi</strong> yang terdeteksi
-                                                        </li>
-                                                    @endif
-                                                    
-                                                    @if($highPriorityDrainage > 0)
-                                                        <li class="bg-blue-50 p-2 rounded border-l-2 border-blue-400">
-                                                            <strong>Pembangunan Drainase:</strong> Bangun <strong class="text-blue-700">{{ $highPriorityDrainage }} saluran drainase prioritas tinggi</strong> untuk mengalirkan air hujan
-                                                        </li>
-                                                    @endif
-                                                    
-                                                    @if($highPriorityRTH > 0)
-                                                        <li class="bg-orange-50 p-2 rounded border-l-2 border-orange-400">
-                                                            <strong>Pembangunan RTH:</strong> Bangun <strong class="text-orange-700">{{ $highPriorityRTH }} lokasi RTH prioritas tinggi</strong> untuk menyerap air hujan
-                                                        </li>
-                                                    @endif
-                                                    
-                                                    @if(($totalRTH > $highPriorityRTH) || ($totalDrainage > $highPriorityDrainage))
-                                                        <li class="bg-yellow-50 p-2 rounded border-l-2 border-yellow-400">
-                                                            <strong>Perencanaan Jangka Menengah:</strong> Rencanakan 
-                                                            @if($totalDrainage > $highPriorityDrainage)
-                                                                {{ $totalDrainage - $highPriorityDrainage }} saluran drainase tambahan
-                                                            @endif
-                                                            @if(($totalRTH > $highPriorityRTH) && ($totalDrainage > $highPriorityDrainage))
-                                                                dan 
-                                                            @endif
-                                                            @if($totalRTH > $highPriorityRTH)
-                                                                {{ $totalRTH - $highPriorityRTH }} lokasi RTH tambahan
-                                                            @endif
-                                                            dalam 1-2 tahun ke depan
-                                                        </li>
-                                                    @endif
-                                                    
-                                                    <li class="bg-purple-50 p-2 rounded border-l-2 border-purple-400">
-                                                        <strong>Monitoring Berkala:</strong> Lakukan pemantauan rutin saat musim hujan untuk antisipasi dini
-                                                    </li>
-                                                    
-                                                    <li class="bg-green-50 p-2 rounded border-l-2 border-green-400">
-                                                        <strong>Koordinasi:</strong> Libatkan Dinas Pekerjaan Umum dan masyarakat dalam implementasi solusi
-                                                    </li>
-                                                </ol>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                     @endif
-                    
+
+                    {{-- TWI ERROR / NOT AVAILABLE --}}
                     @if(isset($summary['twi_analysis']['status']) && 
                         ($summary['twi_analysis']['status'] === 'error' || 
-                         $summary['twi_analysis']['status'] === 'not_available'))
-                        <!-- 🐛 DEBUG: Show why TWI analysis is not available -->
-                        <div class="bg-yellow-50 rounded-xl border-2 border-yellow-300 p-5 mt-6 shadow-md">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
-                                    <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                        $summary['twi_analysis']['status'] === 'not_available'))
+                    <div class="bg-yellow-50 rounded-xl border-2 border-yellow-300 p-5 mt-4 shadow-md">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-yellow-900 text-lg mb-2">⚠️ {{ __('messages.twi_not_available_title') }}</h4>
+                                <div class="bg-white rounded-lg p-3 mb-3 border border-yellow-200">
+                                    <p class="text-sm text-yellow-800 font-semibold mb-1">Status:</p>
+                                    <p class="text-sm text-gray-700">{{ $summary['twi_analysis']['status'] ?? 'Unknown' }}</p>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-yellow-900 text-lg mb-2">⚠️ TWI Analysis Tidak Tersedia</h4>
-                                    <div class="bg-white rounded-lg p-3 mb-3 border border-yellow-200">
-                                        <p class="text-sm text-yellow-800 font-semibold mb-1">Status:</p>
-                                        <p class="text-sm text-gray-700">{{ $summary['twi_analysis']['status'] ?? 'Unknown' }}</p>
-                                    </div>
-                                    
-                                    @if(isset($summary['twi_analysis']['error']))
-                                        <div class="bg-red-50 rounded-lg p-3 mb-3 border border-red-200">
-                                            <p class="text-sm text-red-800 font-semibold mb-1">🐛 Error Detail:</p>
-                                            <p class="text-xs text-red-700 font-mono">{{ $summary['twi_analysis']['error'] }}</p>
-                                        </div>
-                                    @endif
-                                    
-                                    <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                                        <p class="text-sm text-blue-800 font-semibold mb-2">💡 Kemungkinan Penyebab:</p>
-                                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                                            <li>File <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code> tidak ter-generate oleh API server</li>
-                                            <li>Proses TWI analysis gagal atau timeout saat eksekusi</li>
-                                            <li>Error saat membaca atau parsing file JSON</li>
-                                            <li>Data morfologi tidak mencukupi untuk analisis TWI</li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <div class="bg-gray-50 rounded-lg p-3 mt-3 border border-gray-200">
-                                        <p class="text-sm text-gray-800 font-semibold mb-2">🔍 Langkah Debugging:</p>
-                                        <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
-                                            <li>Cek apakah file <strong>RIVANA_TWI_Dashboard.png</strong> ter-generate (jika Ya, berarti TWI calculation berjalan)</li>
-                                            <li>Periksa file log lengkap untuk melihat error message</li>
-                                            <li>Pastikan API server v2 sudah menggunakan kode terbaru</li>
-                                            <li>Coba jalankan ulang analysis dengan parameter yang sama</li>
-                                        </ol>
-                                    </div>
+                                @if(isset($summary['twi_analysis']['error']))
+                                <div class="bg-red-50 rounded-lg p-3 mb-3 border border-red-200">
+                                    <p class="text-sm text-red-800 font-semibold mb-1">🐛 Error Detail:</p>
+                                    <p class="text-xs text-red-700 font-mono">{{ $summary['twi_analysis']['error'] }}</p>
+                                </div>
+                                @endif
+                                <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                                    <p class="text-sm text-blue-800 font-semibold mb-2">💡 Possible Causes:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>File <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code> was not generated by the API server</li>
+                                        <li>TWI analysis process failed or timed out during execution</li>
+                                        <li>Error reading or parsing the JSON file</li>
+                                        <li>Insufficient morphology data for TWI analysis</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3 mt-3 border border-gray-200">
+                                    <p class="text-sm text-gray-800 font-semibold mb-2">🔍 Debugging Steps:</p>
+                                    <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
+                                        <li>Check if <strong>RIVANA_TWI_Dashboard.png</strong> was generated (if Yes, TWI calculation ran)</li>
+                                        <li>Review full log files for error messages</li>
+                                        <li>Ensure the API server v2 is running the latest code</li>
+                                        <li>Try re-running the analysis with the same parameters</li>
+                                    </ol>
                                 </div>
                             </div>
                         </div>
-                    @endif
-                    
-                    @if(!isset($summary['twi_analysis']))
-                        <!-- 🐛 DEBUG: TWI data tidak ada sama sekali -->
-                        <div class="bg-red-50 rounded-xl border-2 border-red-300 p-5 mt-6 shadow-md">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0">
-                                    <i class="fas fa-times-circle text-red-600 text-xl"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-red-900 text-lg mb-2">❌ TWI Analysis Data Tidak Ditemukan</h4>
-                                    <p class="text-sm text-red-700 mb-3">
-                                        Key <code class="bg-gray-200 px-2 py-1 rounded text-xs font-mono">twi_analysis</code> tidak ada dalam data summary.
-                                    </p>
-                                    
-                                    <div class="bg-white rounded-lg p-3 mb-3 border border-red-200">
-                                        <p class="text-sm text-red-800 font-semibold mb-2">🔍 Kemungkinan Penyebab:</p>
-                                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                                            <li><strong>File RIVANA_TWI_Analysis.json tidak ter-generate</strong> oleh API Python</li>
-                                            <li><strong>Controller Laravel gagal membaca/parse file TWI JSON</strong></li>
-                                            <li><strong>Path file TWI tidak sesuai</strong> antara lokal dan VPS</li>
-                                            <li><strong>Permission issue</strong> pada direktori results di VPS</li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
-                                        <p class="text-sm text-yellow-800 font-semibold mb-2">🛠️ Cara Debugging:</p>
-                                        <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
-                                            <li>SSH ke VPS, cek direktori: <code class="bg-gray-200 px-1 rounded">results/{{ $job->job_id }}/</code></li>
-                                            <li>Cari file: <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code> apakah ada?</li>
-                                            <li>Jika ada, cek isi file: <code class="bg-gray-200 px-1 rounded">cat RIVANA_TWI_Analysis.json | head -20</code></li>
-                                            <li>Cek Laravel log: <code class="bg-gray-200 px-1 rounded">tail -100 storage/logs/laravel.log</code></li>
-                                            <li>Cek Python API log untuk error TWI calculation</li>
-                                        </ol>
-                                    </div>
-                                    
-                                    <div class="bg-blue-50 rounded-lg p-3 mt-3 border border-blue-200">
-                                        <p class="text-sm text-blue-800 font-semibold mb-2">💡 Perbedaan Lokal vs VPS:</p>
-                                        <ul class="list-disc list-inside text-xs text-gray-600 space-y-1">
-                                            <li><strong>Path absolut berbeda:</strong> Lokal (E:\laragon\...) vs VPS (/var/www/...)</li>
-                                            <li><strong>Python environment berbeda:</strong> Pastikan semua dependencies terinstall di VPS</li>
-                                            <li><strong>File permissions:</strong> VPS perlu proper chmod/chown untuk direktori results</li>
-                                            <li><strong>Memory/timeout:</strong> VPS mungkin memiliki limit lebih ketat</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                     @endif
 
-                    <!-- BAGIAN 6: PREDIKSI HUJAN 30 HARI -->
-                    @if(isset($summary['prediksi_30_hari']))
-                        <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg p-4 mt-4 shadow-md border-2 border-sky-300">
-                            <h4 class="font-bold text-sky-900 text-lg mb-3 flex items-center">
-                                <i class="fas fa-cloud-sun-rain mr-2 text-sky-600"></i>
-                                <span>📅 {{ __('messages.forecast_30_days') }}</span>
-                            </h4>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                @if(isset($summary['prediksi_30_hari']['rainfall']))
-                                    <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-sky-800 mb-2">{{ __('messages.rainfall_forecast') }}</h5>
-                                        <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['rainfall'] as $key => $value)
-                                                @php
-                                                    $translations = [
-                                                        'rata_rata' => 'Rata-rata',
-                                                        'minimum' => 'Minimum',
-                                                        'maximum' => 'Maximum',
-                                                        'total' => 'Total',
-                                                    ];
-                                                    $label = $translations[strtolower($key)] ?? __('messages.' . strtolower($key));
-                                                @endphp
-                                                <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ $label }}:</span>
-                                                    <span class="font-bold">{{ $value }}</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                @if(isset($summary['prediksi_30_hari']['reservoir']))
-                                    <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-blue-800 mb-2">{{ __('messages.retention_pond') }}</h5>
-                                        <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['reservoir'] as $key => $value)
-                                                @php
-                                                    // Manual translation mapping for missing keys
-                                                    $translations = [
-                                                        'kondisi_saat_ini' => 'Kondisi Saat Ini',
-                                                        'prediksi_30_hari' => 'Prediksi 30 Hari',
-                                                        'persentase_capacity' => 'Persentase Kapasitas',
-                                                    ];
-                                                    $label = $translations[strtolower($key)] ?? __(('messages.' . strtolower($key)));
-                                                @endphp
-                                                <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ $label }}:</span>
-                                                    <span class="font-bold">{{ $value }}</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                @if(isset($summary['prediksi_30_hari']['reliability']))
-                                    <div class="bg-white rounded-lg p-4 shadow-sm">
-                                        <h5 class="font-semibold text-green-800 mb-2">{{ __('messages.reliability') }}</h5>
-                                        <div class="space-y-1 text-sm">
-                                            @foreach($summary['prediksi_30_hari']['reliability'] as $key => $value)
-                                                @php
-                                                    $translations = [
-                                                        'saat_ini' => 'Saat Ini',
-                                                        'prediksi_30_hari' => 'Prediksi 30 Hari',
-                                                        'tren' => 'Tren',
-                                                    ];
-                                                    $label = $translations[strtolower($key)] ?? __('messages.' . strtolower($key));
-                                                @endphp
-                                                <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ $label }}:</span>
-                                                    <span class="font-bold">{{ $value }}</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
+                    {{-- TWI DATA NOT FOUND --}}
+                    @if(!isset($summary['twi_analysis']))
+                    <div class="bg-red-50 rounded-xl border-2 border-red-300 p-5 mt-4 shadow-md">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0">
+                                <i class="fas fa-times-circle text-red-600 text-xl"></i>
                             </div>
-                            
-                            @if(isset($summary['prediksi_30_hari']['rekomendasi_forecast']))
-                                <div class="bg-blue-100 rounded-lg p-3 mt-3 border-l-4 border-blue-500">
-                                    <p class="text-sm font-semibold text-blue-900">{!! nl2br(e($summary['prediksi_30_hari']['rekomendasi_forecast'])) !!}</p>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-red-900 text-lg mb-2">❌ {{ __('messages.twi_not_found_title') }}</h4>
+                                <p class="text-sm text-red-700 mb-3">
+                                    Key <code class="bg-gray-200 px-2 py-1 rounded text-xs font-mono">twi_analysis</code> not found in summary data.
+                                </p>
+                                <div class="bg-white rounded-lg p-3 mb-3 border border-red-200">
+                                    <p class="text-sm text-red-800 font-semibold mb-2">🔍 Possible Causes:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li><strong>RIVANA_TWI_Analysis.json was not generated</strong> by the Python API</li>
+                                        <li><strong>Laravel controller failed to read/parse the TWI JSON file</strong></li>
+                                        <li><strong>TWI file path mismatch</strong> between local and VPS environment</li>
+                                        <li><strong>Permission issue</strong> on the results directory on VPS</li>
+                                    </ul>
                                 </div>
-                            @endif
+                                <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+                                    <p class="text-sm text-yellow-800 font-semibold mb-2">🛠️ Debugging Steps:</p>
+                                    <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1">
+                                        <li>SSH to VPS, check directory: <code class="bg-gray-200 px-1 rounded">results/{{ $job->job_id }}/</code></li>
+                                        <li>Look for: <code class="bg-gray-200 px-1 rounded">RIVANA_TWI_Analysis.json</code></li>
+                                        <li>If found, inspect contents: <code class="bg-gray-200 px-1 rounded">cat RIVANA_TWI_Analysis.json | head -20</code></li>
+                                        <li>Check Laravel log: <code class="bg-gray-200 px-1 rounded">tail -100 storage/logs/laravel.log</code></li>
+                                        <li>Check Python API log for TWI calculation errors</li>
+                                    </ol>
+                                </div>
+                                <div class="bg-blue-50 rounded-lg p-3 mt-3 border border-blue-200">
+                                    <p class="text-sm text-blue-800 font-semibold mb-2">💡 Local vs VPS Differences:</p>
+                                    <ul class="list-disc list-inside text-xs text-gray-600 space-y-1">
+                                        <li><strong>Absolute paths differ:</strong> Local (E:\laragon\...) vs VPS (/var/www/...)</li>
+                                        <li><strong>Python environment:</strong> Ensure all dependencies are installed on VPS</li>
+                                        <li><strong>File permissions:</strong> VPS requires proper chmod/chown on results directory</li>
+                                        <li><strong>Memory/timeout:</strong> VPS may have stricter limits</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    @endif
+
+                    <!-- BAGIAN 6: 30-DAY RAINFALL FORECAST -->
+                    @if(isset($summary['prediksi_30_hari']))
+                    <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-xl p-5 mt-4 shadow-md border-2 border-sky-300">
+                        <h4 class="font-bold text-sky-900 text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-cloud-sun-rain text-sky-600"></i>
+                            📅 {{ __('messages.forecast_30_days') }}
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            {{-- Rainfall Forecast --}}
+                            @if(isset($summary['prediksi_30_hari']['rainfall']))
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-sky-100">
+                                <h5 class="font-semibold text-sky-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-cloud-rain text-sky-500 text-sm"></i>
+                                    {{ __('messages.rainfall_forecast') }}
+                                </h5>
+                                <div class="space-y-2 text-sm">
+                                    @foreach($summary['prediksi_30_hari']['rainfall'] as $key => $value)
+                                    @php
+                                        $rainfallLabels = [
+                                            'rata_rata' => __('messages.average'),
+                                            'minimum'   => __('messages.minimum'),
+                                            'maximum'   => __('messages.maximum'),
+                                            'total'     => __('messages.total'),
+                                        ];
+                                        $label = $rainfallLabels[strtolower($key)] ?? ucwords(str_replace('_', ' ', $key));
+                                    @endphp
+                                    <div class="flex justify-between items-center py-1 border-b border-gray-50 last:border-0">
+                                        <span class="text-gray-500">{{ $label }}</span>
+                                        <span class="font-bold text-gray-800">{{ $value }}</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            {{-- Retention Pond Forecast --}}
+                            @if(isset($summary['prediksi_30_hari']['reservoir']))
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                                <h5 class="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-water text-blue-500 text-sm"></i>
+                                    {{ __('messages.retention_pond') }}
+                                </h5>
+                                <div class="space-y-2 text-sm">
+                                    @foreach($summary['prediksi_30_hari']['reservoir'] as $key => $value)
+                                    @php
+                                        $reservoirLabels = [
+                                            'kondisi_saat_ini'    => __('messages.forecast_current_condition'),
+                                            'prediksi_30_hari'    => __('messages.forecast_30_day_prediction'),
+                                            'persentase_capacity' => __('messages.forecast_capacity_percent'),
+                                        ];
+                                        $label = $reservoirLabels[strtolower($key)] ?? ucwords(str_replace('_', ' ', $key));
+                                    @endphp
+                                    <div class="flex justify-between items-center py-1 border-b border-gray-50 last:border-0">
+                                        <span class="text-gray-500">{{ $label }}</span>
+                                        <span class="font-bold text-gray-800">{{ $value }}</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            {{-- Reliability Forecast --}}
+                            @if(isset($summary['prediksi_30_hari']['reliability']))
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-green-100">
+                                <h5 class="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-shield-alt text-green-500 text-sm"></i>
+                                    {{ __('messages.reliability') }}
+                                </h5>
+                                <div class="space-y-2 text-sm">
+                                    @foreach($summary['prediksi_30_hari']['reliability'] as $key => $value)
+                                    @php
+                                        $reliabilityLabels = [
+                                            'saat_ini'        => __('messages.forecast_current'),
+                                            'prediksi_30_hari'=> __('messages.forecast_30_day_prediction'),
+                                            'tren'            => __('messages.forecast_trend'),
+                                        ];
+                                        $label = $reliabilityLabels[strtolower($key)] ?? ucwords(str_replace('_', ' ', $key));
+                                    @endphp
+                                    <div class="flex justify-between items-center py-1 border-b border-gray-50 last:border-0">
+                                        <span class="text-gray-500">{{ $label }}</span>
+                                        <span class="font-bold text-gray-800">{{ $value }}</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                        </div>
+
+                        {{-- Forecast Recommendation --}}
+                        @if(isset($summary['prediksi_30_hari']['rekomendasi_forecast']))
+                        <div class="bg-blue-100 rounded-xl p-4 mt-4 border-l-4 border-blue-500">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-lightbulb text-blue-600 mt-0.5 shrink-0"></i>
+                                <p class="text-sm font-semibold text-blue-900 leading-relaxed">
+                                    {!! nl2br(e($summary['prediksi_30_hari']['rekomendasi_forecast'])) !!}
+                                </p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
                     @endif
 
                     <!-- BAGIAN 7: PEMENUHAN KEBUTUHAN AIR -->
@@ -1712,266 +1744,265 @@
                 </div>
             @endif --}}
 
-            <!-- 🌊 Interactive River Network Map Section -->
+            <!-- 🌊 Interactive River Network Map Section  -->
             @php
-                // Cari file peta aliran sungai - NAMA FILE YANG BENAR dari API
-                $riverMapHtml = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.html');
-                $riverMapPng = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.png');
+                $riverMapHtml     = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.html');
+                $riverMapPng      = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.png');
                 $riverMapMetadata = $job->files->firstWhere('filename', 'RIVANA_Metadata_Peta.json');
-                
-                // Debug: Log semua files untuk debugging
+
                 \Log::info('Map Files Check', [
-                    'job_id' => $job->id,
-                    'all_files' => $job->files->pluck('filename')->toArray(),
-                    'html_found' => $riverMapHtml ? 'YES' : 'NO',
-                    'png_found' => $riverMapPng ? 'YES' : 'NO',
-                    'metadata_found' => $riverMapMetadata ? 'YES' : 'NO'
+                    'job_id'          => $job->id,
+                    'all_files'       => $job->files->pluck('filename')->toArray(),
+                    'html_found'      => $riverMapHtml     ? 'YES' : 'NO',
+                    'png_found'       => $riverMapPng      ? 'YES' : 'NO',
+                    'metadata_found'  => $riverMapMetadata ? 'YES' : 'NO',
                 ]);
             @endphp
 
             @if($riverMapHtml || $riverMapPng)
-                <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-2 border-cyan-200 mb-6">
-                    <!-- Header -->
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                                <i class="fas fa-water text-white text-lg sm:text-xl"></i>
+            <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl shadow-xl p-4 sm:p-6 border-2 border-cyan-200 mb-6">
+
+                {{-- Header --}}
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                            <i class="fas fa-water text-white text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center flex-wrap gap-2">
+                                🌊 {{ __('messages.interactive_river_map') }}
+                                <span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full animate-pulse">NEW</span>
+                            </h3>
+                            <p class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ __('messages.river_network_visualization') }}</p>
+                        </div>
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="flex flex-wrap gap-2 shrink-0">
+                        @if($riverMapHtml)
+                        <button onclick="openMapFullscreen()"
+                            class="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-expand mr-1 sm:mr-2"></i>Fullscreen
+                        </button>
+                        <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}"
+                            class="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-download mr-1 sm:mr-2"></i>HTML
+                        </a>
+                        @endif
+                        @if($riverMapPng)
+                        <a href="/hidrologi/file/download/{{ $riverMapPng->id }}"
+                            class="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-image mr-1 sm:mr-2"></i>PNG
+                        </a>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Map Container --}}
+                <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
+
+                    @if($riverMapHtml)
+                    {{-- Interactive HTML Map --}}
+                    <div class="relative map-container">
+                        <div id="mapLoadingOverlay" class="absolute inset-0 bg-white flex items-center justify-center z-10">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+                                <p class="text-gray-600 font-semibold">{{ __('messages.map_loading') }}</p>
+                                <p class="text-sm text-gray-400 mt-1">{{ __('messages.map_loading_wait') }}</p>
+                            </div>
+                        </div>
+                        <iframe
+                            id="riverMapFrame"
+                            src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}"
+                            class="w-full border-0"
+                            style="height: 600px; min-height: 600px;"
+                            title="{{ __('messages.interactive_river_map') }}"
+                            onload="setTimeout(function(){ document.getElementById('mapLoadingOverlay').style.display='none'; }, 500);"
+                        ></iframe>
+                    </div>
+
+                    {{-- Info Banner --}}
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                <i class="fas fa-info-circle text-blue-500 shrink-0"></i>
+                                <span>{{ __('messages.map_info_tip') }}</span>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <a href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" target="_blank"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition inline-flex items-center gap-2 whitespace-nowrap">
+                                    <i class="fas fa-external-link-alt"></i>Fullscreen
+                                </a>
+                                <a href="{{ route('hidrologi.file.download', $riverMapHtml->id) }}"
+                                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition inline-flex items-center gap-2 whitespace-nowrap">
+                                    <i class="fas fa-download"></i>{{ __('messages.download') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    @elseif($riverMapPng)
+                    {{-- Static PNG Fallback --}}
+                    <img
+                        src="{{ route('hidrologi.file.preview', $riverMapPng->id) }}"
+                        alt="{{ __('messages.interactive_river_map') }}"
+                        class="w-full h-auto"
+                        style="max-height: 600px; object-fit: contain;"
+                        onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2216%22%3EImage not available%3C/text%3E%3C/svg%3E';"
+                    />
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-t-2 border-yellow-200 p-3">
+                        <div class="flex items-center gap-2 text-sm text-yellow-800">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 shrink-0"></i>
+                            <span>{{ __('messages.map_static_fallback') }}</span>
+                        </div>
+                    </div>
+
+                    @else
+                    {{-- No map at all --}}
+                    <div class="flex items-center justify-center py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
+                        <div class="text-center max-w-sm">
+                            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                                <i class="fas fa-map text-yellow-600 text-3xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">{{ __('messages.map_not_ready_title') }}</h4>
+                            <p class="text-gray-500 text-sm mb-4">{{ __('messages.map_not_ready_desc') }}</p>
+                            <button onclick="location.reload()"
+                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105">
+                                <i class="fas fa-sync-alt mr-2"></i>{{ __('messages.refresh_page') }}
+                            </button>
+                        </div>
+                    </div>
+                    @endif
+
+                </div>
+
+                {{-- Map Info Cards --}}
+                @if($riverMapPng || $riverMapHtml)
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                                <i class="fas fa-map-marker-alt text-blue-600"></i>
                             </div>
                             <div class="min-w-0">
-                                <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 flex items-center flex-wrap">
-                                    <span class="mr-2">🌊 {{ __('messages.interactive_river_map') }}</span>
-                                    <span class="text-xs bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full animate-pulse">NEW</span>
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ __('messages.river_network_visualization') }}</p>
+                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_analysis_location') }}</p>
+                                <p class="text-sm font-bold text-gray-800 truncate">{{ $job->location_name ?? 'N/A' }}</p>
                             </div>
                         </div>
-                        
-                        <!-- Action Buttons - Responsive -->
-                        <div class="flex flex-wrap gap-2">
-                            @if($riverMapHtml)
-                                <button onclick="openMapFullscreen()" class="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                                    <i class="fas fa-expand mr-1 sm:mr-2"></i><span class="hidden xs:inline">Fullscreen</span>
-                                </button>
-                                <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}" class="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                                    <i class="fas fa-download mr-1 sm:mr-2"></i><span class="hidden sm:inline">Download HTML</span><span class="sm:hidden">HTML</span>
-                                </a>
-                            @endif
-                            @if($riverMapPng)
-                                <a href="/hidrologi/file/download/{{ $riverMapPng->id }}" class="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                                    <i class="fas fa-image mr-1 sm:mr-2"></i><span class="hidden sm:inline">Download PNG</span><span class="sm:hidden">PNG</span>
-                                </a>
-                            @endif
+                        <div class="text-xs text-gray-500 bg-blue-50 rounded-lg px-2 py-1.5 font-mono">
+                            <i class="fas fa-crosshairs mr-1 text-blue-400"></i>
+                            {{ number_format($job->latitude, 4) }}, {{ number_format($job->longitude, 4) }}
                         </div>
                     </div>
 
-                    <!-- Map Container -->
-                    <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
-                        @if($riverMapHtml)
-                            <!-- Interactive Map (HTML) in iframe -->
-                            <div class="relative map-container">
-                                <!-- Loading Overlay -->
-                                <div id="mapLoadingOverlay" class="absolute inset-0 bg-white flex items-center justify-center z-10">
-                                    <div class="text-center">
-                                        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-                                        <p class="text-gray-600 font-semibold">Memuat peta interaktif...</p>
-                                        <p class="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Interactive Map iframe - NO RESTRICTIONS -->
-                                <iframe 
-                                    id="riverMapFrame"
-                                    src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                    class="w-full border-0"
-                                    style="height: 600px; min-height: 600px;"
-                                    title="Peta Aliran Sungai Interaktif"
-                                    onload="setTimeout(function(){ document.getElementById('mapLoadingOverlay').style.display='none'; console.log('✅ Map loaded'); }, 500);"
-                                ></iframe>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+                                <i class="fas fa-layer-group text-green-600"></i>
                             </div>
-                            
-                            <!-- Info Banner -->
-                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                    <div class="flex items-center space-x-2 text-sm text-gray-700">
-                                        <i class="fas fa-info-circle text-blue-600"></i>
-                                        <span>Peta interaktif dengan marker & buffer. Zoom/pan dengan mouse. Toggle layer di kanan atas.</span>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <a 
-                                            href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" 
-                                            target="_blank"
-                                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
-                                        >
-                                            <i class="fas fa-external-link-alt mr-2"></i>Fullscreen
-                                        </a>
-                                        <a 
-                                            href="{{ route('hidrologi.file.download', $riverMapHtml->id) }}" 
-                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap inline-flex items-center"
-                                        >
-                                            <i class="fas fa-download mr-2"></i>Download
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @elseif($riverMapPng)
-                            <!-- Fallback: Static Map Preview (PNG) jika HTML tidak ada -->
-                            <div class="relative">
-                                <img 
-                                    src="{{ route('hidrologi.file.preview', $riverMapPng->id) }}" 
-                                    alt="Peta Aliran Sungai"
-                                    class="w-full h-auto"
-                                    style="max-height: 600px; object-fit: contain;"
-                                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22600%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23666%22%3EGambar tidak tersedia%3C/text%3E%3C/svg%3E';"
-                                />
-                            </div>
-                            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-t-2 border-yellow-200 p-3">
-                                <div class="flex items-center space-x-2 text-sm text-yellow-800">
-                                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
-                                    <span>Menampilkan peta statis (PNG). Peta interaktif tidak tersedia.</span>
-                                </div>
-                            </div>
-                        @else
-                            <!-- Fallback jika tidak ada peta sama sekali -->
-                            <div class="flex items-center justify-center py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
-                                <div class="text-center max-w-md">
-                                    <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                                        <i class="fas fa-map text-yellow-600 text-4xl"></i>
-                                    </div>
-                                    <h4 class="text-xl font-bold text-gray-800 mb-3">Peta Belum Tersedia</h4>
-                                    <p class="text-gray-600 mb-4">Peta sedang diproses atau belum di-generate.</p>
-                                    <button onclick="location.reload()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
-                                        <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                    
-                    <!-- Map Info & Metadata -->
-                    @if($riverMapPng || $riverMapHtml)
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Quick Info Cards -->
-                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-map-marker-alt text-blue-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 font-semibold">Lokasi Analisis</p>
-                                        <p class="text-sm font-bold text-gray-800">{{ $job->location_name ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                                <div class="text-xs text-gray-600 bg-blue-50 rounded px-2 py-1">
-                                    <i class="fas fa-crosshairs mr-1"></i>
-                                    {{ number_format($job->latitude, 4) }}, {{ number_format($job->longitude, 4) }}
-                                </div>
-                            </div>
-
-                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-layer-group text-green-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 font-semibold">Layer Peta</p>
-                                        <p class="text-sm font-bold text-gray-800">4 Data Sources</p>
-                                    </div>
-                                </div>
-                                <div class="text-xs text-gray-600 bg-green-50 rounded px-2 py-1">
-                                    <i class="fas fa-database mr-1"></i>
-                                    HydroSHEDS, JRC GSW, SRTM, OSM
-                                </div>
-                            </div>
-
-                            <div class="bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-expand-arrows-alt text-purple-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 font-semibold">Area Buffer</p>
-                                        <p class="text-sm font-bold text-gray-800">10 km radius</p>
-                                    </div>
-                                </div>
-                                <div class="text-xs text-gray-600 bg-purple-50 rounded px-2 py-1">
-                                    <i class="fas fa-ruler-combined mr-1"></i>
-                                    Area analisis jaringan sungai
-                                </div>
+                            <div>
+                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_layers') }}</p>
+                                <p class="text-sm font-bold text-gray-800">4 {{ __('messages.map_data_sources') }}</p>
                             </div>
                         </div>
+                        <div class="text-xs text-gray-500 bg-green-50 rounded-lg px-2 py-1.5">
+                            <i class="fas fa-database mr-1 text-green-400"></i>
+                            HydroSHEDS, JRC GSW, SRTM, OSM
+                        </div>
+                    </div>
 
-                        <!-- Metadata Detail -->
-                        @if($riverMapMetadata)
-                            <div class="mt-4 bg-white rounded-lg p-4 shadow-sm border border-cyan-200">
-                                <button onclick="toggleRiverMetadata()" class="w-full flex items-center justify-between text-left">
-                                    <div class="flex items-center space-x-3">
-                                        <i class="fas fa-info-circle text-cyan-600"></i>
-                                        <span class="font-semibold text-gray-800">Detail Metadata Peta Sungai</span>
-                                    </div>
-                                    <i id="metadataChevron" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
-                                </button>
-                                <div id="riverMetadataContent" class="hidden mt-4 pt-4 border-t border-gray-200">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div class="bg-blue-50 rounded-lg p-3">
-                                            <p class="text-xs font-semibold text-blue-700 mb-2">📊 Data Sources</p>
-                                            <ul class="text-sm text-gray-700 space-y-1">
-                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>HydroSHEDS - Flow Accumulation</li>
-                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>JRC Global Surface Water</li>
-                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>SRTM DEM - Elevation</li>
-                                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>OpenStreetMap - Basemap</li>
-                                            </ul>
-                                        </div>
-                                        <div class="bg-green-50 rounded-lg p-3">
-                                            <p class="text-xs font-semibold text-green-700 mb-2">🗺️ Map Features</p>
-                                            <ul class="text-sm text-gray-700 space-y-1">
-                                                <li><i class="fas fa-water text-blue-500 mr-2"></i>River network visualization</li>
-                                                <li><i class="fas fa-tint text-cyan-500 mr-2"></i>Water occurrence overlay</li>
-                                                <li><i class="fas fa-mountain text-amber-500 mr-2"></i>Topography (DEM)</li>
-                                                <li><i class="fas fa-layer-group text-purple-500 mr-2"></i>Interactive layer control</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
-                                        <p class="text-xs text-gray-600">
-                                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
-                                            <strong>Tips:</strong> Gunakan kontrol layer di pojok kanan atas peta untuk mengaktifkan/menonaktifkan layer. 
-                                            Zoom in/out untuk detail lebih lanjut. Klik marker untuk info lokasi analisis.
-                                        </p>
-                                    </div>
-                                </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
+                                <i class="fas fa-expand-arrows-alt text-purple-600"></i>
                             </div>
-                        @endif
-                    @endif
+                            <div>
+                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_buffer_area') }}</p>
+                                <p class="text-sm font-bold text-gray-800">10 km radius</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 bg-purple-50 rounded-lg px-2 py-1.5">
+                            <i class="fas fa-ruler-combined mr-1 text-purple-400"></i>
+                            {{ __('messages.map_river_network_area') }}
+                        </div>
+                    </div>
+
                 </div>
+
+                {{-- Metadata Accordion --}}
+                @if($riverMapMetadata)
+                <div class="mt-4 bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
+                    <button onclick="toggleRiverMetadata()" class="w-full flex items-center justify-between text-left">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-info-circle text-cyan-600"></i>
+                            <span class="font-semibold text-gray-800">{{ __('messages.map_metadata_detail') }}</span>
+                        </div>
+                        <i id="metadataChevron" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div id="riverMetadataContent" class="hidden mt-4 pt-4 border-t border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-blue-50 rounded-xl p-3">
+                                <p class="text-xs font-semibold text-blue-700 mb-2">📊 {{ __('messages.map_data_sources') }}</p>
+                                <ul class="text-sm text-gray-700 space-y-1">
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>HydroSHEDS - Flow Accumulation</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>JRC Global Surface Water</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>SRTM DEM - Elevation</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>OpenStreetMap - Basemap</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 rounded-xl p-3">
+                                <p class="text-xs font-semibold text-green-700 mb-2">🗺️ {{ __('messages.map_features') }}</p>
+                                <ul class="text-sm text-gray-700 space-y-1">
+                                    <li><i class="fas fa-water text-blue-500 mr-2"></i>River network visualization</li>
+                                    <li><i class="fas fa-tint text-cyan-500 mr-2"></i>Water occurrence overlay</li>
+                                    <li><i class="fas fa-mountain text-amber-500 mr-2"></i>Topography (DEM)</li>
+                                    <li><i class="fas fa-layer-group text-purple-500 mr-2"></i>Interactive layer control</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200">
+                            <p class="text-xs text-gray-600">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                                <strong>{{ __('messages.tip') }}:</strong> {{ __('messages.map_usage_tip') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @endif
+
+            </div>
+
             @else
-                <!-- Fallback message if no map available -->
-                <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-4 sm:p-6 text-center mb-6">
-                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <i class="fas fa-map-marked-alt text-yellow-600 text-xl sm:text-2xl"></i>
-                    </div>
-                    <h3 class="text-base sm:text-lg font-bold text-yellow-800 mb-2">Peta Interaktif Belum Tersedia</h3>
-                    <p class="text-yellow-700 text-xs sm:text-sm mb-4">
-                        File peta aliran sungai interaktif (HTML) belum di-generate atau belum selesai diproses.
-                    </p>
-                    @if($riverMapPng)
-                        <p class="text-yellow-600 text-xs mb-3">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            File PNG peta tersedia di bagian "File yang Dihasilkan" di bawah.
-                        </p>
-                    @endif
-                    <div class="flex flex-col sm:flex-row justify-center gap-2">
-                        <button onclick="location.reload()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition text-sm">
-                            <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
-                        </button>
-                        @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                            <span class="w-full sm:w-auto px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-lg text-sm inline-block">
-                                <i class="fas fa-clock mr-2"></i>Sedang Diproses...
-                            </span>
-                        @endif
-                    </div>
+            {{-- No map available fallback --}}
+            <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-5 text-center mb-6">
+                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-map-marked-alt text-yellow-600 text-2xl"></i>
                 </div>
+                <h3 class="text-base sm:text-lg font-bold text-yellow-800 mb-2">{{ __('messages.map_not_available') }}</h3>
+                <p class="text-yellow-700 text-sm mb-1">{{ __('messages.map_not_available_desc') }}</p>
+                @if($riverMapPng)
+                <p class="text-yellow-600 text-xs mb-4">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    {{ __('messages.map_png_available_hint') }}
+                </p>
+                @else
+                <div class="mb-4"></div>
+                @endif
+                <div class="flex flex-col sm:flex-row justify-center gap-2">
+                    <button onclick="location.reload()"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition text-sm">
+                        <i class="fas fa-sync-alt mr-2"></i>{{ __('messages.refresh_page') }}
+                    </button>
+                    @if(in_array($job->status, ['pending', 'submitted', 'processing']))
+                    <span class="px-4 py-2 bg-gray-100 text-gray-500 font-semibold rounded-xl text-sm inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-clock"></i>{{ __('messages.map_being_processed') }}
+                    </span>
+                    @endif
+                </div>
+            </div>
             @endif
-
             <!-- Generated Files -->
             @if($job->files->count() > 0)
                 <div class="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-100">
@@ -1982,7 +2013,7 @@
                                 <i class="fas fa-file-download text-blue-600 text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-bold text-gray-800">File yang Dihasilkan</h3>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800">{{ __('messages.generated_files') }}</h3>
                                 <p class="text-xs sm:text-sm text-gray-500">Total {{ $job->files->count() }} file</p>
                             </div>
                         </div>
@@ -1990,7 +2021,7 @@
                         <!-- Filter Buttons - Responsive -->
                         <div class="flex flex-wrap gap-2">
                             <button onclick="filterFiles('all')" class="filter-btn active px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="all">
-                                <i class="fas fa-th mr-1"></i><span class="hidden xs:inline">Semua</span><span class="xs:hidden">All</span>
+                                <i class="fas fa-th mr-1"></i><span class="hidden xs:inline">{{ __('messages.filter_all') }}</span><span class="xs:hidden">All</span>
                             </button>
                             <button onclick="filterFiles('png')" class="filter-btn px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-all shadow-sm flex-shrink-0" data-type="png">
                                 <i class="fas fa-image mr-1"></i>PNG
@@ -2090,7 +2121,7 @@
                     <div class="flex items-start p-3 sm:p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
                         <div class="w-3 h-3 bg-blue-600 rounded-full mt-1.5 mr-3 shadow shrink-0"></div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs sm:text-sm font-extrabold text-gray-900">Dibuat</p>
+                            <p class="text-xs sm:text-sm font-extrabold text-gray-900">{{ __('messages.created_label') }}</p>
                             <p class="text-xs text-gray-600 mt-0.5 break-words">{{ $job->created_at->format('d M Y, H:i') }}</p>
                         </div>
                     </div>
@@ -2098,7 +2129,7 @@
                         <div class="flex items-start p-3 sm:p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
                             <div class="w-3 h-3 bg-cyan-600 rounded-full mt-1.5 mr-3 shadow shrink-0"></div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">Dikirim</p>
+                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">{{ __('messages.submitted_label') }}</p>
                                 <p class="text-xs text-gray-600 mt-0.5 break-words">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
@@ -2107,7 +2138,7 @@
                         <div class="flex items-start p-3 sm:p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
                             <div class="w-3 h-3 bg-yellow-600 rounded-full mt-1.5 mr-3 shadow shrink-0"></div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">Mulai Diproses</p>
+                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">{{__('messages.started_processing') }}</p>
                                 <p class="text-xs text-gray-600 mt-0.5 break-words">{{ $job->started_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
@@ -2116,7 +2147,7 @@
                         <div class="flex items-start p-3 sm:p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
                             <div class="w-3 h-3 bg-green-600 rounded-full mt-1.5 mr-3 shadow shrink-0"></div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">Selesai</p>
+                                <p class="text-xs sm:text-sm font-extrabold text-gray-900">{{__('messages.finished_label') }}</p>
                                 <p class="text-xs text-gray-600 mt-0.5 break-words">{{ $job->completed_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
@@ -2130,7 +2161,7 @@
                     <div class="w-11 h-11 bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                         <i class="fas fa-chart-bar text-white text-lg"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-extrabold text-purple-900">Statistik</h3>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-purple-900">{{ __('messages.statistics') }}</h3>
                 </div>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
@@ -2165,7 +2196,7 @@
                             <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-folder text-white"></i>
                             </div>
-                            Total File
+                            {{ __('messages.total_files') }}
                         </span>
                         <span class="font-extrabold text-white text-xl sm:text-2xl">{{ $job->total_files }}</span>
                     </div>
