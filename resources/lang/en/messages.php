@@ -517,4 +517,23 @@ return [
     'tip'                        => 'Tip',
     'download'                   => 'Download',
 
+    //create analysis
+    'select_location_on_map_or_enter_coordinates' => 'Pilih lokasi di peta atau masukkan koordinat secara manual',
+    'map_tips'                          => 'Klik di mana saja pada peta untuk memilih lokasi, atau seret penanda. Anda juga bisa menggunakan kotak pencarian untuk menemukan lokasi tertentu.',
+    'auto_filled_from_coordinates'      => 'Otomatis terisi dari koordinat...',
+    'auto_filled_when_select_location'  => 'Otomatis terisi saat Anda memilih lokasi di peta',
+    'full_address_auto_filled'          => 'Alamat lengkap akan otomatis terisi dari lokasi yang dipilih',
+    'to_lowercase'                      => 'hingga',
+    'determine_time_range_for_analysis' => 'Tentukan rentang waktu untuk analisis hidrologi',
+    'date_validation_important'         => '<strong>Penting:</strong> Tanggal mulai harus sebelum tanggal selesai. Tanggal selesai tidak boleh melebihi hari ini.',
+    'step_select_location'              => '<strong>Pilih Lokasi</strong> — Klik pada peta atau masukkan koordinat secara manual.',
+    'step_submit_job'                   => '<strong>Submit Pekerjaan</strong> — Tentukan rentang tanggal analisis dan kirim formulir.',
+    'step_monitor_progress'             => '<strong>Pantau Progres</strong> — Pantau kemajuan analisis secara real-time.',
+    'step_download_results'             => '<strong>Unduh Hasil</strong> — Unduh grafik, data CSV, dan peta interaktif.',
+    'processing_time'                   => '<strong>Waktu Proses:</strong> Analisis biasanya membutuhkan 5–15 menit tergantung rentang tanggal dan ketersediaan data.',
+    'notification'                      => '<strong>Auto Refresh:</strong> Halaman status akan otomatis refresh setiap 10 detik untuk menampilkan progres terbaru.',
+    'storage'                           => '<strong>Penyimpanan:</strong> Hasil disimpan dan dapat diakses kapan saja dari halaman daftar pekerjaan.',
+    'use_search_feature'                => 'Gunakan kotak pencarian di peta untuk menemukan lokasi tertentu dengan cepat berdasarkan nama atau alamat.',
+    'choose_appropriate_date_range'     => 'Pilih rentang tanggal yang sesuai — periode lebih panjang menghasilkan analisis lebih komprehensif namun membutuhkan waktu lebih lama.',
+
 ];
