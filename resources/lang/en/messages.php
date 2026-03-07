@@ -517,23 +517,24 @@ return [
     'tip'                        => 'Tip',
     'download'                   => 'Download',
 
-    //create analysis
-    'select_location_on_map_or_enter_coordinates' => 'Pilih lokasi di peta atau masukkan koordinat secara manual',
-    'map_tips'                          => 'Klik di mana saja pada peta untuk memilih lokasi, atau seret penanda. Anda juga bisa menggunakan kotak pencarian untuk menemukan lokasi tertentu.',
-    'auto_filled_from_coordinates'      => 'Otomatis terisi dari koordinat...',
-    'auto_filled_when_select_location'  => 'Otomatis terisi saat Anda memilih lokasi di peta',
-    'full_address_auto_filled'          => 'Alamat lengkap akan otomatis terisi dari lokasi yang dipilih',
-    'to_lowercase'                      => 'hingga',
-    'determine_time_range_for_analysis' => 'Tentukan rentang waktu untuk analisis hidrologi',
-    'date_validation_important'         => '<strong>Penting:</strong> Tanggal mulai harus sebelum tanggal selesai. Tanggal selesai tidak boleh melebihi hari ini.',
-    'step_select_location'              => '<strong>Pilih Lokasi</strong> — Klik pada peta atau masukkan koordinat secara manual.',
-    'step_submit_job'                   => '<strong>Submit Pekerjaan</strong> — Tentukan rentang tanggal analisis dan kirim formulir.',
-    'step_monitor_progress'             => '<strong>Pantau Progres</strong> — Pantau kemajuan analisis secara real-time.',
-    'step_download_results'             => '<strong>Unduh Hasil</strong> — Unduh grafik, data CSV, dan peta interaktif.',
-    'processing_time'                   => '<strong>Waktu Proses:</strong> Analisis biasanya membutuhkan 5–15 menit tergantung rentang tanggal dan ketersediaan data.',
-    'notification'                      => '<strong>Auto Refresh:</strong> Halaman status akan otomatis refresh setiap 10 detik untuk menampilkan progres terbaru.',
-    'storage'                           => '<strong>Penyimpanan:</strong> Hasil disimpan dan dapat diakses kapan saja dari halaman daftar pekerjaan.',
-    'use_search_feature'                => 'Gunakan kotak pencarian di peta untuk menemukan lokasi tertentu dengan cepat berdasarkan nama atau alamat.',
-    'choose_appropriate_date_range'     => 'Pilih rentang tanggal yang sesuai — periode lebih panjang menghasilkan analisis lebih komprehensif namun membutuhkan waktu lebih lama.',
-
+    // ==========================================
+    // CREATE PAGE - MISSING KEYS
+    // ==========================================
+    'select_location_on_map_or_enter_coordinates' => 'Select location on map or enter coordinates manually',
+    'map_tips'                          => 'Click on the map to select a location, or drag the marker. You can also use the search box to find a specific place.',
+    'auto_filled_from_coordinates'      => 'Auto-filled from coordinates',
+    'auto_filled_when_select_location'  => 'Automatically filled when you select a location on the map',
+    'full_address_auto_filled'          => 'Full address will be auto-filled when location is selected',
+    'determine_time_range_for_analysis' => 'Determine the time range for hydrological analysis',
+    'date_validation_important'         => '<strong>Important:</strong> Minimum analysis period is <strong>30 days</strong>. Recommended: 6 months to 1 year for better results.',
+    'to_lowercase'                      => 'to',
+    'step_select_location'              => 'Select location on the map or enter coordinates manually',
+    'step_submit_job'                   => 'Submit the analysis job and wait for processing',
+    'step_monitor_progress'             => 'Monitor job progress in real-time on the dashboard',
+    'step_download_results'             => 'Download results: charts, CSV data, and interactive maps',
+    'processing_time'                   => 'Processing takes <strong>15–45 minutes</strong> depending on the date range selected.',
+    'notification'                      => 'You will be <strong>notified</strong> when the analysis is complete.',
+    'storage'                           => 'Results are <strong>saved</strong> and can be accessed anytime.',
+    'use_search_feature'                => 'Use the search feature on the map to find locations faster.',
+    'choose_appropriate_date_range'     => 'Choose an appropriate date range — longer periods give more accurate results.',
 ];
