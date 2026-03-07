@@ -101,7 +101,7 @@ class HidrologiJobController extends Controller
                     'job_id' => $apiData['job_id'],
                     'status' => 'submitted',
                     'submitted_at' => now(),
-                    'status_message' => 'Job berhasil di-submit ke API',
+                    'status_message' => 'Job successfully submitted to API, waiting for processing',
                     'api_response' => json_encode($apiData)
                 ]);
 
@@ -126,7 +126,7 @@ class HidrologiJobController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Job berhasil di-submit',
+                    'message' => 'Job successfully submitted to API, waiting for processing',
                     'job_id' => $job->id,
                     'job_uuid' => $apiData['job_id']
                 ]);
@@ -603,12 +603,12 @@ class HidrologiJobController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Job berhasil dihapus'
+                'message' => 'Job successfully deleted'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghapus job: ' . $e->getMessage()
+                'message' => 'Failed to delete job: ' . $e->getMessage()
             ], 500);
         }
     }

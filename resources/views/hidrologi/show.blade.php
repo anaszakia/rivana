@@ -593,7 +593,7 @@
                         <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
                                 <i class="fas fa-check-circle text-teal-500 mr-2"></i>
-                                Kualitas Data
+                                {{ __('messages.data_quality') }}
                             </h4>
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between items-center py-2 border-b">
