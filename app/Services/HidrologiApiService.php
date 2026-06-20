@@ -398,6 +398,6 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
      */
     public function getAuthHeaderString()
     {
-        return 'Bearer ' . $this->apiToken;
+        return 'Authorization: Bearer ' . $this->apiToken;
     }
 }
