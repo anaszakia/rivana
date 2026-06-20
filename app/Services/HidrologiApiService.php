@@ -392,4 +392,12 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
             ];
         }
     }
+
+    /**
+     * Get Authorization header string
+     */
+    public function getAuthHeaderString()
+    {
+        return 'Bearer ' . $this->apiToken;
+    }
 }
