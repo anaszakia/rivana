@@ -345,7 +345,7 @@ class HidrologiJobController extends Controller
                     'job_uuid' => $job->job_id,
                     'summary_has_twi' => isset($summary['twi_analysis']),
                     'twi_is_array' => isset($summary['twi_analysis']) && is_array($summary['twi_analysis']),
-                    'twi_keys' => isset($summary['twi_analysis']) ? array_keys($summary['twi_analysis']) : null,
+                    'twi_keys' => (isset($summary['twi_analysis']) && is_array($summary['twi_analysis'])) ? array_keys($summary['twi_analysis']) : null,
                     'twi_status' => $summary['twi_analysis']['status'] ?? 'no_status_key',
                     'twi_enhanced' => $summary['twi_analysis']['twi_enhanced'] ?? 'not_found',
                     'twi_risk_level' => $summary['twi_analysis']['risk_level'] ?? 'not_found',
@@ -353,7 +353,7 @@ class HidrologiJobController extends Controller
                     'twi_has_rtho' => isset($summary['twi_analysis']['rtho_recommendations']),
                     'full_twi_structure' => isset($summary['twi_analysis']) ? json_encode($summary['twi_analysis'], JSON_PRETTY_PRINT) : 'TWI data not found in summary',
                     'api_result_keys' => isset($summaryResult['data']) ? array_keys($summaryResult['data']) : [],
-                    'summary_top_level_keys' => isset($summary) ? array_keys($summary) : []
+                    'summary_top_level_keys' => (isset($summary) && is_array($summary)) ? array_keys($summary) : []
                 ]);
             } else {
                 Log::warning('Failed to get summary from API', [
