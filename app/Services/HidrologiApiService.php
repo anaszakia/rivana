@@ -77,7 +77,11 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
             ]);
 
             if ($response->successful()) {
-                $responseData = $response->json();
+                // Sanitize invalid JSON tokens (NaN, Infinity, -Infinity) yang
+                // dikirim oleh API Python tapi tidak valid menurut standar JSON
+                $rawBody = $response->body();
+                $sanitized = preg_replace('/\b(-?Infinity|NaN)\b/', 'null', $rawBody);
+                $data = json_decode($sanitized, true);
                 
                 // API Python mengembalikan: {job_id, status, message}
                 return [
