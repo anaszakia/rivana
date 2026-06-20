@@ -289,7 +289,7 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
                     'twi_enhanced' => isset($data['twi_analysis']['twi_enhanced']) ? $data['twi_analysis']['twi_enhanced'] : 'not_found',
                     'twi_risk_level' => isset($data['twi_analysis']['risk_level']) ? $data['twi_analysis']['risk_level'] : 'not_found',
                     'response_size' => strlen($response->body()),
-                    'top_level_keys' => array_keys($data)
+                    'top_level_keys' => is_array($data) ? array_keys($data) : []
                 ]);
                 
                 return [
