@@ -40,8 +40,7 @@ class HidrologiApiService
     /**
      * Submit job baru ke Python API
      */
-    // Ganti baris 43:
-public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName = null, $dasAreaKm2 = null, $dasLevel = null, $hybasId = null)
+    public function submitJob($longitude, $latitude, $startDate, $endDate)
     {
         try {
             // Konversi ke float untuk memastikan tipe data benar
@@ -50,14 +49,10 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
             
             // Data yang akan dikirim sesuai format API Python
             $payload = [
-                'longitude'    => $lng,
-                'latitude'     => $lat,
-                'start'        => $startDate,
-                'end'          => $endDate,
-                'das_name'     => $dasName,
-                'das_area_km2' => $dasAreaKm2 ? floatval($dasAreaKm2) : null,
-                'das_level'    => $dasLevel ? intval($dasLevel) : null,
-                'hybas_id'     => $hybasId ? floatval($hybasId) : null,
+                'longitude' => $lng,
+                'latitude' => $lat,
+                'start' => $startDate,
+                'end' => $endDate
             ];
             
             // Log payload untuk debugging

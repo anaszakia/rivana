@@ -50,12 +50,17 @@ class HidrologiJobController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'longitude' => 'required|numeric|between:-180,180',
-            'latitude' => 'required|numeric|between:-90,90',
-            'start_date' => 'required|date|before:end_date',
-            'end_date' => 'required|date|after:start_date|before_or_equal:today',
-            'location_name' => 'nullable|string|max:255',
-            'location_description' => 'nullable|string|max:1000'
+            'longitude'          => 'required|numeric|between:-180,180',
+            'latitude'           => 'required|numeric|between:-90,90',
+            'start_date'         => 'required|date|before:end_date',
+            'end_date'           => 'required|date|after:start_date|before_or_equal:today',
+            'location_name'      => 'nullable|string|max:255',
+            'location_description' => 'nullable|string|max:1000',
+            // Tambah ini:
+            'das_name'           => 'nullable|string|max:255',
+            'das_area_km2'       => 'nullable|numeric',
+            'das_level'          => 'nullable|integer|between:3,8',
+            'hybas_id'           => 'nullable|numeric',
         ]);
 
         DB::beginTransaction();
@@ -91,7 +96,12 @@ class HidrologiJobController extends Controller
                 $validated['longitude'],
                 $validated['latitude'],
                 $validated['start_date'],
-                $validated['end_date']
+                $validated['end_date'],
+                // Tambah ini:
+                $validated['das_name']    ?? null,
+                $validated['das_area_km2'] ?? null,
+                $validated['das_level']   ?? null,
+                $validated['hybas_id']    ?? null,
             );
 
             if ($result['success']) {
