@@ -347,4 +347,44 @@ class HidrologiApiService
             ];
         }
     }
+
+    /**
+     * Ambil polygon DAS (HydroSHEDS) untuk titik & level tertentu.
+     * Dipakai oleh form create (Step 2 - pilih level DAS), BUKAN setelah job submit.
+     */
+    public function getDasInfo($lat, $lon, $level)
+    {
+        try {
+            $response = Http::timeout(30) // query GEE FeatureCollection bisa beberapa detik
+                ->withHeaders($this->getHeaders())
+                ->post("{$this->apiUrl}/das-info", [
+                    'lat'   => floatval($lat),
+                    'lon'   => floatval($lon),
+                    'level' => intval($level),
+                ]);
+
+            $data = $response->json();
+
+            if ($response->successful() && ($data['success'] ?? false)) {
+                return [
+                    'success' => true,
+                    'data' => $data
+                ];
+            }
+
+            return [
+                'success' => false,
+                'status'  => $response->status(),
+                'message' => $data['message'] ?? 'DAS tidak ditemukan untuk lokasi/level ini'
+            ];
+
+        } catch (Exception $e) {
+            Log::error('Hidrologi API Get DAS Info Error: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'status'  => 500,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

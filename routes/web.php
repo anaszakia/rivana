@@ -119,6 +119,10 @@ Route::group([], function () {
         // Bulk delete jobs
         Route::post('/bulk-delete', [HidrologiJobController::class, 'bulkDestroy'])
             ->name('bulk-destroy');
+
+        //das info
+        Route::post('/das-info', [HidrologiJobController::class, 'dasInfo'])
+            ->name('das-info');
         
         // File routes
         Route::prefix('file')->name('file.')->group(function () {

@@ -175,6 +175,34 @@ class HidrologiJobController extends Controller
     }
 
     /**
+     * AJAX endpoint Step 2 form create — ambil polygon DAS dari Python API
+     * berdasarkan titik (lat/lon) & level HydroSHEDS yang dipilih user.
+     */
+    public function dasInfo(Request $request)
+    {
+        $validated = $request->validate([
+            'lat'   => 'required|numeric|between:-90,90',
+            'lon'   => 'required|numeric|between:-180,180',
+            'level' => 'required|integer|between:3,8',
+        ]);
+
+        $result = $this->apiService->getDasInfo(
+            $validated['lat'],
+            $validated['lon'],
+            $validated['level']
+        );
+
+        if ($result['success']) {
+            return response()->json(array_merge(['success' => true], $result['data']));
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $result['message'] ?? 'DAS tidak ditemukan untuk lokasi/level ini'
+        ], $result['status'] ?? 404);
+    }
+
+    /**
      * Cek status job (untuk AJAX polling)
      */
     public function checkStatus($id)
@@ -438,7 +466,7 @@ class HidrologiJobController extends Controller
                         'preview_url' => $apiBaseUrl . ($file['preview_url'] ?? "/preview/{$job->job_id}/{$file['name']}"),
                         'display_name' => $this->getDisplayName($file['name']),
                         'description' => $this->getFileDescription($file['name']),
-                        'display_order' => $file['order'] ?? $filesStored,
+                        'display_order' => $file['display_order'] ?? $filesStored,
                         'is_available' => true
                     ]
                 );
@@ -515,23 +543,28 @@ class HidrologiJobController extends Controller
             'RIVANA_Morphometry_Summary.png'        => 'Morphometry Summary',
             'RIVANA_Morphology_Ecology_Dashboard.png' => 'Morphology & Ecology Dashboard',
             'RIVANA_Baseline_Comparison.png'        => 'ML vs Traditional Comparison',
+            'RIVANA_TWI_Dashboard.png'              => '🌊 TWI Analysis Dashboard (Flood Zones & RTH)',
 
             // River Network Map files
-            'peta_aliran_sungai_interaktif.html'    => '🗺️ Interactive River Network Map',
-            'peta_aliran_sungai.png'                => '📷 River Network Map (Image)',
-            'peta_aliran_sungai_metadata.json'      => '📊 River Map Metadata',
+            'RIVANA_Peta_Aliran_Sungai.html'        => '🗺️ Interactive River Network Map',
+            'RIVANA_Peta_Aliran_Sungai.png'         => '📷 River Network Map (Image)',
+            'RIVANA_Metadata_Peta.json'             => '📊 River Map Metadata',
 
             // CSV files
             'RIVANA_Hasil_Complete.csv'             => 'Complete Simulation Results',
             'RIVANA_Monthly_WaterBalance.csv'       => 'Monthly Water Balance',
             'RIVANA_Prediksi_30Hari.csv'            => '30-Day Forecast Data',
-            'RIVANA_Data_GEE_Raw.csv'               => 'Raw Satellite Data (GEE)',
+            'GEE_Raw_Data.csv'                      => 'Raw Satellite Data (GEE)',
+            'RIVANA_WaterBalance_Indices.csv'       => 'Water Balance Indices',
 
             // JSON files
             'RIVANA_WaterBalance_Validation.json'   => 'Water Balance Validation',
             'RIVANA_Model_Validation_Complete.json' => 'Complete Model Validation',
-            'baseline_comparison.json'              => 'Baseline Comparison',
-            'model_validation_report.json'          => 'Model Validation Report',
+            'RIVANA_Model_Validation_Report.json'   => 'Model Validation Report',
+            'RIVANA_Baseline_Comparison.json'       => 'Baseline Comparison',
+            'GEE_Data_Metadata.json'                => 'GEE Data Source & Statistics',
+            'RIVANA_TWI_Analysis.json'              => '🌊 TWI Analysis, Flood Zones & Drainage',
+            'RIVANA_Dam_Cost_Estimate.json'         => '🏗️ Dam Construction Cost Estimate',
         ];
 
         return $names[$filename] ?? $filename;
@@ -557,23 +590,28 @@ class HidrologiJobController extends Controller
             'RIVANA_Morphometry_Summary.png'        => 'Watershed morphometric parameters: area, shape, slope, drainage',
             'RIVANA_Morphology_Ecology_Dashboard.png' => 'River geomorphological condition and aquatic ecosystem health',
             'RIVANA_Baseline_Comparison.png'        => 'Accuracy comparison between Machine Learning model and traditional methods',
+            'RIVANA_TWI_Dashboard.png'              => 'Topographic Wetness Index analysis: flood-prone zones, RTH (green open space), and drainage recommendations',
 
             // River Network Map files
-            'peta_aliran_sungai_interaktif.html'    => 'Interactive map with zoom, layer toggle, and river flow information. Open in browser for detailed exploration.',
-            'peta_aliran_sungai.png'                => 'Static visualization of river network with flow accumulation and topography. Suitable for reports and presentations.',
-            'peta_aliran_sungai_metadata.json'      => 'Complete map metadata: coordinates, flow characteristics, water statistics, and satellite data sources.',
+            'RIVANA_Peta_Aliran_Sungai.html'        => 'Interactive map with zoom, layer toggle, and river flow information. Open in browser for detailed exploration.',
+            'RIVANA_Peta_Aliran_Sungai.png'         => 'Static visualization of river network with flow accumulation and topography. Suitable for reports and presentations.',
+            'RIVANA_Metadata_Peta.json'             => 'Complete map metadata: coordinates, flow characteristics, water statistics, and satellite data sources.',
 
             // CSV files
             'RIVANA_Hasil_Complete.csv'             => 'Complete time series data: rainfall, temperature, ET, discharge, reservoir level, supply-demand',
             'RIVANA_Monthly_WaterBalance.csv'       => 'Monthly summary: precipitation, evapotranspiration, infiltration, runoff, storage',
             'RIVANA_Prediksi_30Hari.csv'            => '30-day rainfall and reservoir level forecast from ML model',
-            'RIVANA_Data_GEE_Raw.csv'               => 'Raw data from Google Earth Engine: rainfall, temperature, soil moisture, NDVI, LST',
+            'GEE_Raw_Data.csv'                      => 'Raw data from Google Earth Engine: rainfall, temperature, soil moisture, NDVI, evapotranspiration',
+            'RIVANA_WaterBalance_Indices.csv'       => 'Calculated water balance indices derived from the simulation results',
 
             // JSON files
             'RIVANA_WaterBalance_Validation.json'   => 'Water balance validation with maximum 5% error tolerance',
             'RIVANA_Model_Validation_Complete.json' => 'Model validation metrics: NSE, R², PBIAS, RMSE for all parameters',
-            'baseline_comparison.json'              => 'ML vs traditional method performance comparison (NRECA, SCS-CN)',
-            'model_validation_report.json'          => 'Complete validation report with interpretation and recommendations',
+            'RIVANA_Model_Validation_Report.json'   => 'Complete validation report with interpretation and recommendations',
+            'RIVANA_Baseline_Comparison.json'       => 'ML vs traditional method performance comparison (NRECA, SCS-CN)',
+            'GEE_Data_Metadata.json'                => 'Google Earth Engine data sources and statistics used in the analysis',
+            'RIVANA_TWI_Analysis.json'              => 'Detailed TWI analysis: flood zone coordinates, RTH recommendations, and drainage planning',
+            'RIVANA_Dam_Cost_Estimate.json'         => 'Estimated dam construction cost: minimum/moderate/maximum HPS, RAB components, and work schedule (LPSE PUPR benchmark)',
         ];
 
         return $descriptions[$filename] ?? null;

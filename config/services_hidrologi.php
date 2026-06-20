@@ -12,13 +12,13 @@ return [
 
     'hidrologi' => [
         // API Base URL
-        'api_url' => env('RIVANA_API_URL', 'https://itriverdna.my.id:8001'),
+        'api_url'   => env('RIVANA_API_URL', env('HIDROLOGI_API_URL', 'http://localhost:8000')),
         
         // Bearer Token untuk Authentication
-        'api_token' => env('RIVANA_API_TOKEN'),
+        'api_token' => env('RIVANA_API_TOKEN', env('HIDROLOGI_API_KEY')),
         
         // Request Timeout (dalam detik)
-        'timeout' => env('RIVANA_API_TIMEOUT', 300),
+        'timeout'   => env('RIVANA_API_TIMEOUT', env('HIDROLOGI_API_TIMEOUT', 300)),
         
         // Enable/Disable Logging
         'enable_logging' => env('RIVANA_API_LOGGING', true),

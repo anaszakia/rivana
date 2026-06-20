@@ -20,6 +20,10 @@ class HidrologiJobs extends Model
         'end_date',
         'location_name',
         'location_description',
+        'das_name',
+        'das_area_km2',
+        'das_level',
+        'hybas_id',
         'status',
         'progress',
         'status_message',
@@ -38,6 +42,7 @@ class HidrologiJobs extends Model
     ];
 
     protected $casts = [
+        'das_area_km2' => 'decimal:2',
         'submitted_at' => 'datetime',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',

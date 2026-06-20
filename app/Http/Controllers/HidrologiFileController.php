@@ -39,22 +39,22 @@ class HidrologiFileController extends Controller
                     'timeout' => 30,
                     'ignore_errors' => true,
                     'follow_location' => 1,
-                    'header' => "Authorization: Bearer " . config('services_hidrologi.hidrologi.api_token')
+                    'header' => $this->apiService->getAuthHeaderString()
                 ]
             ]);
             
-            // Fetch file content
-            $fileContent = @file_get_contents($downloadUrl, false, $context);
+            // Fetch file content (validates HTTP status, won't return error bodies as "success")
+            $fileContent = $this->fetchRemoteFile($downloadUrl, $context);
             
-            if ($fileContent === false) {
+            if ($fileContent === null) {
                 $error = error_get_last();
-                \Log::error('File download failed - file_get_contents returned false', [
+                \Log::error('File download failed - request unsuccessful or returned no content', [
                     'file_id' => $id,
                     'file_name' => $file->filename,
                     'job_uuid' => $file->job_uuid,
                     'url' => $downloadUrl,
                     'error' => $error['message'] ?? 'Unknown error',
-                    'http_response_header' => $http_response_header ?? 'No headers'
+                    'http_response_status' => $this->lastFetchStatusLine ?? 'No headers'
                 ]);
                 
                 // Return 404 with proper error message
@@ -117,6 +117,55 @@ class HidrologiFileController extends Controller
     }
 
     /**
+     * Holds the status line of the most recent fetchRemoteFile() call, for logging.
+     */
+    private $lastFetchStatusLine = null;
+
+    /**
+     * Fetch a remote file via stream context and validate the HTTP status code.
+     *
+     * file_get_contents() with 'ignore_errors' => true still returns the response
+     * body even on 401/404/500 instead of returning false - so without checking
+     * the actual status line, an API error JSON (e.g. {"error":"Unauthorized"})
+     * would silently be treated as the real file content. This guards against that.
+     *
+     * @return string|null  File content on success (HTTP 2xx), null on any failure
+     */
+    private function fetchRemoteFile($url, $context)
+    {
+        $content = @file_get_contents($url, false, $context);
+        $this->lastFetchStatusLine = $http_response_header[0] ?? null;
+
+        if ($content === false) {
+            return null;
+        }
+
+        if (!$this->isSuccessfulHttpResponse($http_response_header ?? null)) {
+            return null;
+        }
+
+        return $content;
+    }
+
+    /**
+     * Check whether the $http_response_header populated by file_get_contents()
+     * indicates a 2xx HTTP status.
+     */
+    private function isSuccessfulHttpResponse($headers)
+    {
+        if (empty($headers) || !isset($headers[0])) {
+            return false;
+        }
+
+        if (preg_match('#^HTTP/\S+\s+(\d{3})#', $headers[0], $matches)) {
+            $statusCode = (int) $matches[1];
+            return $statusCode >= 200 && $statusCode < 300;
+        }
+
+        return false;
+    }
+
+    /**
      * Preview file (untuk gambar, CSV, JSON)
      */
     public function preview($id)
@@ -144,25 +193,26 @@ class HidrologiFileController extends Controller
                     'timeout' => 30,
                     'ignore_errors' => true,
                     'follow_location' => 1,
-                    'header' => "Authorization: Bearer " . config('services_hidrologi.hidrologi.api_token')
+                    'header' => $this->apiService->getAuthHeaderString()
                 ]
             ]);
             
             // Untuk PNG/Image - fetch dan return sebagai response
             if ($file->isImage()) {
                 // Coba preview URL dulu
-                $imageContent = @file_get_contents($previewUrl, false, $context);
+                $imageContent = $this->fetchRemoteFile($previewUrl, $context);
                 
                 // Jika gagal, coba download URL
-                if ($imageContent === false) {
+                if ($imageContent === null) {
                     \Log::warning('Preview URL failed, trying download URL', [
                         'file_id' => $id,
-                        'preview_url' => $previewUrl
+                        'preview_url' => $previewUrl,
+                        'status' => $this->lastFetchStatusLine ?? 'No headers'
                     ]);
-                    $imageContent = @file_get_contents($downloadUrl, false, $context);
+                    $imageContent = $this->fetchRemoteFile($downloadUrl, $context);
                 }
                 
-                if ($imageContent === false) {
+                if ($imageContent === null) {
                     $error = error_get_last();
                     \Log::error('Image file not found or not accessible from both URLs', [
                         'file_id' => $id,
@@ -176,7 +226,7 @@ class HidrologiFileController extends Controller
                 
                 // Return image dengan proper headers
                 return response($imageContent)
-                    ->header('Content-Type', 'image/' . $file->file_type)
+                    ->header('Content-Type', $this->getMimeType($file->file_type))
                     ->header('Cache-Control', 'public, max-age=86400') // Cache 24 hours
                     ->header('Access-Control-Allow-Origin', '*');
             }
@@ -184,18 +234,19 @@ class HidrologiFileController extends Controller
             // Untuk CSV - fetch dan return sebagai text
             if ($file->file_type === 'csv') {
                 // Coba preview URL dulu
-                $csvContent = @file_get_contents($previewUrl, false, $context);
+                $csvContent = $this->fetchRemoteFile($previewUrl, $context);
                 
                 // Jika gagal, coba download URL
-                if ($csvContent === false) {
+                if ($csvContent === null) {
                     \Log::warning('CSV preview URL failed, trying download URL', [
                         'file_id' => $id,
-                        'preview_url' => $previewUrl
+                        'preview_url' => $previewUrl,
+                        'status' => $this->lastFetchStatusLine ?? 'No headers'
                     ]);
-                    $csvContent = @file_get_contents($downloadUrl, false, $context);
+                    $csvContent = $this->fetchRemoteFile($downloadUrl, $context);
                 }
                 
-                if ($csvContent === false) {
+                if ($csvContent === null) {
                     $error = error_get_last();
                     \Log::error('CSV file not found or not accessible from both URLs', [
                         'file_id' => $id,
@@ -216,18 +267,19 @@ class HidrologiFileController extends Controller
             // Untuk JSON - fetch dan return sebagai JSON
             if ($file->file_type === 'json') {
                 // Coba preview URL dulu
-                $jsonContent = @file_get_contents($previewUrl, false, $context);
+                $jsonContent = $this->fetchRemoteFile($previewUrl, $context);
                 
                 // Jika gagal, coba download URL
-                if ($jsonContent === false) {
+                if ($jsonContent === null) {
                     \Log::warning('JSON preview URL failed, trying download URL', [
                         'file_id' => $id,
-                        'preview_url' => $previewUrl
+                        'preview_url' => $previewUrl,
+                        'status' => $this->lastFetchStatusLine ?? 'No headers'
                     ]);
-                    $jsonContent = @file_get_contents($downloadUrl, false, $context);
+                    $jsonContent = $this->fetchRemoteFile($downloadUrl, $context);
                 }
                 
-                if ($jsonContent === false) {
+                if ($jsonContent === null) {
                     $error = error_get_last();
                     \Log::error('JSON file not found or not accessible from both URLs', [
                         'file_id' => $id,
@@ -248,18 +300,19 @@ class HidrologiFileController extends Controller
             // Untuk HTML - fetch dan return sebagai HTML (untuk peta interaktif)
             if ($file->file_type === 'html') {
                 // Coba preview URL dulu
-                $htmlContent = @file_get_contents($previewUrl, false, $context);
+                $htmlContent = $this->fetchRemoteFile($previewUrl, $context);
                 
                 // Jika gagal, coba download URL
-                if ($htmlContent === false) {
+                if ($htmlContent === null) {
                     \Log::warning('HTML preview URL failed, trying download URL', [
                         'file_id' => $id,
-                        'preview_url' => $previewUrl
+                        'preview_url' => $previewUrl,
+                        'status' => $this->lastFetchStatusLine ?? 'No headers'
                     ]);
-                    $htmlContent = @file_get_contents($downloadUrl, false, $context);
+                    $htmlContent = $this->fetchRemoteFile($downloadUrl, $context);
                 }
                 
-                if ($htmlContent === false) {
+                if ($htmlContent === null) {
                     $error = error_get_last();
                     \Log::error('HTML file not found or not accessible from both URLs', [
                         'file_id' => $id,

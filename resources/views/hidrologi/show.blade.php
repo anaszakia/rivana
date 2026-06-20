@@ -741,45 +741,288 @@
                         </div>
                     @endif
 
-                    <!-- BAGIAN 3: BIAYA & MANFAAT -->
-                    @if(isset($summary['analysis_results']['economics']) && !isset($summary['analysis_results']['economics']['error']))
+                    <!-- BAGIAN 3: PERENCANAAN PEMBANGUNAN BENDUNGAN -->
+                    @if(isset($summary['dam_cost_estimate']) && !isset($summary['dam_cost_estimate']['error']) && !isset($summary['dam_cost_estimate']['status']))
+                        @php
+                            $dam = $summary['dam_cost_estimate'];
+                            $hps = $dam['estimasi_hps'] ?? [];
+                            $skenario = $dam['skenario'] ?? [];
+                            $moderat = $skenario['moderat'] ?? [];
+                            $jadwal = $dam['jadwal'] ?? [];
+                        @endphp
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
-                                <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
-                                {{ strtoupper(__('messages.cost_benefit')) }}
+                                <i class="fas fa-hard-hat text-green-600 mr-2"></i>
+                                PERENCANAAN PEMBANGUNAN BENDUNGAN
                             </h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div class="bg-red-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.cost') }}</div>
-                                    <div class="font-bold text-2xl text-red-700">{{ $summary['analysis_results']['economics']['total_biaya'] ?? 'N/A' }}</div>
+
+                            <!-- Info Bangunan -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm mb-4">
+                                <div class="bg-gray-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Tipe Bangunan</div>
+                                    <div class="font-bold text-gray-800">{{ $dam['tipe_bangunan'] ?? 'N/A' }}</div>
                                 </div>
-                                <div class="bg-green-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.total') }} {{ __('messages.benefit') }}</div>
-                                    <div class="font-bold text-2xl text-green-700">{{ $summary['analysis_results']['economics']['total_manfaat'] ?? 'N/A' }}</div>
+                                <div class="bg-gray-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Provinsi</div>
+                                    <div class="font-bold text-gray-800">{{ $dam['provinsi'] ?? 'N/A' }}</div>
                                 </div>
-                                <div class="bg-blue-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.net_benefit') }}</div>
-                                    <div class="font-bold text-2xl text-blue-700">{{ $summary['analysis_results']['economics']['net_benefit'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="bg-purple-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">{{ __('messages.efficiency') }}</div>
-                                    <div class="font-bold text-2xl text-purple-700">{{ $summary['analysis_results']['economics']['efisiensi'] ?? 'N/A' }}</div>
+                                <div class="bg-gray-50 rounded p-3">
+                                    <div class="text-xs text-gray-600 mb-1">Wilayah (IKK)</div>
+                                    <div class="font-bold text-gray-800">{{ $dam['ikk_wilayah'] ?? 'N/A' }}</div>
                                 </div>
                             </div>
-                            
-                            @if(isset($summary['analysis_results']['economics']['breakdown']))
-                                <div class="mt-3 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">{{ __('messages.breakdown') }} {{ __('messages.cost') }}:</div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        @foreach($summary['analysis_results']['economics']['breakdown'] as $item => $nilai)
+
+                            <!-- Dimensi Tampungan -->
+                            @if(isset($dam['dimensi']))
+                                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                                    <div class="bg-blue-50 rounded p-3">
+                                        <div class="text-xs text-gray-600 mb-1">Volume Tampungan</div>
+                                        <div class="font-bold text-lg text-blue-700">{{ number_format($dam['dimensi']['v_tampungan_m3'] ?? 0, 0, ',', '.') }} m³</div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded p-3">
+                                        <div class="text-xs text-gray-600 mb-1">Tinggi Rata-rata</div>
+                                        <div class="font-bold text-lg text-blue-700">{{ number_format($dam['dimensi']['h_rata_m'] ?? 0, 2, ',', '.') }} m</div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Estimasi HPS (Harga Perkiraan Sendiri) -->
+                            <div class="mb-4">
+                                <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
+                                    <i class="fas fa-calculator text-gray-500 mr-1"></i>
+                                    Estimasi HPS (Harga Perkiraan Sendiri)
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                                    <div class="bg-emerald-50 rounded p-3">
+                                        <div class="text-xs text-gray-600 mb-1">Minimum</div>
+                                        <div class="font-bold text-xl text-emerald-700">Rp {{ number_format($hps['minimum_rp'] ?? 0, 0, ',', '.') }}</div>
+                                    </div>
+                                    <div class="bg-amber-50 rounded p-3">
+                                        <div class="text-xs text-gray-600 mb-1">Moderat</div>
+                                        <div class="font-bold text-xl text-amber-700">Rp {{ number_format($hps['moderat_rp'] ?? 0, 0, ',', '.') }}</div>
+                                    </div>
+                                    <div class="bg-red-50 rounded p-3">
+                                        <div class="text-xs text-gray-600 mb-1">Maksimum</div>
+                                        <div class="font-bold text-xl text-red-700">Rp {{ number_format($hps['maksimum_rp'] ?? 0, 0, ',', '.') }}</div>
+                                    </div>
+                                </div>
+                                @if(!empty($hps['sumber']))
+                                    <div class="text-xs text-gray-500 mt-2">
+                                        <i class="fas fa-info-circle mr-1"></i>Sumber: {{ $hps['sumber'] }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Skenario Total Proyek -->
+                            <div class="mb-4">
+                                <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
+                                    <i class="fas fa-chart-bar text-gray-500 mr-1"></i>
+                                    Skenario Total Proyek (RAB)
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs border-collapse">
+                                        <thead>
+                                            <tr class="bg-gray-100">
+                                                <th class="text-left p-2 border">Skenario</th>
+                                                <th class="text-right p-2 border">Total Proyek</th>
+                                                <th class="text-right p-2 border">Estimasi Kontrak</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 border font-medium text-emerald-700">Minimum</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['minimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['minimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr class="bg-amber-50">
+                                                <td class="p-2 border font-medium text-amber-700">Moderat</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($moderat['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($moderat['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-2 border font-medium text-red-700">Maksimum</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['maksimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['maksimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Komponen Biaya (Breakdown skenario moderat) -->
+                            @if(!empty($moderat['komponen_biaya']))
+                                <div class="mb-4 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2">Komponen Biaya (Skenario Moderat):</div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        @foreach($moderat['komponen_biaya'] as $komponen => $detail)
                                             <div class="bg-gray-50 rounded p-2 text-xs">
-                                                <span class="text-gray-600">{{ $item }}:</span>
-                                                <span class="font-bold text-gray-800 ml-2">{{ $nilai }}</span>
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">{{ $komponen }}</span>
+                                                    <span class="font-bold text-gray-800">{{ $detail['persentase_pct'] ?? 0 }}%</span>
+                                                </div>
+                                                <div class="text-right text-gray-700 mt-1">Rp {{ number_format($detail['jumlah_rp'] ?? 0, 0, ',', '.') }}</div>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
                             @endif
+
+                            @if(!empty($moderat['breakdown']))
+                                <div class="mb-4 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2">Rincian Breakdown (Moderat):</div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        @foreach($moderat['breakdown'] as $item => $nilai)
+                                            <div class="bg-gray-50 rounded p-2 text-xs flex justify-between">
+                                                <span class="text-gray-600">{{ $item }}:</span>
+                                                <span class="font-bold text-gray-800">
+                                                    @if(is_numeric($nilai))
+                                                        Rp {{ number_format($nilai, 0, ',', '.') }}
+                                                    @else
+                                                        {{ $nilai }}
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Rasio Kontrak / HPS -->
+                            @if(!empty($dam['rasio_kontrak_hps']))
+                                @php $rasio = $dam['rasio_kontrak_hps']; @endphp
+                                <div class="mb-4 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2">Rasio Kontrak terhadap HPS (Benchmark LPSE):</div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="bg-purple-50 rounded p-2 text-xs text-center">
+                                            <div class="text-gray-600">Q1</div>
+                                            <div class="font-bold text-purple-700">{{ number_format($rasio['q1'] ?? 0, 1) }}%</div>
+                                        </div>
+                                        <div class="bg-purple-100 rounded p-2 text-xs text-center">
+                                            <div class="text-gray-600">Median</div>
+                                            <div class="font-bold text-purple-800">{{ number_format($rasio['median'] ?? 0, 1) }}%</div>
+                                        </div>
+                                        <div class="bg-purple-50 rounded p-2 text-xs text-center">
+                                            <div class="text-gray-600">Q3</div>
+                                            <div class="font-bold text-purple-700">{{ number_format($rasio['q3'] ?? 0, 1) }}%</div>
+                                        </div>
+                                    </div>
+                                    @if(!empty($rasio['sumber']))
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            <i class="fas fa-info-circle mr-1"></i>{{ $rasio['sumber'] }} (n={{ $rasio['n'] ?? 0 }} paket)
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Jadwal Pelaksanaan -->
+                            @if(isset($dam['jadwal']))
+                                <div class="mb-4 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
+                                        <i class="fas fa-calendar-alt text-gray-500 mr-1"></i>
+                                        Jadwal Pelaksanaan
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 text-sm mb-3">
+                                        <div class="bg-indigo-50 rounded p-3">
+                                            <div class="text-xs text-gray-600 mb-1">Durasi</div>
+                                            <div class="font-bold text-indigo-700">{{ $jadwal['total_bulan'] ?? 0 }} bulan ({{ $jadwal['total_tahun'] ?? 0 }} tahun)</div>
+                                        </div>
+                                        <div class="bg-indigo-50 rounded p-3">
+                                            <div class="text-xs text-gray-600 mb-1">Rentang Waktu</div>
+                                            <div class="font-bold text-indigo-700">{{ $jadwal['rentang_bulan'] ?? 'N/A' }}</div>
+                                        </div>
+                                    </div>
+
+                                    @if(!empty($jadwal['tahapan']))
+                                        <div class="space-y-2">
+                                            @foreach($jadwal['tahapan'] as $tahap)
+                                                <div class="bg-gray-50 rounded p-3 flex items-center justify-between gap-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="bg-indigo-600 text-white rounded-full w-14 h-6 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+                                                            Bln {{ $tahap['mulai_bulan'] }}-{{ $tahap['selesai_bulan'] }}
+                                                        </span>
+                                                        <div class="text-xs font-medium text-gray-800">{{ $tahap['tahap'] }}</div>
+                                                    </div>
+                                                    <div class="text-xs text-gray-500 flex-shrink-0">{{ $tahap['durasi_bulan'] }} bln</div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Paket LPSE Serupa (data pembanding dari hasil scraping) -->
+                            @if(!empty($dam['paket_lpse_serupa']))
+                                <div class="mb-4 pt-3 border-t">
+                                    <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
+                                        <i class="fas fa-file-contract text-gray-500 mr-1"></i>
+                                        Paket LPSE Serupa — Data Pembanding ({{ count($dam['paket_lpse_serupa']) }} referensi)
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-xs border-collapse">
+                                            <thead>
+                                                <tr class="bg-gray-100">
+                                                    <th class="text-left p-2 border">Nama Paket</th>
+                                                    <th class="text-left p-2 border">Provinsi</th>
+                                                    <th class="text-left p-2 border">Tahun</th>
+                                                    <th class="text-right p-2 border">HPS</th>
+                                                    <th class="text-right p-2 border">Nilai Kontrak</th>
+                                                    <th class="text-right p-2 border">% Kontrak/HPS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($dam['paket_lpse_serupa'] as $paket)
+                                                    <tr>
+                                                        <td class="p-2 border">
+                                                            @if(!empty($paket['url_detail']))
+                                                                <a href="{{ $paket['url_detail'] }}" target="_blank" class="text-blue-600 hover:underline">
+                                                                    {{ $paket['nama_paket'] ?? '-' }}
+                                                                </a>
+                                                            @else
+                                                                {{ $paket['nama_paket'] ?? '-' }}
+                                                            @endif
+                                                            @if(!empty($paket['tahapan_status']))
+                                                                <span class="block text-[10px] text-gray-500">{{ $paket['tahapan_status'] }}</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="p-2 border">{{ $paket['provinsi'] ?? '-' }}</td>
+                                                        <td class="p-2 border">{{ $paket['tahun_anggaran'] ?? '-' }}</td>
+                                                        <td class="p-2 border text-right">Rp {{ number_format($paket['hps_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                        <td class="p-2 border text-right">Rp {{ number_format($paket['nilai_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                        <td class="p-2 border text-right">{{ isset($paket['pct_kontrak_vs_hps']) ? number_format($paket['pct_kontrak_vs_hps'], 1) . '%' : '-' }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Referensi & Disclaimer -->
+                            @if(!empty($dam['referensi']) || !empty($dam['disclaimer']))
+                                <div class="mt-3 pt-3 border-t text-xs text-gray-500">
+                                    @if(!empty($dam['referensi']))
+                                        <div class="mb-1">
+                                            <i class="fas fa-book mr-1"></i><strong>Referensi:</strong>
+                                            @foreach($dam['referensi'] as $ref)
+                                                <span class="block ml-4">- {{ $ref }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if(!empty($dam['disclaimer']))
+                                        <div class="italic">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>{{ $dam['disclaimer'] }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @elseif(isset($summary['dam_cost_estimate']['status']))
+                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-gray-200">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-gray-50 p-3 rounded">
+                                <i class="fas fa-hard-hat text-gray-500 mr-2"></i>
+                                PERENCANAAN PEMBANGUNAN BENDUNGAN
+                            </h4>
+                            <p class="text-sm text-gray-500 italic">{{ $summary['dam_cost_estimate']['status'] }}</p>
                         </div>
                     @endif
 
