@@ -470,13 +470,13 @@ class HidrologiJobController extends Controller
                         'job_uuid' => $job->job_id,
                         'file_type' => $fileType,
                         'mime_type' => $mimeType,
-                        'file_size' => $file['size'] ?? 0,
-                        'file_size_mb' => $file['size_mb'] ?? 0,
+                        'file_size' => intval($file['size'] ?? 0),
+                        'file_size_mb' => floatval($file['size_mb'] ?? 0),
                         'download_url' => $apiBaseUrl . ($file['download_url'] ?? "/download/{$job->job_id}/{$file['name']}"),
                         'preview_url' => $apiBaseUrl . ($file['preview_url'] ?? "/preview/{$job->job_id}/{$file['name']}"),
-                        'display_name' => $this->getDisplayName($file['name']),
-                        'description' => $this->getFileDescription($file['name']),
-                        'display_order' => $file['display_order'] ?? $filesStored,
+                        'display_name' => is_string($this->getDisplayName($file['name'])) ? $this->getDisplayName($file['name']) : $file['name'],
+                        'description' => is_string($this->getFileDescription($file['name'])) ? $this->getFileDescription($file['name']) : null,
+                        'display_order' => intval($file['display_order'] ?? $filesStored),
                         'is_available' => true
                     ]
                 );
