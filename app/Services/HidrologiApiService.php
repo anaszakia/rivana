@@ -281,7 +281,9 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
                 ->get($url);
 
             if ($response->successful()) {
-                $data = $response->json();
+                $rawBody = $response->body();
+                $sanitized = preg_replace('/\b(-?Infinity|NaN)\b/', 'null', $rawBody);
+                $data = json_decode($sanitized, true);
                 
                 // Log khusus untuk TWI analysis
                 Log::info('Summary API Response - TWI Check', [
