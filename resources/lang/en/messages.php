@@ -539,4 +539,85 @@ return [
     'choose_appropriate_date_range'     => 'Choose an appropriate date range — longer periods give more accurate results.',
     'total_jobs_recorded' => ':count jobs recorded',
     'all_status'          => 'All Status',
+
+    // ==========================================
+    // CREATE PAGE — DAS STEPS & JS STRINGS
+    // ==========================================
+    'create_page_subtitle'         => 'Select a DAS region, set the analysis period, and submit the job',
+
+    // Step 1
+    'step1_title'                  => 'Click a Point on the Map',
+    'step1_desc'                   => 'Click anywhere inside the watershed area you want to analyse',
+    'step1_hint'                   => '<strong>Click the map</strong> to pin a location, then choose the DAS level below. Use the search box (magnifier icon) to find a place by name.',
+    'click_map_placeholder'        => 'Click the map...',
+
+    // Step 2
+    'step2_title'                  => 'Select DAS Level',
+    'step2_desc'                   => 'The level determines the size of the watershed area to be analysed',
+    'step2_loading'                => 'Loading DAS...',
+    'das_selected_label'           => 'Selected DAS',
+    'das_level_not_available'      => 'This level is not available for the selected location.',
+
+    // DAS level names & ranges
+    'das_level_large'              => 'Large DAS',
+    'das_level_large_range'        => '> 10,000 km²',
+    'das_level_medium'             => 'Medium DAS',
+    'das_level_medium_range'       => '1,000–10,000 km²',
+    'das_level_sub'                => 'Sub-DAS',
+    'das_level_sub_range'          => '100–1,000 km²',
+    'das_level_small_sub'          => 'Small Sub-DAS',
+    'das_level_small_sub_range'    => '10–100 km²',
+    'das_level_micro'              => 'Micro-DAS',
+    'das_level_micro_range'        => '1–10 km²',
+    'das_level_micro_small'        => 'Small Micro-DAS',
+    'das_level_micro_small_range'  => '< 1 km²',
+
+    // Step 3
+    'step3_title'                  => 'Location Information',
+    'step3_desc'                   => 'Auto-filled from the selected coordinates',
+    'fetching_name_short'          => 'Fetching name...',
+    'location_name_placeholder'    => 'Auto-filled from coordinates...',
+    'location_desc_placeholder'    => 'Full address auto-filled...',
+
+    // Step 4
+    'step4_title'                  => 'Analysis Period',
+    'step4_desc'                   => 'Set the time range for the data to be processed',
+
+    // Sidebar
+    'das_level_guide'              => 'DAS Level Guide',
+    'das_level_guide_tip'          => '<strong>Recommendation:</strong> Level 5–6 for sub-DAS analysis, commonly used in water resources planning.',
+
+    // "How it works" steps
+    'how_it_works_step1'           => 'Click a point on the map inside the target DAS area',
+    'how_it_works_step2'           => 'Select the DAS level matching your analysis scale',
+    'how_it_works_step3'           => 'DAS boundary is automatically drawn on the map',
+    'how_it_works_step4'           => 'Set the analysis time period',
+    'how_it_works_step5'           => 'Submit — RIVANA will process everything automatically',
+
+    // Submit button states
+    'submit_click_map_first'       => 'Click the map first',
+    'submit_select_das_first'      => 'Select a DAS level first',
+    'submit_complete_period'       => 'Complete the analysis period',
+
+    // Map popup
+    'map_popup_selected_point'     => 'Selected Point',
+
+    // SweetAlert / JS strings (passed via @json)
+    'swal_no_point_title'          => 'No Location Pinned',
+    'swal_no_point_text'           => 'Click the map to set a location.',
+    'swal_no_das_title'            => 'DAS Not Selected',
+    'swal_no_das_text'             => 'Please select a DAS level first.',
+    'submit_sending'               => 'Sending...',
+    'submit_success_text'          => 'Analysis submitted successfully!',
+    'das_not_found_msg'            => 'DAS not found',
+    'das_error_not_found'          => 'Level :level is not available for this location. Try another level.',
+    'das_error_generic'            => 'Failed to load DAS: :message',
+    'timeout_error'                => 'Request timed out! Check your connection to the RIVANA server.',
+    'response_not_json'            => 'Server response is not JSON',
+    'check_console'                => 'Check browser console (F12) for details',
+    'failed_title'                 => 'Failed!',
+    'failed_to_send'               => 'Failed to submit',
+    'map_popup_area'               => 'Area',
+    'map_popup_level'              => 'Level',
+    'geocoder_placeholder'         => 'Search location...',
 ];

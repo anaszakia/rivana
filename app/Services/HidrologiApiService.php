@@ -87,9 +87,9 @@ public function submitJob($longitude, $latitude, $startDate, $endDate, $dasName 
                 return [
                     'success' => true,
                     'data' => [
-                        'job_id' => $responseData['job_id'],
-                        'status' => $responseData['status'] ?? 'processing',
-                        'message' => $responseData['message'] ?? 'Job submitted successfully',
+                        'job_id' => $data['job_id'] ?? null,
+                        'status' => $data['status'] ?? 'processing',
+                        'message' => $data['message'] ?? 'Job submitted successfully',
                         'longitude' => $lng,
                         'latitude' => $lat,
                         'start_date' => $startDate,

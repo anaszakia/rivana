@@ -6,210 +6,472 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" crossorigin=""/>
 <style>
-    #map {
-        height: 520px;
-        width: 100%;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    /* ── Design Tokens ── */
+    :root {
+        --c-teal:     #0d9488;
+        --c-teal-lt:  #ccfbf1;
+        --c-teal-dk:  #0f766e;
+        --c-ocean:    #0e7490;
+        --c-sky:      #e0f2fe;
+        --c-slate:    #1e293b;
+        --c-muted:    #64748b;
+        --c-surface:  #f8fafc;
+        --c-border:   #e2e8f0;
+        --c-white:    #ffffff;
+        --radius-card: 1.25rem;
+        --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+        --shadow-lift: 0 4px 24px rgba(0,0,0,.12);
     }
 
-    /* ── DAS Level Selector ── */
-    .das-level-grid {
+    /* ── Base ── */
+    body { background: var(--c-surface); }
+
+    /* ── Progress Rail (top sticky) ── */
+    .progress-rail {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: var(--c-white);
+        border-bottom: 1px solid var(--c-border);
+        padding: 0 1.5rem;
+        position: sticky;
+        top: var(--navbar-height, 64px); /* set via JS to match actual navbar */
+        z-index: 40;                     /* below navbar (usually z-50) */
+        box-shadow: 0 2px 8px rgba(0,0,0,.07);
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .progress-rail::-webkit-scrollbar { display: none; }
+
+    .rail-step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.25rem;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    .rail-step.active  { border-bottom-color: var(--c-teal); }
+    .rail-step.done    { border-bottom-color: #10b981; }
+
+    .rail-num {
+        width: 1.625rem; height: 1.625rem;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.7rem; font-weight: 800;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    .rail-num.active   { background: var(--c-teal); color: #fff; }
+    .rail-num.done     { background: #10b981; color: #fff; }
+    .rail-num.inactive { background: var(--c-border); color: var(--c-muted); }
+
+    .rail-label { font-size: 0.8rem; font-weight: 600; }
+    .rail-step.active   .rail-label { color: var(--c-teal-dk); }
+    .rail-step.done     .rail-label { color: #059669; }
+    .rail-step.inactive .rail-label { color: var(--c-muted); }
+
+    .rail-sep { width: 2rem; height: 1px; background: var(--c-border); flex-shrink: 0; }
+
+    /* ── Map ── */
+    #map {
+        height: 440px;
+        width: 100%;
+        border-radius: 0.75rem;
+    }
+    .map-wrapper {
+        position: relative;
+        border-radius: 0.875rem;
+        overflow: hidden;
+        border: 1.5px solid var(--c-border);
+        /* Isolate Leaflet's z-index stack so tiles can't bleed outside */
+        isolation: isolate;
+        transform: translateZ(0);
+    }
+
+    /* Keep all Leaflet layers inside the wrapper's stacking context */
+    .map-wrapper .leaflet-pane,
+    .map-wrapper .leaflet-control-container {
+        z-index: auto !important;
+    }
+    .map-overlay-hint {
+        position: absolute;
+        bottom: 0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 400;
+        background: rgba(15, 118, 110, 0.92);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        padding: 0.5rem 1.1rem;
+        border-radius: 2rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+        transition: opacity 0.4s;
+    }
+    .map-overlay-hint.hidden { opacity: 0; }
+
+    /* ── Coord chips ── */
+    .coord-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--c-surface);
+        border: 1.5px solid var(--c-border);
+        border-radius: 0.625rem;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+    }
+    .coord-chip .label { color: var(--c-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .coord-chip .value { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; color: var(--c-slate); font-weight: 700; }
+    .coord-chip .dot   { width: 0.5rem; height: 0.5rem; border-radius: 50%; }
+
+    /* ── Step cards ── */
+    .step-card {
+        background: var(--c-white);
+        border-radius: var(--radius-card);
+        border: 1.5px solid var(--c-border);
+        box-shadow: var(--shadow-card);
+        transition: box-shadow 0.2s;
+    }
+    .step-card.is-active {
+        border-color: var(--c-teal);
+        box-shadow: 0 0 0 3px rgba(13,148,136,.1), var(--shadow-card);
+    }
+    .step-card.is-done {
+        border-color: #a7f3d0;
+    }
+
+    .step-header {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1.5px solid var(--c-border);
+    }
+    .step-card.is-active .step-header { border-bottom-color: #ccfbf1; }
+    .step-card.is-done   .step-header { border-bottom-color: #d1fae5; }
+
+    .step-badge {
+        width: 2.25rem; height: 2.25rem;
+        border-radius: 0.625rem;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.875rem;
+        flex-shrink: 0;
+    }
+    .step-badge.active   { background: var(--c-teal); color: #fff; }
+    .step-badge.done     { background: #10b981; color: #fff; }
+    .step-badge.inactive { background: var(--c-border); color: var(--c-muted); }
+
+    .step-card.is-active .step-header { background: linear-gradient(90deg, #f0fdfa, transparent); }
+    .step-card.is-done   .step-header { background: linear-gradient(90deg, #f0fdf4, transparent); }
+
+    /* ── DAS Level buttons ── */
+    .das-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 0.625rem;
     }
-    @media (max-width: 480px) {
-        .das-level-grid { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 480px) { .das-grid { grid-template-columns: repeat(2, 1fr); } }
 
-    .das-level-btn {
+    .das-btn {
         position: relative;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.25rem;
-        padding: 0.75rem 0.5rem;
-        border: 2px solid #e5e7eb;
+        align-items: flex-start;
+        gap: 0.2rem;
+        padding: 0.875rem;
+        border: 1.5px solid var(--c-border);
         border-radius: 0.875rem;
-        background: #fff;
+        background: var(--c-white);
         cursor: pointer;
-        transition: all 0.18s ease;
-        text-align: center;
-        min-height: 80px;
+        transition: all 0.15s ease;
+        text-align: left;
     }
-    .das-level-btn:hover:not(:disabled) {
-        border-color: #3b82f6;
-        background: #eff6ff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59,130,246,0.18);
+    .das-btn:hover:not(:disabled) {
+        border-color: var(--c-teal);
+        background: #f0fdfa;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13,148,136,.15);
     }
-    .das-level-btn.selected {
-        border-color: #2563eb;
-        background: linear-gradient(135deg, #eff6ff, #dbeafe);
-        box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+    .das-btn.selected {
+        border-color: var(--c-teal);
+        background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+        box-shadow: 0 0 0 3px rgba(13,148,136,.15);
     }
-    .das-level-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-    }
-    .das-level-badge {
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 0.03em;
+    .das-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .das-lvl-tag {
+        font-size: 0.65rem; font-weight: 800;
+        letter-spacing: 0.05em;
         padding: 0.15rem 0.5rem;
         border-radius: 9999px;
-        background: #e0e7ff;
-        color: #3730a3;
+        background: var(--c-teal-lt);
+        color: var(--c-teal-dk);
     }
-    .das-level-btn.selected .das-level-badge {
-        background: #2563eb;
+    .das-btn.selected .das-lvl-tag { background: var(--c-teal); color: #fff; }
+
+    .das-name { font-size: 0.75rem; font-weight: 700; color: var(--c-slate); line-height: 1.2; }
+    .das-range { font-size: 0.68rem; color: var(--c-muted); }
+    .das-btn.selected .das-name  { color: var(--c-teal-dk); }
+    .das-btn.selected .das-range { color: var(--c-teal); }
+
+    /* ── DAS info badge ── */
+    .das-found-strip {
+        display: flex; align-items: center; gap: 0.75rem;
+        background: linear-gradient(90deg, #f0fdf4, #f0fdfa);
+        border: 1.5px solid #a7f3d0;
+        border-radius: 0.75rem;
+        padding: 0.875rem 1.125rem;
+    }
+    .das-found-icon {
+        width: 2.25rem; height: 2.25rem;
+        border-radius: 0.625rem;
+        background: #10b981;
         color: #fff;
-    }
-    .das-level-name {
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: #374151;
-        line-height: 1.2;
-    }
-    .das-level-range {
-        font-size: 0.65rem;
-        color: #6b7280;
-        line-height: 1.2;
-    }
-    .das-level-btn.selected .das-level-name { color: #1d4ed8; }
-    .das-level-btn.selected .das-level-range { color: #3b82f6; }
-
-    /* ── DAS Info Panel ── */
-    #das-info-panel {
-        transition: all 0.3s ease;
-    }
-    #das-polygon-layer {
-        transition: opacity 0.3s;
-    }
-
-    /* ── Step indicator ── */
-    .step-dot {
-        width: 2rem; height: 2rem;
-        border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        font-size: 0.8rem; font-weight: 800;
         flex-shrink: 0;
-        transition: all 0.2s;
     }
-    .step-dot.active   { background: #2563eb; color: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.18); }
-    .step-dot.done     { background: #16a34a; color: #fff; }
-    .step-dot.inactive { background: #e5e7eb; color: #9ca3af; }
 
-    /* ── Leaflet Geocoder ── */
-    .leaflet-control-geocoder { border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
+    /* ── Form inputs ── */
+    .field-label {
+        display: flex; align-items: center; gap: 0.375rem;
+        font-size: 0.8rem; font-weight: 700; color: var(--c-slate);
+        margin-bottom: 0.375rem;
+    }
+    .field-label i { color: var(--c-muted); font-size: 0.75rem; }
+
+    .field-input {
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        border: 1.5px solid var(--c-border);
+        border-radius: 0.625rem;
+        font-size: 0.875rem;
+        color: var(--c-slate);
+        background: var(--c-white);
+        transition: border-color 0.15s, box-shadow 0.15s;
+        font-family: inherit;
+    }
+    .field-input:focus {
+        outline: none;
+        border-color: var(--c-teal);
+        box-shadow: 0 0 0 3px rgba(13,148,136,.12);
+    }
+    .field-input:read-only { background: var(--c-surface); color: var(--c-muted); cursor: default; }
+
+    .field-input[type="date"] { appearance: none; }
+
+    /* ── Alert/note strips ── */
+    .note-strip {
+        display: flex; align-items: flex-start; gap: 0.625rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.625rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    .note-strip.info    { background: var(--c-sky); color: #0369a1; }
+    .note-strip.warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+    .note-strip.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .note-strip.success { background: #f0fdf4; color: #166534; border: 1px solid #a7f3d0; }
+
+    /* ── Submit button ── */
+    .btn-submit {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem;
+        padding: 0.875rem 2.25rem;
+        background: var(--c-teal);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.9rem;
+        border-radius: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 4px 14px rgba(13,148,136,.3);
+    }
+    .btn-submit:hover:not(:disabled) {
+        background: var(--c-teal-dk);
+        box-shadow: 0 6px 20px rgba(13,148,136,.4);
+        transform: translateY(-1px);
+    }
+    .btn-submit:disabled {
+        background: #cbd5e1;
+        box-shadow: none;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .btn-back {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        padding: 0.875rem 1.5rem;
+        background: transparent;
+        color: var(--c-muted);
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-radius: 0.75rem;
+        border: 1.5px solid var(--c-border);
+        transition: all 0.15s;
+    }
+    .btn-back:hover { background: var(--c-surface); color: var(--c-slate); border-color: #94a3b8; }
+
+    /* ── Sidebar guide ── */
+    .guide-card {
+        background: var(--c-white);
+        border-radius: var(--radius-card);
+        border: 1.5px solid var(--c-border);
+        box-shadow: var(--shadow-card);
+        overflow: hidden;
+    }
+    .guide-head {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #f0fdfa, var(--c-sky));
+        border-bottom: 1.5px solid #bae6fd;
+    }
+    .guide-icon {
+        width: 2rem; height: 2rem;
+        border-radius: 0.5rem;
+        background: var(--c-teal);
+        color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .guide-title { font-size: 0.85rem; font-weight: 800; color: var(--c-slate); }
+    .guide-body  { padding: 0.875rem 1.25rem; }
+
+    .guide-row {
+        display: flex; align-items: flex-start; gap: 0.625rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--c-border);
+        font-size: 0.775rem;
+    }
+    .guide-row:last-child { border-bottom: none; }
+    .guide-num {
+        width: 1.375rem; height: 1.375rem;
+        border-radius: 0.375rem;
+        background: var(--c-teal-lt);
+        color: var(--c-teal-dk);
+        font-size: 0.65rem; font-weight: 800;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        margin-top: 0.05rem;
+    }
+    .guide-row-text { color: var(--c-muted); line-height: 1.45; }
+    .guide-row-text strong { color: var(--c-slate); }
+
+    /* ── Leaflet override ── */
+    .leaflet-control-geocoder { border-radius: 0.5rem; box-shadow: var(--shadow-lift); }
     .leaflet-control-geocoder-form input {
-        border-radius: 0.5rem; padding: 0.75rem; font-size: 14px;
-        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem; padding: 0.625rem 0.875rem;
+        font-size: 0.875rem; border: 1.5px solid var(--c-border);
+        font-family: inherit;
     }
-    .leaflet-control-geocoder-form input:focus { border-color: #3b82f6; outline: none; }
-
-    /* ── Pulse animation for click prompt ── */
-    @keyframes pulse-ring {
-        0%   { transform: scale(0.8); opacity: 1; }
-        100% { transform: scale(2.0); opacity: 0; }
-    }
-    .info-card { transition: all 0.3s ease; }
-    .info-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .leaflet-control-geocoder-form input:focus { border-color: var(--c-teal); outline: none; }
 </style>
 @endpush
 
 @section('content')
-<div class="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
 
-    {{-- ── Header ── --}}
-    <div class="mb-6">
-        <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl">
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute w-96 h-96 -top-48 -right-48 bg-white rounded-full animate-pulse"></div>
-                <div class="absolute w-64 h-64 -bottom-32 -left-32 bg-white rounded-full animate-pulse" style="animation-delay:1s"></div>
-            </div>
-            <div class="relative z-10 p-6 sm:p-8">
-                <div class="flex items-center gap-2 text-blue-100 mb-4 text-xs sm:text-sm flex-wrap">
-                    <a href="{{ route('hidrologi.index') }}" class="flex items-center gap-1 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-lg">
-                        <i class="fas fa-water"></i>
-                        <span class="hidden sm:inline">{{ __('messages.hydrology') }}</span>
-                    </a>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-white font-bold bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">{{ __('messages.create_new_analysis') }}</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shrink-0">
-                        <i class="fas fa-draw-polygon text-2xl sm:text-3xl text-white"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight">{{ __('messages.create_new_hydrology_analysis') }}</h1>
-                        <p class="text-blue-100 text-sm sm:text-base">Pilih wilayah DAS, tentukan periode analisis, dan kirim pekerjaan</p>
-                    </div>
-                </div>
-            </div>
+{{-- ── Progress Rail ── --}}
+<div class="progress-rail" id="progressRail">
+    <div class="rail-step active" id="rail-1">
+        <div class="rail-num active" id="rail-num-1">1</div>
+        <span class="rail-label">{{ __('messages.step1_title') }}</span>
+    </div>
+    <div class="rail-sep"></div>
+    <div class="rail-step inactive" id="rail-2">
+        <div class="rail-num inactive" id="rail-num-2">2</div>
+        <span class="rail-label">{{ __('messages.step2_title') }}</span>
+    </div>
+    <div class="rail-sep"></div>
+    <div class="rail-step inactive" id="rail-3">
+        <div class="rail-num inactive" id="rail-num-3">3</div>
+        <span class="rail-label">{{ __('messages.step3_title') }}</span>
+    </div>
+    <div class="rail-sep"></div>
+    <div class="rail-step inactive" id="rail-4">
+        <div class="rail-num inactive" id="rail-num-4">4</div>
+        <span class="rail-label">{{ __('messages.step4_title') }}</span>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 sm:px-5 lg:px-6 py-6 max-w-6xl">
+
+    {{-- ── Page title ── --}}
+    <div class="mb-5 flex items-center gap-3">
+        <a href="{{ route('hidrologi.index') }}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border-1.5 border-gray-200 text-gray-400 hover:text-gray-700 hover:border-gray-300 transition-all" style="border: 1.5px solid #e2e8f0;">
+            <i class="fas fa-arrow-left text-sm"></i>
+        </a>
+        <div>
+            <p class="text-xs text-gray-400 font-medium mb-0.5">
+                <a href="{{ route('hidrologi.index') }}" class="hover:text-teal-600 transition-colors">{{ __('messages.hydrology') }}</a>
+                <span class="mx-1.5">·</span>
+                {{ __('messages.create_new_analysis') }}
+            </p>
+            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">{{ __('messages.create_new_hydrology_analysis') }}</h1>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {{-- ── FORM ── --}}
-        <div class="lg:col-span-2 space-y-5">
+        {{-- ── FORM COLUMN ── --}}
+        <div class="lg:col-span-2 space-y-4">
             <form id="hidrologiForm" action="{{ route('hidrologi.submit') }}" method="POST">
                 @csrf
 
                 {{-- Hidden fields --}}
-                <input type="hidden" name="longitude"   id="longitude"   value="">
-                <input type="hidden" name="latitude"    id="latitude"    value="">
-                <input type="hidden" name="das_level"   id="das_level"   value="">
-                <input type="hidden" name="das_name"    id="das_name"    value="">
+                <input type="hidden" name="longitude"    id="longitude"    value="">
+                <input type="hidden" name="latitude"     id="latitude"     value="">
+                <input type="hidden" name="das_level"    id="das_level"    value="">
+                <input type="hidden" name="das_name"     id="das_name"     value="">
                 <input type="hidden" name="das_area_km2" id="das_area_km2" value="">
-                <input type="hidden" name="hybas_id"    id="hybas_id"    value="">
+                <input type="hidden" name="hybas_id"     id="hybas_id"     value="">
 
                 {{-- ══════════════════════════════════════ --}}
-                {{-- STEP 1 — Klik Peta                    --}}
+                {{-- STEP 1 — Pilih Lokasi di Peta         --}}
                 {{-- ══════════════════════════════════════ --}}
-                <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-gray-100">
-
-                    {{-- Step header --}}
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="step-dot active" id="step1-dot">1</div>
+                <div class="step-card is-active" id="step1-card">
+                    <div class="step-header">
+                        <div class="step-badge active" id="step1-dot">1</div>
                         <div>
-                            <h3 class="text-lg font-extrabold text-gray-900">Klik Titik di Peta</h3>
-                            <p class="text-xs text-gray-500">Klik sembarang titik di dalam wilayah DAS yang ingin dianalisis</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step1_title') }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step1_desc') }}</p>
+                        </div>
+                        {{-- Loading indicator --}}
+                        <div id="step2-loading" class="ml-auto hidden flex items-center gap-1.5 text-teal-600 text-xs font-semibold bg-teal-50 px-2.5 py-1 rounded-full">
+                            <i class="fas fa-spinner fa-spin text-xs"></i>
+                            <span>{{ __('messages.step2_loading') }}</span>
                         </div>
                     </div>
 
-                    {{-- Map --}}
-                    <div id="map" class="border-4 border-blue-200 mb-4"></div>
-
-                    {{-- Map hint --}}
-                    <div id="map-hint" class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
-                        <p class="text-sm text-blue-900 flex items-start gap-2">
-                            <i class="fas fa-mouse-pointer text-blue-600 mt-0.5 shrink-0"></i>
-                            <span><strong>Klik peta</strong> untuk menentukan titik lokasi, lalu pilih level DAS di bawah.
-                            Gunakan fitur pencarian (ikon kaca pembesar) untuk mencari nama lokasi.</span>
-                        </p>
-                    </div>
-
-                    {{-- Koordinat readonly --}}
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1 flex items-center gap-1">
-                                <i class="fas fa-globe text-blue-500"></i> Longitude
-                            </label>
-                            <input type="text" id="longitude_display" readonly
-                                class="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl bg-gray-50 text-sm font-mono text-gray-700 cursor-default"
-                                placeholder="Klik peta...">
+                    <div class="p-4">
+                        {{-- Map --}}
+                        <div class="map-wrapper mb-3">
+                            <div id="map"></div>
+                            <div class="map-overlay-hint" id="mapHint">
+                                <i class="fas fa-mouse-pointer text-xs"></i>
+                                {!! __('messages.step1_hint') !!}
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1 flex items-center gap-1">
-                                <i class="fas fa-globe text-green-500"></i> Latitude
-                            </label>
-                            <input type="text" id="latitude_display" readonly
-                                class="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl bg-gray-50 text-sm font-mono text-gray-700 cursor-default"
-                                placeholder="Klik peta...">
+
+                        {{-- Coordinate chips --}}
+                        <div class="flex flex-wrap gap-2" id="coord-row">
+                            <div class="coord-chip">
+                                <span class="dot" style="background:#0d9488"></span>
+                                <span class="label">Lng</span>
+                                <span class="value" id="longitude_display">—</span>
+                            </div>
+                            <div class="coord-chip">
+                                <span class="dot" style="background:#0e7490"></span>
+                                <span class="label">Lat</span>
+                                <span class="value" id="latitude_display">—</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,86 +479,71 @@
                 {{-- ══════════════════════════════════════ --}}
                 {{-- STEP 2 — Pilih Level DAS              --}}
                 {{-- ══════════════════════════════════════ --}}
-                <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-gray-100" id="step2-card">
-
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="step-dot inactive" id="step2-dot">2</div>
+                <div class="step-card" id="step2-card">
+                    <div class="step-header">
+                        <div class="step-badge inactive" id="step2-dot">2</div>
                         <div>
-                            <h3 class="text-lg font-extrabold text-gray-900">Pilih Level DAS</h3>
-                            <p class="text-xs text-gray-500">Level menentukan ukuran wilayah DAS yang akan dianalisis</p>
-                        </div>
-                        <div id="step2-loading" class="ml-auto hidden">
-                            <div class="flex items-center gap-2 text-blue-600 text-sm font-semibold">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <span>Memuat DAS...</span>
-                            </div>
+                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step2_title') }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step2_desc') }}</p>
                         </div>
                     </div>
 
-                    {{-- Level buttons --}}
-                    <div class="das-level-grid mb-4" id="das-level-grid">
+                    <div class="p-4 space-y-3">
                         @php
                         $levels = [
-                            3 => ['name' => 'DAS Besar',        'range' => '> 10.000 km²',     'icon' => 'fa-mountain'],
-                            4 => ['name' => 'DAS Menengah',     'range' => '1.000–10.000 km²',  'icon' => 'fa-water'],
-                            5 => ['name' => 'Sub-DAS',          'range' => '100–1.000 km²',     'icon' => 'fa-stream'],
-                            6 => ['name' => 'Sub-DAS Kecil',    'range' => '10–100 km²',        'icon' => 'fa-tint'],
-                            7 => ['name' => 'Mikro-DAS',        'range' => '1–10 km²',          'icon' => 'fa-tint-slash'],
-                            8 => ['name' => 'Mikro-DAS Kecil',  'range' => '< 1 km²',           'icon' => 'fa-circle'],
+                            3 => ['name' => __('messages.das_level_large'),       'range' => __('messages.das_level_large_range'),       'icon' => 'fa-mountain'],
+                            4 => ['name' => __('messages.das_level_medium'),      'range' => __('messages.das_level_medium_range'),      'icon' => 'fa-water'],
+                            5 => ['name' => __('messages.das_level_sub'),         'range' => __('messages.das_level_sub_range'),         'icon' => 'fa-stream'],
+                            6 => ['name' => __('messages.das_level_small_sub'),   'range' => __('messages.das_level_small_sub_range'),   'icon' => 'fa-tint'],
+                            7 => ['name' => __('messages.das_level_micro'),       'range' => __('messages.das_level_micro_range'),       'icon' => 'fa-tint-slash'],
+                            8 => ['name' => __('messages.das_level_micro_small'), 'range' => __('messages.das_level_micro_small_range'), 'icon' => 'fa-circle'],
                         ];
                         @endphp
 
-                        @foreach($levels as $lvl => $info)
-                        <button type="button"
-                            class="das-level-btn"
-                            id="das-btn-{{ $lvl }}"
-                            data-level="{{ $lvl }}"
-                            disabled
-                            onclick="selectDasLevel({{ $lvl }})">
-                            <i class="fas {{ $info['icon'] }} text-blue-400 text-lg mb-1"></i>
-                            <span class="das-level-badge">Level {{ $lvl }}</span>
-                            <span class="das-level-name">{{ $info['name'] }}</span>
-                            <span class="das-level-range">{{ $info['range'] }}</span>
-                        </button>
-                        @endforeach
-                    </div>
+                        <div class="das-grid" id="das-level-grid">
+                            @foreach($levels as $lvl => $info)
+                            <button type="button"
+                                class="das-btn"
+                                id="das-btn-{{ $lvl }}"
+                                data-level="{{ $lvl }}"
+                                disabled
+                                onclick="selectDasLevel({{ $lvl }})">
+                                <span class="das-lvl-tag">Level {{ $lvl }}</span>
+                                <span class="das-name">{{ $info['name'] }}</span>
+                                <span class="das-range">{{ $info['range'] }}</span>
+                            </button>
+                            @endforeach
+                        </div>
 
-                    {{-- DAS Info Panel --}}
-                    <div id="das-info-panel" class="hidden">
-                        <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center shrink-0">
-                                    <i class="fas fa-check-circle text-white"></i>
+                        {{-- DAS Found --}}
+                        <div id="das-info-panel" class="hidden">
+                            <div class="das-found-strip">
+                                <div class="das-found-icon">
+                                    <i class="fas fa-check text-sm"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-extrabold text-emerald-900 mb-1">DAS Terpilih</p>
-                                    <p class="text-base font-bold text-emerald-800 truncate" id="das-info-name">—</p>
-                                    <div class="flex flex-wrap gap-3 mt-2">
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">
-                                            <i class="fas fa-expand-arrows-alt"></i>
+                                    <p class="text-xs font-semibold text-emerald-600 mb-0.5">{{ __('messages.das_selected_label') }}</p>
+                                    <p class="text-sm font-extrabold text-gray-900 truncate" id="das-info-name">—</p>
+                                    <div class="flex flex-wrap gap-2 mt-1">
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                                            <i class="fas fa-expand-arrows-alt" style="font-size:0.6rem"></i>
                                             <span id="das-info-area">—</span>
                                         </span>
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 bg-blue-100 px-2.5 py-1 rounded-lg">
-                                            <i class="fas fa-layer-group"></i>
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
+                                            <i class="fas fa-layer-group" style="font-size:0.6rem"></i>
                                             Level <span id="das-info-level">—</span>
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-lg">
-                                            <i class="fas fa-database"></i>
-                                            HydroSHEDS
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- Error panel --}}
-                    <div id="das-error-panel" class="hidden">
-                        <div class="p-4 bg-red-50 rounded-2xl border-2 border-red-200">
-                            <p class="text-sm font-semibold text-red-700 flex items-center gap-2">
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span id="das-error-msg">Level ini tidak tersedia untuk lokasi ini.</span>
-                            </p>
+                        {{-- DAS Error --}}
+                        <div id="das-error-panel" class="hidden">
+                            <div class="note-strip error">
+                                <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                                <span id="das-error-msg">{{ __('messages.das_level_not_available') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,36 +551,38 @@
                 {{-- ══════════════════════════════════════ --}}
                 {{-- STEP 3 — Info Lokasi (readonly)       --}}
                 {{-- ══════════════════════════════════════ --}}
-                <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-gray-100" id="step3-card">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="step-dot inactive" id="step3-dot">3</div>
+                <div class="step-card" id="step3-card">
+                    <div class="step-header">
+                        <div class="step-badge inactive" id="step3-dot">3</div>
                         <div>
-                            <h3 class="text-lg font-extrabold text-gray-900">Informasi Lokasi</h3>
-                            <p class="text-xs text-gray-500">Terisi otomatis dari koordinat yang dipilih</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step3_title') }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step3_desc') }}</p>
                         </div>
+                        <span id="location-loading" class="ml-auto hidden text-xs text-sky-600 font-semibold bg-sky-50 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                            <i class="fas fa-spinner fa-spin text-xs"></i>
+                            {{ __('messages.fetching_name_short') }}
+                        </span>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4">
+                    <div class="p-4 space-y-3">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                                <i class="fas fa-map-pin text-red-500"></i>
-                                Nama Lokasi
-                                <span id="location-loading" class="hidden text-blue-500 text-xs ml-1">
-                                    <i class="fas fa-spinner fa-spin"></i> Mengambil nama...
-                                </span>
+                            <label class="field-label">
+                                <i class="fas fa-map-pin text-red-400"></i>
+                                {{ __('messages.location_name') }}
                             </label>
                             <input type="text" name="location_name" id="location_name" readonly
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl bg-gray-50 text-sm font-medium text-gray-700 cursor-default"
-                                placeholder="Otomatis dari koordinat...">
+                                class="field-input"
+                                placeholder="{{ __('messages.location_name_placeholder') }}">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                                <i class="fas fa-file-alt text-purple-500"></i>
-                                Deskripsi Lokasi
+                            <label class="field-label">
+                                <i class="fas fa-file-alt text-purple-400"></i>
+                                {{ __('messages.location_description') }}
                             </label>
-                            <textarea name="location_description" id="location_description" rows="3" readonly
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl bg-gray-50 text-sm text-gray-700 cursor-default resize-none"
-                                placeholder="Alamat lengkap otomatis..."></textarea>
+                            <textarea name="location_description" id="location_description" rows="2" readonly
+                                class="field-input resize-none"
+                                style="resize: none;"
+                                placeholder="{{ __('messages.location_desc_placeholder') }}"></textarea>
                         </div>
                     </div>
                 </div>
@@ -341,73 +590,70 @@
                 {{-- ══════════════════════════════════════ --}}
                 {{-- STEP 4 — Periode Analisis             --}}
                 {{-- ══════════════════════════════════════ --}}
-                <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-gray-100" id="step4-card">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="step-dot inactive" id="step4-dot">4</div>
+                <div class="step-card" id="step4-card">
+                    <div class="step-header">
+                        <div class="step-badge inactive" id="step4-dot">4</div>
                         <div>
-                            <h3 class="text-lg font-extrabold text-gray-900">Periode Analisis</h3>
-                            <p class="text-xs text-gray-500">Tentukan rentang waktu data yang akan diproses</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step4_title') }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step4_desc') }}</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label for="start_date" class="flex items-center gap-2 text-sm font-bold text-gray-800 mb-2">
-                                <div class="w-5 h-5 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-calendar-check text-green-600 text-xs"></i>
-                                </div>
-                                {{ __('messages.start_date') }} <span class="text-red-600">*</span>
-                            </label>
-                            <input type="date" name="start_date" id="start_date"
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
-                                required>
+                    <div class="p-4 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="start_date" class="field-label">
+                                    <i class="fas fa-calendar-check text-emerald-500"></i>
+                                    {{ __('messages.start_date') }}
+                                    <span class="text-red-500 ml-0.5">*</span>
+                                </label>
+                                <input type="date" name="start_date" id="start_date"
+                                    class="field-input"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="end_date" class="field-label">
+                                    <i class="fas fa-calendar-times text-red-400"></i>
+                                    {{ __('messages.end_date') }}
+                                    <span class="text-red-500 ml-0.5">*</span>
+                                </label>
+                                <input type="date" name="end_date" id="end_date"
+                                    class="field-input"
+                                    required max="{{ date('Y-m-d') }}">
+                            </div>
                         </div>
-                        <div>
-                            <label for="end_date" class="flex items-center gap-2 text-sm font-bold text-gray-800 mb-2">
-                                <div class="w-5 h-5 bg-red-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-calendar-times text-red-600 text-xs"></i>
-                                </div>
-                                {{ __('messages.end_date') }} <span class="text-red-600">*</span>
-                            </label>
-                            <input type="date" name="end_date" id="end_date"
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
-                                required max="{{ date('Y-m-d') }}">
-                        </div>
-                    </div>
 
-                    <div class="mt-4 p-4 bg-yellow-50 rounded-2xl border-2 border-yellow-200">
-                        <p class="text-sm text-yellow-900 flex items-start gap-2 font-medium">
-                            <i class="fas fa-exclamation-triangle text-yellow-600 mt-0.5 shrink-0"></i>
+                        <div class="note-strip warning">
+                            <i class="fas fa-exclamation-triangle flex-shrink-0 mt-0.5" style="font-size:0.75rem"></i>
                             <span>{!! __('messages.date_validation_important') !!}</span>
-                        </p>
+                        </div>
                     </div>
                 </div>
 
-                {{-- ── Submit ── --}}
-                <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-gray-100">
+                {{-- ── Submit bar ── --}}
+                <div class="step-card p-4">
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                        <a href="{{ route('hidrologi.index') }}"
-                           class="inline-flex items-center justify-center gap-2 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-bold rounded-2xl transition-all">
-                            <i class="fas fa-arrow-left"></i>
-                            <span>{{ __('messages.back') }}</span>
+                        <a href="{{ route('hidrologi.index') }}" class="btn-back">
+                            <i class="fas fa-arrow-left text-xs"></i>
+                            {{ __('messages.back') }}
                         </a>
-                        <button type="submit" id="submitBtn" disabled
-                            class="inline-flex items-center justify-center gap-2 px-8 py-3
-                                   bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600
-                                   hover:from-blue-700 hover:via-blue-800 hover:to-indigo-700
-                                   disabled:from-gray-400 disabled:via-gray-400 disabled:to-gray-400
-                                   disabled:cursor-not-allowed
-                                   text-white font-extrabold rounded-2xl transition-all shadow-xl">
-                            <i class="fas fa-paper-plane" id="submitIcon"></i>
-                            <span id="submitText">Pilih DAS terlebih dahulu</span>
-                        </button>
+
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                            {{-- Status badge --}}
+                            <div id="submit-status" class="text-xs text-gray-400 font-semibold text-center sm:text-right hidden sm:block"></div>
+                            <button type="submit" id="submitBtn" disabled class="btn-submit">
+                                <i class="fas fa-paper-plane" id="submitIcon" style="font-size:0.8rem"></i>
+                                <span id="submitText">{{ __('messages.submit_select_das_first') }}</span>
+                            </button>
+                        </div>
                     </div>
-                    {{-- Validation hint --}}
+
+                    {{-- Mobile status --}}
                     <div id="submit-hint" class="mt-3 hidden">
-                        <p class="text-xs text-red-600 font-semibold flex items-center gap-1">
-                            <i class="fas fa-exclamation-circle"></i>
+                        <div class="note-strip info">
+                            <i class="fas fa-info-circle flex-shrink-0" style="font-size:0.75rem; margin-top:0.05rem"></i>
                             <span id="submit-hint-text"></span>
-                        </p>
+                        </div>
                     </div>
                 </div>
 
@@ -415,80 +661,76 @@
         </div>
 
         {{-- ── SIDEBAR ── --}}
-        <div class="lg:col-span-1 space-y-5">
+        <div class="lg:col-span-1 space-y-4">
 
-            {{-- DAS Level Guide --}}
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-5 shadow-xl info-card border-2 border-blue-200">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-layer-group text-white text-lg"></i>
-                    </div>
-                    <h3 class="text-lg font-extrabold text-blue-900">Panduan Level DAS</h3>
+            {{-- How it works --}}
+            <div class="guide-card">
+                <div class="guide-head">
+                    <div class="guide-icon"><i class="fas fa-info-circle"></i></div>
+                    <span class="guide-title">{{ __('messages.how_it_works') }}</span>
                 </div>
-                <div class="space-y-2 text-sm">
+                <div class="guide-body">
+                    @foreach([
+                        ['icon'=>'fa-mouse-pointer', 'key'=>'how_it_works_step1'],
+                        ['icon'=>'fa-layer-group',   'key'=>'how_it_works_step2'],
+                        ['icon'=>'fa-draw-polygon',  'key'=>'how_it_works_step3'],
+                        ['icon'=>'fa-calendar-alt',  'key'=>'how_it_works_step4'],
+                        ['icon'=>'fa-paper-plane',   'key'=>'how_it_works_step5'],
+                    ] as $i => $step)
+                    <div class="guide-row">
+                        <div class="guide-num">{{ $i + 1 }}</div>
+                        <span class="guide-row-text">{{ __('messages.'.$step['key']) }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- DAS Level Reference --}}
+            <div class="guide-card">
+                <div class="guide-head" style="background: linear-gradient(135deg, #f0fdfa, #e0f2fe); border-bottom-color: #bae6fd;">
+                    <div class="guide-icon" style="background: var(--c-ocean)"><i class="fas fa-layer-group"></i></div>
+                    <span class="guide-title">{{ __('messages.das_level_guide') }}</span>
+                </div>
+                <div class="guide-body" style="padding: 0.625rem 1rem;">
                     @foreach($levels as $lvl => $info)
-                    <div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
-                        <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-xs font-extrabold text-blue-700 shrink-0">{{ $lvl }}</span>
-                        <div class="min-w-0">
-                            <p class="font-bold text-gray-800 text-xs">{{ $info['name'] }}</p>
-                            <p class="text-gray-500 text-xs">{{ $info['range'] }}</p>
+                    <div class="guide-row">
+                        <span class="guide-num" style="background: #e0f2fe; color: #0e7490;">{{ $lvl }}</span>
+                        <div class="guide-row-text">
+                            <strong>{{ $info['name'] }}</strong>
+                            <span style="display:block; font-size:0.7rem;">{{ $info['range'] }}</span>
                         </div>
                     </div>
                     @endforeach
+                    <p class="mt-2 text-xs text-gray-400 pt-2" style="border-top: 1px solid var(--c-border);">
+                        <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
+                        {!! __('messages.das_level_guide_tip') !!}
+                    </p>
                 </div>
-                <p class="mt-4 text-xs text-blue-800 font-medium bg-white rounded-xl p-3">
-                    <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
-                    <strong>Rekomendasi:</strong> Level 5–6 untuk analisis sub-DAS yang umum digunakan dalam perencanaan SDA.
-                </p>
             </div>
 
-            {{-- Cara Kerja --}}
-            <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl p-5 shadow-xl info-card border-2 border-green-200">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-11 h-11 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-info-circle text-white text-lg"></i>
-                    </div>
-                    <h3 class="text-lg font-extrabold text-green-900">{{ __('messages.how_it_works') }}</h3>
+            {{-- Notes --}}
+            <div class="guide-card">
+                <div class="guide-head" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border-bottom-color: #fde68a;">
+                    <div class="guide-icon" style="background: #d97706"><i class="fas fa-exclamation-triangle"></i></div>
+                    <span class="guide-title">{{ __('messages.important_notes') }}</span>
                 </div>
-                <ol class="space-y-2 text-sm text-green-900">
+                <div class="guide-body">
                     @foreach([
-                        ['icon'=>'fa-mouse-pointer', 'text'=>'Klik titik di peta di dalam wilayah DAS target'],
-                        ['icon'=>'fa-layer-group',   'text'=>'Pilih level DAS sesuai skala analisis'],
-                        ['icon'=>'fa-draw-polygon',  'text'=>'Batas DAS otomatis tampil di peta'],
-                        ['icon'=>'fa-calendar-alt',  'text'=>'Tentukan periode waktu analisis'],
-                        ['icon'=>'fa-paper-plane',   'text'=>'Kirim — RIVANA akan memproses secara otomatis'],
-                    ] as $step)
-                    <li class="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
-                        <i class="fas {{ $step['icon'] }} text-green-600 mt-0.5 shrink-0 w-4 text-center"></i>
-                        <span class="font-medium">{{ $step['text'] }}</span>
-                    </li>
-                    @endforeach
-                </ol>
-            </div>
-
-            {{-- Catatan --}}
-            <div class="bg-gradient-to-br from-yellow-50 to-orange-100 rounded-3xl p-5 shadow-xl info-card border-2 border-yellow-200">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-11 h-11 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-exclamation-triangle text-white text-lg"></i>
-                    </div>
-                    <h3 class="text-lg font-extrabold text-yellow-900">{{ __('messages.important_notes') }}</h3>
-                </div>
-                <ul class="space-y-2 text-sm text-yellow-900">
-                    @foreach([
-                        ['icon'=>'fa-clock',       'text'=>__('messages.processing_time')],
-                        ['icon'=>'fa-bell',        'text'=>__('messages.notification')],
-                        ['icon'=>'fa-save',        'text'=>__('messages.storage')],
+                        ['icon'=>'fa-clock', 'key'=>'processing_time'],
+                        ['icon'=>'fa-bell',  'key'=>'notification'],
+                        ['icon'=>'fa-save',  'key'=>'storage'],
                     ] as $note)
-                    <li class="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
-                        <i class="fas {{ $note['icon'] }} text-yellow-600 mt-0.5 shrink-0"></i>
-                        <span class="font-medium">{!! $note['text'] !!}</span>
-                    </li>
+                    <div class="guide-row">
+                        <div class="guide-num" style="background: #fef3c7; color: #d97706;">
+                            <i class="fas {{ $note['icon'] }}" style="font-size:0.55rem"></i>
+                        </div>
+                        <span class="guide-row-text">{!! __('messages.'.$note['key']) !!}</span>
+                    </div>
                     @endforeach
-                </ul>
+                </div>
             </div>
-        </div>
 
+        </div>{{-- /sidebar --}}
     </div>{{-- /grid --}}
 </div>
 @endsection
@@ -508,13 +750,60 @@ let clickedLng  = null;
 let selectedLevel = null;
 let dasReady    = false;
 
-// HydroSHEDS API endpoint — sesuaikan jika proxy berbeda
-const HYDROSHEDS_BASE = 'https://earthengine.googleapis.com';
+// ════════════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ════════════════════════════════════════════════════════════════
+const trans = {
+    submitClickMap:       @json(__('messages.submit_click_map_first')),
+    submitSelectDas:      @json(__('messages.submit_select_das_first')),
+    submitPeriod:         @json(__('messages.submit_complete_period')),
+    submitSending:        @json(__('messages.submit_sending')),
+    createAnalysis:       @json(__('messages.create_analysis')),
+    swalNoPointTitle:     @json(__('messages.swal_no_point_title')),
+    swalNoPointText:      @json(__('messages.swal_no_point_text')),
+    swalNoDasTitle:       @json(__('messages.swal_no_das_title')),
+    swalNoDasText:        @json(__('messages.swal_no_das_text')),
+    submitSuccessText:    @json(__('messages.submit_success_text')),
+    dasNotFoundMsg:       @json(__('messages.das_not_found_msg')),
+    dasErrorNotFound:     @json(__('messages.das_error_not_found')),
+    dasErrorGeneric:      @json(__('messages.das_error_generic')),
+    timeoutError:         @json(__('messages.timeout_error')),
+    responseNotJson:      @json(__('messages.response_not_json')),
+    checkConsole:         @json(__('messages.check_console')),
+    failedTitle:          @json(__('messages.failed_title')),
+    successTitle:         @json(__('messages.success')),
+    mapPopupPoint:        @json(__('messages.map_popup_selected_point')),
+    mapPopupArea:         @json(__('messages.map_popup_area')),
+    mapPopupLevel:        @json(__('messages.map_popup_level')),
+    geocoderPlaceholder:  @json(__('messages.geocoder_placeholder')),
+};
 
 // ════════════════════════════════════════════════════════════════
 // INIT MAP
 // ════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Auto-detect navbar height so progress rail sits flush below it ──
+    (function () {
+        const navbar =
+            document.querySelector('nav[class*="navbar"]')   ||
+            document.querySelector('header')                  ||
+            document.querySelector('nav')                     ||
+            document.querySelector('[class*="navbar"]')       ||
+            document.querySelector('[id*="navbar"]')          ||
+            document.querySelector('[id*="header"]');
+
+        const h = navbar ? navbar.getBoundingClientRect().height : 64;
+        document.documentElement.style.setProperty('--navbar-height', h + 'px');
+
+        window.addEventListener('resize', () => {
+            if (navbar) {
+                document.documentElement.style.setProperty(
+                    '--navbar-height', navbar.getBoundingClientRect().height + 'px'
+                );
+            }
+        });
+    })();
 
     map = L.map('map').setView([-7.2525, 110.4053], 11);
 
@@ -526,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Geocoder
     L.Control.geocoder({
         defaultMarkGeocode: false,
-        placeholder: 'Cari lokasi...',
+        placeholder: trans.geocoderPlaceholder,
         geocoder: L.Control.Geocoder.nominatim({
             geocodingQueryParams: { countrycodes: 'id' }
         })
@@ -555,13 +844,50 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ════════════════════════════════════════════════════════════════
+// PROGRESS RAIL UPDATE
+// ════════════════════════════════════════════════════════════════
+function updateRail(step, status) {
+    // status: 'active' | 'done' | 'inactive'
+    const num = document.getElementById(`rail-num-${step}`);
+    const rail = document.getElementById(`rail-${step}`);
+    if (!num || !rail) return;
+
+    num.className = `rail-num ${status}`;
+    rail.className = `rail-step ${status}`;
+
+    if (status === 'done') {
+        num.innerHTML = '<i class="fas fa-check" style="font-size:0.6rem"></i>';
+    } else {
+        num.textContent = step;
+    }
+}
+
+function updateStepCard(step, status) {
+    // status: 'active' | 'done' | 'inactive'
+    const card = document.getElementById(`step${step}-card`);
+    const dot  = document.getElementById(`step${step}-dot`);
+    if (!card || !dot) return;
+
+    card.className = 'step-card';
+    if (status === 'active') card.classList.add('is-active');
+    if (status === 'done')   card.classList.add('is-done');
+
+    dot.className = `step-badge ${status === 'inactive' ? 'inactive' : status === 'done' ? 'done' : 'active'}`;
+    if (status === 'done') {
+        dot.innerHTML = '<i class="fas fa-check" style="font-size:0.65rem"></i>';
+    } else {
+        dot.textContent = step;
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
 // STEP 1 — klik peta
 // ════════════════════════════════════════════════════════════════
 function handleMapClick(lat, lng) {
     clickedLat = lat;
     clickedLng = lng;
 
-    // Update marker
+    // Marker
     if (marker) {
         marker.setLatLng([lat, lng]);
     } else {
@@ -571,19 +897,27 @@ function handleMapClick(lat, lng) {
             handleMapClick(p.lat, p.lng);
         });
     }
-    marker.bindPopup(`<b>Titik Terpilih</b><br>
+    marker.bindPopup(`<b>${trans.mapPopupPoint}</b><br>
         Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`).openPopup();
 
-    // Update display inputs
-    document.getElementById('longitude_display').value = lng.toFixed(6);
-    document.getElementById('latitude_display').value  = lat.toFixed(6);
+    // Koordinat chips
+    document.getElementById('longitude_display').textContent = lng.toFixed(6);
+    document.getElementById('latitude_display').textContent  = lat.toFixed(6);
     document.getElementById('longitude').value = lng.toFixed(6);
     document.getElementById('latitude').value  = lat.toFixed(6);
+
+    // Sembunyikan hint overlay
+    document.getElementById('mapHint').classList.add('hidden');
 
     // Reverse geocode
     fetchLocationName(lat, lng);
 
-    // Aktifkan step 2
+    // Step states
+    updateRail(1, 'done');
+    updateRail(2, 'active');
+    updateStepCard(1, 'done');
+    updateStepCard(2, 'active');
+
     activateStep2();
     resetDasSelection();
     checkSubmitReady();
@@ -593,9 +927,7 @@ function handleMapClick(lat, lng) {
 // STEP 2 — pilih level DAS
 // ════════════════════════════════════════════════════════════════
 function activateStep2() {
-    document.getElementById('step2-dot').className = 'step-dot active';
-    // Enable semua tombol level
-    document.querySelectorAll('.das-level-btn').forEach(btn => {
+    document.querySelectorAll('.das-btn').forEach(btn => {
         btn.disabled = false;
     });
 }
@@ -605,27 +937,18 @@ function selectDasLevel(level) {
 
     selectedLevel = level;
 
-    // Update UI tombol
-    document.querySelectorAll('.das-level-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
+    document.querySelectorAll('.das-btn').forEach(btn => btn.classList.remove('selected'));
     document.getElementById(`das-btn-${level}`).classList.add('selected');
 
-    // Sembunyikan panel lama
     document.getElementById('das-info-panel').classList.add('hidden');
     document.getElementById('das-error-panel').classList.add('hidden');
-
-    // Loading
     document.getElementById('step2-loading').classList.remove('hidden');
 
-    // Fetch DAS polygon dari GEE via API server RIVANA
     fetchDasPolygon(clickedLat, clickedLng, level);
 }
 
 async function fetchDasPolygon(lat, lng, level) {
     try {
-        // Endpoint ini memanggil Python RIVANA API untuk ambil polygon DAS
-        // Sesuaikan URL dengan endpoint API server kamu
         const resp = await fetch(`{{ route('hidrologi.das-info') }}`, {
             method: 'POST',
             headers: {
@@ -638,38 +961,38 @@ async function fetchDasPolygon(lat, lng, level) {
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
 
-        if (!data.success) throw new Error(data.message || 'DAS tidak ditemukan');
+        if (!data.success) throw new Error(data.message || trans.dasNotFoundMsg);
 
-        // Tampilkan polygon di peta
         displayDasPolygon(data.geometry, data);
 
-        // Isi hidden fields
         document.getElementById('das_level').value    = level;
         document.getElementById('das_name').value     = data.name || `DAS Level ${level}`;
         document.getElementById('das_area_km2').value = data.area_km2 || 0;
         document.getElementById('hybas_id').value     = data.hybas_id || '';
 
-        // Tampilkan info panel
         document.getElementById('das-info-name').textContent  = data.name || `DAS Level ${level}`;
         document.getElementById('das-info-area').textContent  = `${parseFloat(data.area_km2 || 0).toFixed(1)} km²`;
         document.getElementById('das-info-level').textContent = level;
         document.getElementById('das-info-panel').classList.remove('hidden');
 
-        // Update step dots
-        document.getElementById('step3-dot').className = 'step-dot active';
-        document.getElementById('step4-dot').className = 'step-dot active';
+        // Step rail update
+        updateRail(2, 'done');
+        updateRail(3, 'done');
+        updateRail(4, 'active');
+        updateStepCard(2, 'done');
+        updateStepCard(3, 'done');
+        updateStepCard(4, 'active');
         dasReady = true;
 
     } catch (err) {
         console.error('DAS fetch error:', err);
         document.getElementById('das-error-msg').textContent =
-            err.message.includes('404') || err.message.includes('tidak ditemukan')
-            ? `Level ${level} tidak tersedia untuk lokasi ini. Coba level lain.`
-            : `Gagal memuat DAS: ${err.message}`;
+            err.message.includes('404') || err.message.includes('tidak ditemukan') || err.message === trans.dasNotFoundMsg
+            ? trans.dasErrorNotFound.replace(':level', level)
+            : trans.dasErrorGeneric.replace(':message', err.message);
         document.getElementById('das-error-panel').classList.remove('hidden');
         dasReady = false;
 
-        // Reset hidden fields
         document.getElementById('das_level').value    = '';
         document.getElementById('das_name').value     = '';
         document.getElementById('das_area_km2').value = '';
@@ -681,46 +1004,38 @@ async function fetchDasPolygon(lat, lng, level) {
 }
 
 function displayDasPolygon(geometry, dasData) {
-    // Hapus polygon lama
-    if (dasPolygonLayer) {
-        map.removeLayer(dasPolygonLayer);
-    }
-
+    if (dasPolygonLayer) map.removeLayer(dasPolygonLayer);
     if (!geometry) return;
 
     try {
         dasPolygonLayer = L.geoJSON(geometry, {
             style: {
-                color:       '#2563eb',
-                weight:      3,
+                color:       '#0d9488',
+                weight:      2.5,
                 opacity:     0.9,
-                fillColor:   '#3b82f6',
+                fillColor:   '#14b8a6',
                 fillOpacity: 0.12,
-                dashArray:   null,
             }
         })
         .bindPopup(`
-            <div style="min-width:180px">
-                <b style="font-size:14px">${dasData.name || 'DAS'}</b><br>
-                <span style="color:#6b7280;font-size:12px">Luas: ${parseFloat(dasData.area_km2||0).toFixed(1)} km²</span><br>
-                <span style="color:#6b7280;font-size:12px">Level: ${dasData.level || selectedLevel}</span>
+            <div style="min-width:170px; font-family: inherit;">
+                <b style="font-size:13px; color: #1e293b;">${dasData.name || 'DAS'}</b><br>
+                <span style="color:#64748b; font-size:11px;">${trans.mapPopupArea}: ${parseFloat(dasData.area_km2||0).toFixed(1)} km²</span><br>
+                <span style="color:#64748b; font-size:11px;">${trans.mapPopupLevel}: ${dasData.level || selectedLevel}</span>
             </div>
         `)
         .addTo(map);
 
-        // Zoom ke polygon
         map.fitBounds(dasPolygonLayer.getBounds(), { padding: [30, 30] });
-
     } catch (e) {
         console.warn('Gagal render polygon DAS:', e);
     }
 }
 
 function resetDasSelection() {
-    // Reset pilihan level
     selectedLevel = null;
     dasReady      = false;
-    document.querySelectorAll('.das-level-btn').forEach(btn => btn.classList.remove('selected'));
+    document.querySelectorAll('.das-btn').forEach(btn => btn.classList.remove('selected'));
     document.getElementById('das-info-panel').classList.add('hidden');
     document.getElementById('das-error-panel').classList.add('hidden');
     if (dasPolygonLayer) { map.removeLayer(dasPolygonLayer); dasPolygonLayer = null; }
@@ -728,9 +1043,12 @@ function resetDasSelection() {
     document.getElementById('das_name').value     = '';
     document.getElementById('das_area_km2').value = '';
     document.getElementById('hybas_id').value     = '';
-    document.getElementById('step2-dot').className = 'step-dot inactive';
-    document.getElementById('step3-dot').className = 'step-dot inactive';
-    document.getElementById('step4-dot').className = 'step-dot inactive';
+
+    updateRail(2, 'active');
+    updateRail(3, 'inactive');
+    updateRail(4, 'inactive');
+    updateStepCard(3, '');
+    updateStepCard(4, '');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -766,7 +1084,7 @@ function fetchLocationName(lat, lng) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// VALIDASI & SUBMIT BUTTON
+// VALIDASI & SUBMIT
 // ════════════════════════════════════════════════════════════════
 function validateDates() {
     const s = document.getElementById('start_date').value;
@@ -778,10 +1096,9 @@ function validateDates() {
 }
 
 function checkSubmitReady() {
-    const btn      = document.getElementById('submitBtn');
-    const txtEl    = document.getElementById('submitText');
-    const hintDiv  = document.getElementById('submit-hint');
-    const hintTxt  = document.getElementById('submit-hint-text');
+    const btn     = document.getElementById('submitBtn');
+    const txtEl   = document.getElementById('submitText');
+    const statusEl = document.getElementById('submit-status');
 
     const hasClick = !!clickedLat;
     const hasDas   = dasReady;
@@ -790,20 +1107,22 @@ function checkSubmitReady() {
 
     if (!hasClick) {
         btn.disabled = true;
-        txtEl.textContent = 'Klik peta terlebih dahulu';
-        hintDiv.classList.add('hidden');
+        txtEl.textContent = trans.submitClickMap;
+        if (statusEl) statusEl.textContent = '';
     } else if (!hasDas) {
         btn.disabled = true;
-        txtEl.textContent = 'Pilih level DAS terlebih dahulu';
-        hintDiv.classList.add('hidden');
+        txtEl.textContent = trans.submitSelectDas;
+        if (statusEl) statusEl.textContent = '';
     } else if (!hasStart || !hasEnd) {
         btn.disabled = true;
-        txtEl.textContent = 'Lengkapi periode analisis';
-        hintDiv.classList.add('hidden');
+        txtEl.textContent = trans.submitPeriod;
+        if (statusEl) statusEl.textContent = '';
     } else {
         btn.disabled = false;
-        txtEl.textContent = '{{ __("messages.create_analysis") }}';
-        hintDiv.classList.add('hidden');
+        txtEl.textContent = trans.createAnalysis;
+        if (statusEl) statusEl.textContent = '';
+        updateRail(4, 'done');
+        updateStepCard(4, 'done');
     }
 }
 
@@ -813,13 +1132,12 @@ function checkSubmitReady() {
 function handleSubmit(e) {
     e.preventDefault();
 
-    // Validasi akhir
     if (!clickedLat || !clickedLng) {
-        Swal.fire({ icon:'warning', title:'Belum Ada Titik', text:'Klik peta untuk menentukan lokasi.' });
+        Swal.fire({ icon:'warning', title: trans.swalNoPointTitle, text: trans.swalNoPointText });
         return;
     }
     if (!dasReady || !document.getElementById('das_level').value) {
-        Swal.fire({ icon:'warning', title:'DAS Belum Dipilih', text:'Pilih level DAS terlebih dahulu.' });
+        Swal.fire({ icon:'warning', title: trans.swalNoDasTitle, text: trans.swalNoDasText });
         return;
     }
 
@@ -828,7 +1146,7 @@ function handleSubmit(e) {
     const submitText = document.getElementById('submitText');
     submitBtn.disabled = true;
     submitIcon.className = 'fas fa-spinner fa-spin';
-    submitText.textContent = 'Mengirim...';
+    submitText.textContent = trans.submitSending;
 
     const formData = new FormData(this);
     const controller = new AbortController();
@@ -843,14 +1161,14 @@ function handleSubmit(e) {
     .then(r => {
         clearTimeout(timeout);
         if (!r.headers.get('content-type')?.includes('application/json'))
-            throw new Error('Respon bukan JSON');
+            throw new Error(trans.responseNotJson);
         return r.json();
     })
     .then(data => {
         if (data.success || data.job_id) {
             Swal.fire({
-                icon: 'success', title: 'Berhasil!',
-                text: data.message || 'Analisis berhasil dikirim!',
+                icon: 'success', title: trans.successTitle,
+                text: data.message || trans.submitSuccessText,
                 showConfirmButton: false, timer: 2000
             }).then(() => {
                 window.location.href = `{{ url('hidrologi/show') }}/${data.job_id}`;
@@ -863,16 +1181,13 @@ function handleSubmit(e) {
         clearTimeout(timeout);
         submitBtn.disabled = false;
         submitIcon.className = 'fas fa-paper-plane';
-        submitText.textContent = '{{ __("messages.create_analysis") }}';
+        submitText.textContent = trans.createAnalysis;
 
-        const msg = err.name === 'AbortError'
-            ? 'Waktu habis! Periksa koneksi ke server RIVANA.'
-            : err.message;
-
+        const msg = err.name === 'AbortError' ? trans.timeoutError : err.message;
         Swal.fire({
-            icon: 'error', title: 'Gagal!',
+            icon: 'error', title: trans.failedTitle,
             html: `<p>${msg}</p>`,
-            footer: '<p class="text-xs">Periksa konsol browser (F12) untuk detail</p>'
+            footer: `<p class="text-xs">${trans.checkConsole}</p>`
         });
     });
 }
