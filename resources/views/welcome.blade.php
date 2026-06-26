@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIVANA - River DNA Analysis (TES ACTION) ke 2 dann ke 3</title>
+    <title>RIVANA - River DNA Analysis</title>
     <link rel="icon" type="image/jpeg" href="/images/logo2.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -73,7 +73,7 @@
                     <div class="inline-block">
                         <h1 class="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter">
                             <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-600 drop-shadow-2xl">
-                                RIVANA
+                                RIVANA TC
                             </span>
                         </h1>
                         <!-- Animated underline -->
