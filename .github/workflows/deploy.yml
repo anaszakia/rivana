@@ -3,7 +3,7 @@ name: Deploy to Production Server
 on:
   push:
     branches:
-      - main  # Ubah ke branch yang Anda gunakan (bisa juga 'master')
+      - main
 
 jobs:
   deploy:
@@ -17,10 +17,10 @@ jobs:
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
+          host: "31.97.186.233"
+          username: "root"
           key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
+          port: 22
           script: |
             echo "🚀 Starting deployment..."
             
@@ -49,7 +49,7 @@ jobs:
             
             # Create storage link jika belum ada
             echo "🔗 Creating storage link..."
-            php artisan storage:link
+            php artisan storage:link || true
             
             # Clear all cache
             echo "🧹 Clearing cache..."
