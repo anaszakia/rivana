@@ -100,9 +100,9 @@
     </div>
 
     <!-- Main Content Wrapper -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 mb-6 items-start">
         <!-- Main Content Column (Left) -->
-        <div class="lg:col-span-2 space-y-5 sm:space-y-6 order-2 lg:order-1">
+        <div class="lg:col-span-2 space-y-5 sm:space-y-6 min-w-0">
             <!-- Location Info Card -->
             <div class="step-card">
                 <div class="step-header">
@@ -2313,7 +2313,7 @@
         </div>
 
         <!-- Sidebar (Right) -->
-        <div class="lg:col-span-1 space-y-5 sm:space-y-6 order-1 lg:order-2">
+        <div class="lg:col-span-1 space-y-5 sm:space-y-6 min-w-0">
             <!-- Timeline Card -->
             <div class="step-card">
                 <div class="step-header">

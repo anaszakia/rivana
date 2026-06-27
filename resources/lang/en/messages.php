@@ -91,6 +91,7 @@ return [
     'failed'                            => 'Failed',
     'completed'                         => 'Completed',
     'statistics'                        => 'Statistics',
+    'file_count'                        => 'File count',
     'progress'                          => 'Progress',
     'search'                            => 'Search',
     'copy'                              => 'Copy',
@@ -171,6 +172,7 @@ return [
     // TIMELINE SIDEBAR (previously hardcoded)
     // ==========================================
     'timeline'                          => 'Timeline',
+    'job_history'                       => 'Job processing history',
     'created_label'                     => 'Created',
     'submitted_label'                   => 'Submitted',
     'started_processing'                => 'Processing Started',
@@ -180,9 +182,11 @@ return [
     // LOCATION & PERIOD
     // ==========================================
     'location_info'                     => 'Location Info',
+    'location_details'                  => 'Coordinate and address details for the analysis location',
     'coordinates'                       => 'Coordinates',
     'description'                       => 'Description',
     'analysis_period'                   => 'Analysis Period',
+    'date_range_for_analysis'           => 'Date range used for hydrological data processing',
     'duration'                          => 'Duration',
     'period'                            => 'Period',
 
@@ -314,6 +318,7 @@ return [
     // GENERATED FILES SECTION (previously hardcoded)
     // ==========================================
     'generated_files'                   => 'Generated Files',
+    'file'                              => 'file',
     'filter_all'                        => 'All',
     'file_too_large_preview'            => 'File Too Large for Preview',
     'failed_to_load_image'              => 'Failed to load image',
