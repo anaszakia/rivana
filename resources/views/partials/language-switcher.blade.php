@@ -3,7 +3,7 @@
     <button 
         @click="open = !open" 
         type="button"
-        class="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition-all duration-200 shadow-md hover:shadow-lg"
+        class="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white transition-all duration-200 shadow-md hover:shadow-lg"
         title="Change Language"
     >
         <i class="fas fa-language text-sm sm:text-lg"></i>
@@ -40,7 +40,7 @@
             <input type="hidden" name="locale" value="id">
             <button 
                 type="submit" 
-                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'id' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
+                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'id' ? 'bg-gradient-to-r from-teal-100 to-cyan-100 text-teal-700 font-semibold' : 'text-gray-700' }}"
             >
                 <span class="text-xl sm:text-2xl">🇮🇩</span>
                 <div class="flex-1">
@@ -48,7 +48,7 @@
                     <div class="text-[10px] sm:text-xs text-gray-500">Indonesian</div>
                 </div>
                 @if(app()->getLocale() === 'id')
-                    <i class="fas fa-check-circle text-blue-600 text-sm sm:text-base"></i>
+                    <i class="fas fa-check-circle text-teal-600 text-sm sm:text-base"></i>
                 @endif
             </button>
         </form>
@@ -59,7 +59,7 @@
             <input type="hidden" name="locale" value="en">
             <button 
                 type="submit" 
-                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'en' ? 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 font-semibold' : 'text-gray-700' }}"
+                class="w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 transition-all duration-150 flex items-center space-x-2 sm:space-x-3 {{ app()->getLocale() === 'en' ? 'bg-gradient-to-r from-teal-100 to-cyan-100 text-teal-700 font-semibold' : 'text-gray-700' }}"
             >
                 <span class="text-xl sm:text-2xl">🇬🇧</span>
                 <div class="flex-1">
@@ -67,7 +67,7 @@
                     <div class="text-[10px] sm:text-xs text-gray-500">English</div>
                 </div>
                 @if(app()->getLocale() === 'en')
-                    <i class="fas fa-check-circle text-blue-600 text-sm sm:text-base"></i>
+                    <i class="fas fa-check-circle text-teal-600 text-sm sm:text-base"></i>
                 @endif
             </button>
         </form>

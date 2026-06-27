@@ -1,357 +1,338 @@
 @extends('layouts.app')
 
-@section('title', 'Analisis Hidrologi')
+@section('title', __('messages.hydrology_analysis'))
+
+@push('styles')
+<style>
+    /* ── Design tokens (selaras dengan halaman create) ── */
+    :root {
+        --c-teal:     #0d9488;
+        --c-teal-lt:  #ccfbf1;
+        --c-teal-dk:  #0f766e;
+        --c-ocean:    #0e7490;
+        --c-sky:      #e0f2fe;
+        --c-slate:    #1e293b;
+        --c-muted:    #64748b;
+        --c-surface:  #f8fafc;
+        --c-border:   #e2e8f0;
+        --c-white:    #ffffff;
+        --radius-card: 1.25rem;
+        --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    body { background: var(--c-surface); }
+
+    /* ── Card dasar (sama dengan step-card di halaman create) ── */
+    .step-card {
+        background: var(--c-white);
+        border-radius: var(--radius-card);
+        border: 1.5px solid var(--c-border);
+        box-shadow: var(--shadow-card);
+    }
+    .step-header {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 1.125rem 1.25rem;
+        border-bottom: 1.5px solid var(--c-border);
+        flex-wrap: wrap;
+    }
+    .step-badge {
+        width: 2.25rem; height: 2.25rem;
+        border-radius: 0.625rem;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.875rem;
+        flex-shrink: 0;
+        background: var(--c-teal); color: #fff;
+    }
+
+    /* ── Tombol utama ── */
+    .btn-submit {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        padding: 0.75rem 1.375rem;
+        background: var(--c-teal);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.85rem;
+        border-radius: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 4px 14px rgba(13,148,136,.3);
+        text-decoration: none;
+    }
+    .btn-submit:hover { background: var(--c-teal-dk); box-shadow: 0 6px 20px rgba(13,148,136,.4); transform: translateY(-1px); color: #fff; }
+
+    /* Tombol hapus terpilih — display diatur via utility hidden/flex Tailwind, bukan di sini */
+    .btn-danger {
+        padding: 0.625rem 1.125rem;
+        background: #dc2626;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.8rem;
+        border-radius: 0.625rem;
+        border: none;
+        cursor: pointer;
+        transition: background .15s;
+    }
+    .btn-danger:hover { background: #b91c1c; }
+
+    /* ── Tombol ikon (aksi tabel & refresh) ── */
+    .icon-btn {
+        width: 2.25rem; height: 2.25rem;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 0.625rem;
+        border: 1.5px solid var(--c-border);
+        background: var(--c-white);
+        color: var(--c-muted);
+        transition: all .15s;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--c-surface); border-color: #94a3b8; color: var(--c-slate); }
+    .icon-btn-view:hover { border-color: var(--c-teal); color: var(--c-teal-dk); background: #f0fdfa; }
+    .icon-btn-warn:hover { border-color: #f59e0b; color: #b45309; background: #fffbeb; }
+    .icon-btn-danger:hover { border-color: #ef4444; color: #b91c1c; background: #fef2f2; }
+
+    /* ── Kartu statistik ── */
+    .stat-card {
+        background: var(--c-white);
+        border: 1.5px solid var(--c-border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        padding: 1.125rem 1.25rem;
+        display: flex; align-items: center; gap: 1rem;
+    }
+    .stat-icon {
+        width: 2.75rem; height: 2.75rem;
+        border-radius: 0.75rem;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; font-size: 1.05rem; color: #fff;
+    }
+    .stat-value { font-size: 1.625rem; font-weight: 800; color: var(--c-slate); line-height: 1; }
+    .stat-label { font-size: 0.68rem; font-weight: 700; color: var(--c-muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 0.2rem; }
+
+    /* ── Tabel ── */
+    .job-table th {
+        font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+        color: var(--c-muted); text-align: left; padding: 0.875rem 1.25rem;
+        border-bottom: 1.5px solid var(--c-border);
+        background: var(--c-surface);
+        white-space: nowrap;
+    }
+    .job-table td { padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--c-border); vertical-align: middle; }
+    .job-table tbody tr:last-child td { border-bottom: none; }
+    .job-table tbody tr:hover td { background: var(--c-surface); }
+
+    .status-pill {
+        display: inline-flex; align-items: center; gap: 0.375rem;
+        padding: 0.3rem 0.75rem; border-radius: 9999px;
+        font-size: 0.72rem; font-weight: 700; white-space: nowrap;
+    }
+
+    .progress-track { width: 100%; height: 0.5rem; background: var(--c-border); border-radius: 9999px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 9999px; background: var(--c-teal); transition: width .4s; }
+
+    .files-pill {
+        display: inline-flex; align-items: center; gap: 0.375rem;
+        padding: 0.3rem 0.7rem; border-radius: 0.5rem;
+        background: var(--c-teal-lt); color: var(--c-teal-dk);
+        font-size: 0.78rem; font-weight: 700; white-space: nowrap;
+    }
+
+    input.chk { width: 1.05rem; height: 1.05rem; accent-color: var(--c-teal); border-radius: 0.3rem; cursor: pointer; }
+</style>
+@endpush
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <!-- Modern Header Banner -->
-    <div class="mb-6">
-        <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 rounded-3xl shadow-2xl">
-            <!-- Animated Background Pattern -->
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute w-96 h-96 -top-48 -right-48 bg-white rounded-full animate-pulse"></div>
-                <div class="absolute w-64 h-64 -bottom-32 -left-32 bg-white rounded-full animate-pulse" style="animation-delay: 1s;"></div>
-                <div class="absolute w-40 h-40 top-1/2 left-1/4 bg-white rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+<div class="container mx-auto px-4 sm:px-5 lg:px-6 py-6 max-w-6xl">
+
+    {{-- ── Header halaman ── --}}
+    <div class="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+            <p class="text-xs text-gray-400 font-medium mb-0.5">{{ __('messages.hydrology') }}</p>
+            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">{{ __('messages.hydrology_analysis') }}</h1>
+            <p class="text-xs text-gray-400 mt-1">{{ __('messages.manage_monitor_hydrology_jobs') }}</p>
+        </div>
+        <a href="{{ route('hidrologi.create') }}" class="btn-submit">
+            <i class="fas fa-plus" style="font-size:0.75rem"></i>
+            {{ __('messages.new_analysis') }}
+        </a>
+    </div>
+
+    {{-- ── Statistik ringkas ── --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--c-teal);"><i class="fas fa-tasks"></i></div>
+            <div>
+                <div class="stat-value">{{ $jobs->total() }}</div>
+                <div class="stat-label">{{ __('messages.total_jobs') }}</div>
             </div>
-            
-            <div class="relative z-10 p-8 md:p-10">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-water text-white text-xl"></i>
-                            </div>
-                            <div>
-                                <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                                    {{ __('messages.hydrology_analysis') }}
-                                </h1>
-                                <p class="text-blue-100 text-sm mt-1">{{ __('messages.manage_monitor_hydrology_jobs') }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-wrap items-center gap-4 text-sm">
-                            <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
-                                <i class="fas fa-database text-blue-200"></i>
-                                <span class="text-white font-medium">{{ __('messages.total_jobs_recorded', ['count' => $jobs->total()]) }}</span>
-                            </div>
-                            <div class="flex items-center gap-2 bg-green-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-green-300/30">
-                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                <span class="text-white font-medium">Live Monitoring</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center">
-                        <a href="{{ route('hidrologi.create') }}" class="inline-flex items-center gap-3 px-6 py-3.5 bg-white hover:bg-blue-50 text-blue-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
-                            <div class="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                                <i class="fas fa-plus text-blue-600"></i>
-                            </div>
-                            <span>{{ __('messages.new_analysis') }}</span>
-                        </a>
-                    </div>
-                </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#d97706;"><i class="fas fa-spinner fa-spin"></i></div>
+            <div>
+                <div class="stat-value">{{ $jobs->where('status', 'processing')->count() }}</div>
+                <div class="stat-label">{{ __('messages.being_processed') }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#10b981;"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <div class="stat-value">{{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}</div>
+                <div class="stat-label">{{ __('messages.completed') }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#ef4444;"><i class="fas fa-exclamation-circle"></i></div>
+            <div>
+                <div class="stat-value">{{ $jobs->where('status', 'failed')->count() }}</div>
+                <div class="stat-label">{{ __('messages.failed') }}</div>
             </div>
         </div>
     </div>
 
-    <!-- Modern Stats Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-        <!-- Total Jobs Card -->
-        <div class="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-            <!-- Decorative Gradient Circle -->
-            <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-500"></div>
-            
-            <div class="p-6 relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                        <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">{{ __('messages.total_jobs') }}</p>
-                        <h3 class="text-4xl font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {{ $jobs->total() }}
-                        </h3>
-                    </div>
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        <i class="fas fa-tasks text-white text-2xl"></i>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-2 rounded-xl">
-                    <i class="fas fa-chart-line text-sm"></i>
-                    <span class="text-xs font-bold">{{ __('messages.all_status') }}</span>
-                </div>
+    {{-- ── Kartu daftar pekerjaan ── --}}
+    <div class="step-card" style="overflow: hidden;">
+        <div class="step-header">
+            <div class="step-badge"><i class="fas fa-list-ul" style="font-size:0.8rem"></i></div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.job_list') }}</h3>
+                <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.monitor_progress_status') }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="bulkDeleteBtn" onclick="bulkDelete()"
+                        class="hidden items-center gap-2 btn-danger"
+                        title="{{ __('messages.delete_selected') }}">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>{{ __('messages.delete_selected') }} (<span id="selectedCount">0</span>)</span>
+                </button>
+                <button onclick="location.reload()" class="icon-btn" title="{{ __('messages.refresh') }}">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Processing Card -->
-        <div class="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-            <!-- Decorative Gradient Circle -->
-            <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-500"></div>
-            
-            <div class="p-6 relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                        <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">{{ __('messages.being_processed') }}</p>
-                        <h3 class="text-4xl font-extrabold text-gray-900 group-hover:text-yellow-600 transition-colors">
-                            {{ $jobs->where('status', 'processing')->count() }}
-                        </h3>
-                    </div>
-                    <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        <i class="fas fa-spinner fa-spin text-white text-2xl"></i>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2 text-yellow-600 bg-yellow-50 px-3 py-2 rounded-xl">
-                    <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                    <span class="text-xs font-bold">{{ __('messages.active_now') }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Completed Card -->
-        <div class="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-            <!-- Decorative Gradient Circle -->
-            <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-500"></div>
-            
-            <div class="p-6 relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                        <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">{{ __('messages.completed') }}</p>
-                        <h3 class="text-4xl font-extrabold text-gray-900 group-hover:text-green-600 transition-colors">
-                            {{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}
-                        </h3>
-                    </div>
-                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        <i class="fas fa-check-circle text-white text-2xl"></i>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-2 rounded-xl">
-                    <i class="fas fa-check text-sm"></i>
-                    <span class="text-xs font-bold">{{ __('messages.successfully_processed') }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Failed Card -->
-        <div class="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-            <!-- Decorative Gradient Circle -->
-            <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-red-400 to-rose-600 rounded-full opacity-10 group-hover:scale-125 transition-transform duration-500"></div>
-            
-            <div class="p-6 relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                        <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">{{ __('messages.failed') }}</p>
-                        <h3 class="text-4xl font-extrabold text-gray-900 group-hover:text-red-600 transition-colors">
-                            {{ $jobs->where('status', 'failed')->count() }}
-                        </h3>
-                    </div>
-                    <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        <i class="fas fa-exclamation-circle text-white text-2xl"></i>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-2 rounded-xl">
-                    <i class="fas fa-exclamation-triangle text-sm"></i>
-                    <span class="text-xs font-bold">{{ __('messages.needs_attention') }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modern Jobs Table -->
-    <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-        <!-- Table Header -->
-        <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 px-6 py-5 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-list-ul text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">
-                            {{ __('messages.job_list') }}
-                        </h3>
-                        <p class="text-sm text-gray-500">{{ __('messages.monitor_progress_status') }}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button id="bulkDeleteBtn" onclick="bulkDelete()" 
-                            class="hidden items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105" 
-                            title="{{ __('messages.delete_selected') }}">
-                        <i class="fas fa-trash-alt"></i>
-                        <span>{{ __('messages.delete_selected') }} (<span id="selectedCount">0</span>)</span>
-                    </button>
-                    
-                    <button onclick="location.reload()" class="p-2.5 hover:bg-white rounded-xl transition-all duration-200 group" title="{{ __('messages.refresh') }}">
-                        <i class="fas fa-sync-alt text-gray-400 group-hover:text-blue-600 group-hover:rotate-180 transition-all duration-300"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gradient-to-r from-gray-50 to-blue-50">
+            <table class="min-w-full job-table">
+                <thead>
                     <tr>
-                        <th class="px-6 py-4 text-left w-12">
-                            <input type="checkbox" id="selectAll" 
-                                   class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all"
-                                   onchange="toggleSelectAll(this)">
+                        <th class="w-10">
+                            <input type="checkbox" id="selectAll" class="chk" onchange="toggleSelectAll(this)">
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.job_id') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.location') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.date_range') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.status') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.progress') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.files') }}</th>
-                        <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.created') }}</th>
-                        <th class="px-6 py-4 text-right text-xs font-extrabold text-gray-700 uppercase tracking-wider">{{ __('messages.actions') }}</th>
+                        <th>{{ __('messages.job_id') }}</th>
+                        <th>{{ __('messages.location') }}</th>
+                        <th>{{ __('messages.date_range') }}</th>
+                        <th>{{ __('messages.status') }}</th>
+                        <th>{{ __('messages.progress') }}</th>
+                        <th>{{ __('messages.files') }}</th>
+                        <th>{{ __('messages.created') }}</th>
+                        <th class="text-right">{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-100">
+                <tbody>
                     @forelse($jobs as $job)
-                        <tr class="hover:bg-blue-50/50 transition-all duration-200 group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="checkbox" 
-                                       class="job-checkbox w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all" 
-                                       value="{{ $job->id }}"
-                                       onchange="updateBulkDeleteButton()">
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="job-checkbox chk" value="{{ $job->id }}" onchange="updateBulkDeleteButton()">
                             </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:shadow-md transition-all">
-                                        <i class="fas fa-hashtag text-blue-600"></i>
-                                    </div>
-                                    <span class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{{ Str::limit($job->job_id, 12) }}</span>
+
+                            <td class="whitespace-nowrap">
+                                <span class="text-sm font-bold text-gray-900">
+                                    <i class="fas fa-hashtag text-gray-400" style="font-size:0.65rem"></i>
+                                    {{ Str::limit($job->job_id, 12) }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="text-sm font-bold text-gray-900">
+                                    <i class="fas fa-map-marker-alt text-red-400" style="font-size:0.7rem"></i>
+                                    {{ $job->location_name ?? __('messages.unknown') }}
                                 </div>
+                                <div class="text-xs text-gray-400 mt-0.5">{{ $job->latitude }}, {{ $job->longitude }}</div>
                             </td>
-                            
-                            <td class="px-6 py-4">
-                                <div class="flex items-start gap-3">
-                                    <div class="w-9 h-9 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all">
-                                        <i class="fas fa-map-marker-alt text-red-600"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-bold text-gray-900">{{ $job->location_name ?? __('messages.unknown') }}</div>
-                                        <div class="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                                            <i class="fas fa-globe text-gray-400"></i>
-                                            <span>{{ $job->latitude }}, {{ $job->longitude }}</span>
-                                        </div>
-                                    </div>
+
+                            <td class="whitespace-nowrap">
+                                <div class="text-sm font-semibold text-gray-700">
+                                    <i class="fas fa-calendar text-gray-400" style="font-size:0.7rem"></i>
+                                    {{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}
                                 </div>
+                                <div class="text-xs text-gray-400 mt-0.5">{{ __('messages.to') }} {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
                             </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center group-hover:shadow-md transition-all">
-                                        <i class="fas fa-calendar text-purple-600"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-bold text-gray-900">{{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}</div>
-                                        <div class="text-xs text-gray-500">{{ __('messages.to') }} {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+
+                            <td class="whitespace-nowrap">
                                 @php
                                     $statusConfig = [
-                                        'pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-clock', 'label' => __('messages.waiting')],
-                                        'submitted' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-paper-plane', 'label' => __('messages.sent')],
-                                        'processing' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-spinner fa-spin', 'label' => __('messages.processed')],
-                                        'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check-circle', 'label' => __('messages.completed')],
-                                        'completed_with_warning' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'icon' => 'fa-exclamation-triangle', 'label' => __('messages.completed_with_warning')],
-                                        'failed' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times-circle', 'label' => __('messages.failed')],
-                                        'cancelled' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'icon' => 'fa-ban', 'label' => __('messages.cancelled')]
+                                        'pending' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-clock', 'label' => __('messages.waiting')],
+                                        'submitted' => ['bg' => '#e0f2fe', 'text' => '#0369a1', 'icon' => 'fa-paper-plane', 'label' => __('messages.sent')],
+                                        'processing' => ['bg' => '#fef3c7', 'text' => '#b45309', 'icon' => 'fa-spinner fa-spin', 'label' => __('messages.processed')],
+                                        'completed' => ['bg' => '#d1fae5', 'text' => '#047857', 'icon' => 'fa-check-circle', 'label' => __('messages.completed')],
+                                        'completed_with_warning' => ['bg' => '#ffedd5', 'text' => '#c2410c', 'icon' => 'fa-exclamation-triangle', 'label' => __('messages.completed_with_warning')],
+                                        'failed' => ['bg' => '#fee2e2', 'text' => '#b91c1c', 'icon' => 'fa-times-circle', 'label' => __('messages.failed')],
+                                        'cancelled' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-ban', 'label' => __('messages.cancelled')],
                                     ];
                                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
                                 @endphp
-                                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold {{ $config['bg'] }} {{ $config['text'] }} shadow-sm border-2 border-transparent group-hover:border-current transition-all">
-                                    <i class="fas {{ $config['icon'] }}"></i>
-                                    <span>{{ $config['label'] }}</span>
+                                <span class="status-pill" style="background: {{ $config['bg'] }}; color: {{ $config['text'] }};">
+                                    <i class="fas {{ $config['icon'] }}" style="font-size:0.65rem"></i>
+                                    {{ $config['label'] }}
                                 </span>
                             </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex-1 min-w-[120px]">
-                                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
-                                            <div class="h-3 rounded-full transition-all duration-500 {{ $job->progress == 100 ? 'bg-gradient-to-r from-green-400 to-emerald-600' : 'bg-gradient-to-r from-blue-400 to-indigo-600' }}" style="width: {{ $job->progress }}%"></div>
-                                        </div>
+
+                            <td class="whitespace-nowrap" style="min-width:140px;">
+                                <div class="flex items-center gap-2">
+                                    <div class="progress-track flex-1">
+                                        <div class="progress-fill" style="width: {{ $job->progress }}%; {{ $job->progress == 100 ? 'background:#10b981;' : '' }}"></div>
                                     </div>
-                                    <span class="text-sm font-extrabold text-gray-700 min-w-[50px] text-right">{{ $job->progress }}%</span>
+                                    <span class="text-xs font-bold text-gray-600" style="min-width:2.2rem; text-align:right;">{{ $job->progress }}%</span>
                                 </div>
                             </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
+
+                            <td class="whitespace-nowrap">
                                 @if($job->total_files > 0)
-                                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-100">
-                                        <div class="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-file-alt text-white text-xs"></i>
-                                        </div>
-                                        <span class="text-sm font-extrabold text-blue-700">{{ $job->total_files }}</span>
-                                    </div>
+                                    <span class="files-pill">
+                                        <i class="fas fa-file-alt" style="font-size:0.65rem"></i>
+                                        {{ $job->total_files }}
+                                    </span>
                                 @else
-                                    <span class="text-gray-400 text-sm font-medium">{{ __('messages.no_files') }}</span>
+                                    <span class="text-gray-400 text-xs">{{ __('messages.no_files') }}</span>
                                 @endif
                             </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-clock text-gray-500 text-xs"></i>
-                                    </div>
-                                    <span class="text-sm font-medium text-gray-600">{{ $job->created_at->diffForHumans() }}</span>
-                                </div>
+
+                            <td class="whitespace-nowrap">
+                                <span class="text-xs text-gray-500">{{ $job->created_at->diffForHumans() }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('hidrologi.show', $job->id) }}" 
-                                       class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 group/btn" 
-                                       title="{{ __('messages.detail') }}">
-                                        <i class="fas fa-eye group-hover/btn:scale-110 transition-transform"></i>
-                                        <span class="text-xs font-bold">{{ __('messages.detail') }}</span>
+
+                            <td class="text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <a href="{{ route('hidrologi.show', $job->id) }}" class="icon-btn icon-btn-view" title="{{ __('messages.detail') }}">
+                                        <i class="fas fa-eye" style="font-size:0.8rem"></i>
                                     </a>
-                                   
+
                                     @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                                        <button onclick="cancelJob({{ $job->id }})" 
-                                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 group/btn" 
-                                                title="{{ __('messages.cancel_action') }}">
-                                            <i class="fas fa-stop-circle group-hover/btn:scale-110 transition-transform"></i>
-                                            <span class="text-xs font-bold">{{ __('messages.cancel_action') }}</span>
+                                        <button onclick="cancelJob({{ $job->id }})" class="icon-btn icon-btn-warn" title="{{ __('messages.cancel_action') }}">
+                                            <i class="fas fa-stop-circle" style="font-size:0.8rem"></i>
                                         </button>
                                     @endif
-                                    
-                                    <button onclick="deleteJob({{ $job->id }})" 
-                                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 group/btn" 
-                                            title="{{ __('messages.delete_action') }}">
-                                        <i class="fas fa-trash group-hover/btn:scale-110 transition-transform"></i>
-                                        <span class="text-xs font-bold">{{ __('messages.delete_action') }}</span>
+
+                                    <button onclick="deleteJob({{ $job->id }})" class="icon-btn icon-btn-danger" title="{{ __('messages.delete_action') }}">
+                                        <i class="fas fa-trash" style="font-size:0.8rem"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-20 text-center">
+                            <td colspan="9" class="text-center" style="padding: 4rem 1.5rem;">
                                 <div class="flex flex-col items-center justify-center">
-                                    <div class="relative mb-8">
-                                        <div class="w-32 h-32 bg-gradient-to-br from-blue-100 via-blue-200 to-indigo-200 rounded-full flex items-center justify-center shadow-2xl">
-                                            <i class="fas fa-folder-open text-5xl text-blue-400"></i>
-                                        </div>
-                                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
-                                            <i class="fas fa-plus text-white text-sm"></i>
-                                        </div>
+                                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background: var(--c-teal-lt);">
+                                        <i class="fas fa-folder-open text-2xl" style="color: var(--c-teal);"></i>
                                     </div>
-                                    
-                                    <h3 class="text-2xl font-extrabold text-gray-800 mb-2">{{ __('messages.no_analysis_jobs_yet') }}</h3>
-                                    <p class="text-gray-500 mb-8 max-w-md">{{ __('messages.start_first_analysis') }}</p>
-                                   
-                                    <a href="{{ route('hidrologi.create') }}" 
-                                       class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 text-white font-bold rounded-2xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group">
-                                        <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
-                                            <i class="fas fa-plus text-white"></i>
-                                        </div>
-                                        <span>{{ __('messages.create_first_analysis') }}</span>
+                                    <h3 class="text-base font-extrabold text-gray-800 mb-1">{{ __('messages.no_analysis_jobs_yet') }}</h3>
+                                    <p class="text-sm text-gray-400 mb-5 max-w-sm">{{ __('messages.start_first_analysis') }}</p>
+                                    <a href="{{ route('hidrologi.create') }}" class="btn-submit">
+                                        <i class="fas fa-plus" style="font-size:0.75rem"></i>
+                                        {{ __('messages.create_first_analysis') }}
                                     </a>
                                 </div>
                             </td>
@@ -361,9 +342,8 @@
             </table>
         </div>
 
-        <!-- Modern Pagination -->
         @if($jobs->hasPages())
-            <div class="px-6 py-5 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
+            <div class="px-5 py-4" style="border-top: 1.5px solid var(--c-border); background: var(--c-surface);">
                 {{ $jobs->links() }}
             </div>
         @endif
@@ -387,7 +367,7 @@ function updateBulkDeleteButton() {
     const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
     const selectedCount = document.getElementById('selectedCount');
     const selectAll = document.getElementById('selectAll');
-    
+
     if (checkedBoxes.length > 0) {
         bulkDeleteBtn.classList.remove('hidden');
         bulkDeleteBtn.classList.add('flex');
@@ -396,7 +376,7 @@ function updateBulkDeleteButton() {
         bulkDeleteBtn.classList.add('hidden');
         bulkDeleteBtn.classList.remove('flex');
     }
-    
+
     // Update select all checkbox state
     const allCheckboxes = document.querySelectorAll('.job-checkbox');
     if (selectAll) {
@@ -408,7 +388,7 @@ function updateBulkDeleteButton() {
 function bulkDelete() {
     const checkedBoxes = document.querySelectorAll('.job-checkbox:checked');
     const jobIds = Array.from(checkedBoxes).map(cb => cb.value);
-    
+
     if (jobIds.length === 0) {
         Swal.fire({
             icon: 'warning',
@@ -417,19 +397,18 @@ function bulkDelete() {
         });
         return;
     }
-    
+
     Swal.fire({
         title: 'Hapus Data Terpilih?',
         html: `Apakah Anda yakin ingin menghapus <strong>${jobIds.length}</strong> pekerjaan?<br><strong class='text-red-600'>Tindakan ini tidak dapat dibatalkan!</strong>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
+        cancelButtonColor: '#64748b',
         confirmButtonText: 'Ya, Hapus Semua!',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Show loading
             Swal.fire({
                 title: 'Menghapus Data...',
                 html: `Menghapus ${jobIds.length} pekerjaan, mohon tunggu...`,
@@ -493,13 +472,12 @@ function cancelJob(jobId) {
         text: "Apakah Anda yakin ingin membatalkan pekerjaan ini?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#0d9488',
+        cancelButtonColor: '#64748b',
         confirmButtonText: 'Ya, Batalkan!',
         cancelButtonText: 'Tidak, Biarkan'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Show loading
             Swal.fire({
                 title: 'Membatalkan...',
                 text: 'Mohon tunggu sebentar',
@@ -555,12 +533,11 @@ function deleteJob(jobId) {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
+        cancelButtonColor: '#64748b',
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Show loading
             Swal.fire({
                 title: 'Menghapus...',
                 text: 'Mohon tunggu sebentar',
