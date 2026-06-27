@@ -100,9 +100,9 @@
     </div>
 
     <!-- Main Content Wrapper -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 mb-6 items-start">
+    <div class="job-detail-layout mb-6">
         <!-- Main Content Column (Left) -->
-        <div class="lg:col-span-2 space-y-5 sm:space-y-6 min-w-0">
+        <div class="job-detail-main space-y-5 sm:space-y-6">
             <!-- Location Info Card -->
             <div class="step-card">
                 <div class="step-header">
@@ -2313,7 +2313,7 @@
         </div>
 
         <!-- Sidebar (Right) -->
-        <div class="lg:col-span-1 space-y-5 sm:space-y-6 min-w-0">
+        <div class="job-detail-sidebar space-y-5 sm:space-y-6">
             <!-- Timeline Card -->
             <div class="step-card">
                 <div class="step-header">
@@ -2434,9 +2434,30 @@
         --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
     }
 
-    body { background: var(--c-surface); }
+	    body { background: var(--c-surface); }
 
-    /* ── Step card styling (sama dengan index) ── */
+	    .job-detail-layout {
+	        display: grid;
+	        grid-template-columns: minmax(0, 1fr);
+	        gap: 1.25rem;
+	        align-items: start;
+	    }
+	    .job-detail-main,
+	    .job-detail-sidebar {
+	        min-width: 0;
+	    }
+	    @media (min-width: 1024px) {
+	        .job-detail-layout {
+	            grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+	            gap: 1.5rem;
+	        }
+	        .job-detail-sidebar {
+	            position: sticky;
+	            top: 1.5rem;
+	        }
+	    }
+
+	    /* ── Step card styling (sama dengan index) ── */
     .step-card {
         background: var(--c-white);
         border-radius: var(--radius-card);
