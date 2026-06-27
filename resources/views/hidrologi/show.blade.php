@@ -64,17 +64,17 @@
                     </div>
 
                     <!-- Progress Bar -->
-                    @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                        <div class="w-full lg:w-80">
-                            <div class="flex justify-between text-xs font-bold mb-2">
-                                <span class="text-var(--c-slate)">{{ __('messages.progress') }}</span>
-                                <span id="progress-percent" class="text-var(--c-teal)">{{ $job->progress }}%</span>
-                            </div>
-                            <div class="w-full bg-var(--c-border) rounded-full h-3 overflow-hidden">
-                                <div id="progress-bar" class="bg-var(--c-teal) h-3 rounded-full transition-all duration-500" style="width: {{ $job->progress }}%"></div>
-                            </div>
-                        </div>
-                    @endif
+	                    @if(in_array($job->status, ['pending', 'submitted', 'processing']))
+	                        <div class="job-progress">
+	                            <div class="job-progress-meta">
+	                                <span>{{ __('messages.progress') }}</span>
+	                                <span id="progress-percent">{{ $job->progress }}%</span>
+	                            </div>
+	                            <div class="job-progress-track">
+	                                <div id="progress-bar" class="job-progress-fill" style="width: {{ $job->progress }}%"></div>
+	                            </div>
+	                        </div>
+	                    @endif
                 </div>
 
                 <!-- Warning/Error Messages -->
@@ -1872,11 +1872,12 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
-                </div>
-            @endif
+	                    @endif
+	                </div>
+	            </div>
+	            @endif
 
-            <!-- Full Process Logs - COMPLETE OUTPUT (Output Lengkap) -->
+	            <!-- Full Process Logs - COMPLETE OUTPUT (Output Lengkap) -->
             {{-- @if($fullLogs)
                 <div class="bg-gray-900 rounded-lg shadow-xl p-6 mb-6 border-2 border-green-500">
                     <div class="flex justify-between items-center mb-4">
@@ -2324,37 +2325,37 @@
                     </div>
                 </div>
                 <div class="p-5 sm:p-6 space-y-3">
-                    <div class="flex items-start p-3 rounded-lg bg-var(--c-surface) border border-var(--c-border) hover:border-var(--c-teal) transition">
-                        <div class="w-3 h-3 bg-var(--c-teal) rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{ __('messages.created_label') }}</p>
-                            <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->created_at->format('d M Y, H:i') }}</p>
-                        </div>
-                    </div>
-                    @if($job->submitted_at)
-                        <div class="flex items-start p-3 rounded-lg bg-var(--c-surface) border border-var(--c-border) hover:border-var(--c-teal) transition">
-                            <div class="w-3 h-3 bg-var(--c-ocean) rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{ __('messages.submitted_label') }}</p>
-                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
-                    @endif
-                    @if($job->started_at)
-                        <div class="flex items-start p-3 rounded-lg bg-var(--c-surface) border border-var(--c-border) hover:border-var(--c-teal) transition">
-                            <div class="w-3 h-3 bg-yellow-500 rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{__('messages.started_processing') }}</p>
-                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->started_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
-                    @endif
-                    @if($job->completed_at)
-                        <div class="flex items-start p-3 rounded-lg bg-var(--c-surface) border border-var(--c-border) hover:border-var(--c-teal) transition">
-                            <div class="w-3 h-3 bg-green-600 rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{__('messages.finished_label') }}</p>
-                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->completed_at->format('d M Y, H:i') }}</p>
+	                    <div class="timeline-item">
+	                        <div class="timeline-icon timeline-icon-created"><i class="fas fa-plus"></i></div>
+	                        <div class="flex-1 min-w-0">
+	                            <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{ __('messages.created_label') }}</p>
+	                            <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->created_at->format('d M Y, H:i') }}</p>
+	                        </div>
+	                    </div>
+	                    @if($job->submitted_at)
+	                        <div class="timeline-item">
+	                            <div class="timeline-icon timeline-icon-submitted"><i class="fas fa-paper-plane"></i></div>
+	                            <div class="flex-1 min-w-0">
+	                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{ __('messages.submitted_label') }}</p>
+	                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->submitted_at->format('d M Y, H:i') }}</p>
+	                            </div>
+	                        </div>
+	                    @endif
+	                    @if($job->started_at)
+	                        <div class="timeline-item">
+	                            <div class="timeline-icon timeline-icon-processing"><i class="fas fa-cog"></i></div>
+	                            <div class="flex-1 min-w-0">
+	                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{__('messages.started_processing') }}</p>
+	                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->started_at->format('d M Y, H:i') }}</p>
+	                            </div>
+	                        </div>
+	                    @endif
+	                    @if($job->completed_at)
+	                        <div class="timeline-item">
+	                            <div class="timeline-icon timeline-icon-finished"><i class="fas fa-check"></i></div>
+	                            <div class="flex-1 min-w-0">
+	                                <p class="text-xs sm:text-sm font-extrabold text-var(--c-slate)">{{__('messages.finished_label') }}</p>
+	                                <p class="text-xs text-var(--c-muted) mt-0.5 break-words">{{ $job->completed_at->format('d M Y, H:i') }}</p>
                             </div>
                         </div>
                     @endif
@@ -2455,6 +2456,84 @@
 	            position: sticky;
 	            top: 1.5rem;
 	        }
+	    }
+
+	    .job-progress {
+	        width: 100%;
+	        max-width: 20rem;
+	    }
+	    .job-progress-meta {
+	        display: flex;
+	        align-items: center;
+	        justify-content: space-between;
+	        gap: 1rem;
+	        margin-bottom: 0.5rem;
+	        color: var(--c-slate);
+	        font-size: 0.75rem;
+	        font-weight: 800;
+	    }
+	    .job-progress-meta #progress-percent {
+	        color: var(--c-teal);
+	    }
+	    .job-progress-track {
+	        width: 100%;
+	        height: 0.75rem;
+	        overflow: hidden;
+	        border-radius: 999px;
+	        background: #e2e8f0;
+	    }
+	    .job-progress-fill {
+	        height: 100%;
+	        min-width: 0.5rem;
+	        border-radius: inherit;
+	        background: linear-gradient(90deg, #0d9488, #06b6d4);
+	        transition: width 0.5s ease;
+	    }
+	    @media (max-width: 1023px) {
+	        .job-progress {
+	            max-width: none;
+	        }
+	    }
+
+	    .timeline-item {
+	        display: flex;
+	        align-items: flex-start;
+	        gap: 0.75rem;
+	        padding: 0.75rem;
+	        border: 1px solid var(--c-border);
+	        border-radius: 0.75rem;
+	        background: var(--c-surface);
+	        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	    }
+	    .timeline-item:hover {
+	        border-color: var(--c-teal);
+	        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+	    }
+	    .timeline-icon {
+	        width: 2rem;
+	        height: 2rem;
+	        display: inline-flex;
+	        align-items: center;
+	        justify-content: center;
+	        flex: 0 0 2rem;
+	        border-radius: 0.625rem;
+	        font-size: 0.75rem;
+	    }
+	    .timeline-icon-created {
+	        color: #0f766e;
+	        background: #ccfbf1;
+	    }
+	    .timeline-icon-submitted {
+	        color: #0369a1;
+	        background: #e0f2fe;
+	    }
+	    .timeline-icon-processing {
+	        color: #b45309;
+	        background: #fef3c7;
+	    }
+	    .timeline-icon-finished {
+	        color: #047857;
+	        background: #d1fae5;
 	    }
 
 	    /* ── Step card styling (sama dengan index) ── */
