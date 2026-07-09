@@ -460,17 +460,31 @@
                             </div>
                         </div>
 
-                        {{-- Coordinate chips --}}
-                        <div class="flex flex-wrap gap-2" id="coord-row">
-                            <div class="coord-chip">
-                                <span class="dot" style="background:#0d9488"></span>
-                                <span class="label">Lng</span>
-                                <span class="value" id="longitude_display">—</span>
+                        {{-- Coordinate inputs --}}
+                        <div class="grid grid-cols-2 gap-3" id="coord-row">
+                            <div>
+                                <label for="longitude_input" class="field-label">
+                                    <i class="fas fa-arrows-alt-h text-teal-500"></i>
+                                    Longitude
+                                </label>
+                                <input type="number" name="longitude_input" id="longitude_input" 
+                                    class="field-input"
+                                    placeholder="e.g., 110.4053"
+                                    step="0.000001"
+                                    min="-180" max="180">
+                                <p class="text-xs text-gray-400 mt-1">-180 hingga 180</p>
                             </div>
-                            <div class="coord-chip">
-                                <span class="dot" style="background:#0e7490"></span>
-                                <span class="label">Lat</span>
-                                <span class="value" id="latitude_display">—</span>
+                            <div>
+                                <label for="latitude_input" class="field-label">
+                                    <i class="fas fa-arrows-alt-v text-sky-500"></i>
+                                    Latitude
+                                </label>
+                                <input type="number" name="latitude_input" id="latitude_input" 
+                                    class="field-input"
+                                    placeholder="e.g., -7.2525"
+                                    step="0.000001"
+                                    min="-90" max="90">
+                                <p class="text-xs text-gray-400 mt-1">-90 hingga 90</p>
                             </div>
                         </div>
                     </div>
@@ -510,7 +524,6 @@
                                 onclick="selectDasLevel({{ $lvl }})">
                                 <span class="das-lvl-tag">Level {{ $lvl }}</span>
                                 <span class="das-name">{{ $info['name'] }}</span>
-                                <span class="das-range">{{ $info['range'] }}</span>
                             </button>
                             @endforeach
                         </div>
@@ -697,13 +710,12 @@
                         <span class="guide-num" style="background: #e0f2fe; color: #0e7490;">{{ $lvl }}</span>
                         <div class="guide-row-text">
                             <strong>{{ $info['name'] }}</strong>
-                            <span style="display:block; font-size:0.7rem;">{{ $info['range'] }}</span>
                         </div>
                     </div>
                     @endforeach
                     <p class="mt-2 text-xs text-gray-400 pt-2" style="border-top: 1px solid var(--c-border);">
                         <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
-                        {!! __('messages.das_level_guide_tip') !!}
+                        {{ __('messages.das_level_guide_tip_level8') }}
                     </p>
                 </div>
             </div>
@@ -832,6 +844,10 @@ document.addEventListener('DOMContentLoaded', function () {
         handleMapClick(e.latlng.lat, e.latlng.lng);
     });
 
+    // Coordinate input listeners
+    document.getElementById('longitude_input').addEventListener('change', handleCoordinateInput);
+    document.getElementById('latitude_input').addEventListener('change', handleCoordinateInput);
+
     // Date validation
     document.getElementById('start_date').addEventListener('change', validateDates);
     document.getElementById('end_date').addEventListener('change', validateDates);
@@ -881,8 +897,20 @@ function updateStepCard(step, status) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// STEP 1 — klik peta
+// STEP 1 — klik peta & input manual
 // ════════════════════════════════════════════════════════════════
+function handleCoordinateInput() {
+    const lng = parseFloat(document.getElementById('longitude_input').value);
+    const lat = parseFloat(document.getElementById('latitude_input').value);
+
+    // Validasi
+    if (isNaN(lng) || isNaN(lat)) return;
+    if (lng < -180 || lng > 180 || lat < -90 || lat > 90) return;
+
+    handleMapClick(lat, lng);
+    map.setView([lat, lng], 12);
+}
+
 function handleMapClick(lat, lng) {
     clickedLat = lat;
     clickedLng = lng;
@@ -900,9 +928,9 @@ function handleMapClick(lat, lng) {
     marker.bindPopup(`<b>${trans.mapPopupPoint}</b><br>
         Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`).openPopup();
 
-    // Koordinat chips
-    document.getElementById('longitude_display').textContent = lng.toFixed(6);
-    document.getElementById('latitude_display').textContent  = lat.toFixed(6);
+    // Koordinat inputs & hidden fields
+    document.getElementById('longitude_input').value = lng.toFixed(6);
+    document.getElementById('latitude_input').value  = lat.toFixed(6);
     document.getElementById('longitude').value = lng.toFixed(6);
     document.getElementById('latitude').value  = lat.toFixed(6);
 

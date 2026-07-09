@@ -591,6 +591,7 @@ return [
     // Sidebar
     'das_level_guide'              => 'DAS Level Guide',
     'das_level_guide_tip'          => '<strong>Recommendation:</strong> Level 5–6 for sub-DAS analysis, commonly used in water resources planning.',
+    'das_level_guide_tip_level8'   => '<strong>Recommendation:</strong> Level 8 for micro-DAS analysis, commonly used in detailed hydrological studies.',
 
     // "How it works" steps
     'how_it_works_step1'           => 'Click a point on the map inside the target DAS area',
