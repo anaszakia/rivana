@@ -1825,131 +1825,170 @@
                             $moderat = $skenario['moderat'] ?? [];
                             $jadwal = $dam['jadwal'] ?? [];
                         @endphp
-                        <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-green-200">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center bg-green-50 p-3 rounded">
-                                <i class="fas fa-hard-hat text-green-600 mr-2"></i>
-                                PERENCANAAN PEMBANGUNAN BENDUNGAN
-                            </h4>
-
-                            <!-- Info Bangunan -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm mb-4">
-                                <div class="bg-gray-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Tipe Bangunan</div>
-                                    <div class="font-bold text-gray-800">{{ $dam['tipe_bangunan'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="bg-gray-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Provinsi</div>
-                                    <div class="font-bold text-gray-800">{{ $dam['provinsi'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="bg-gray-50 rounded p-3">
-                                    <div class="text-xs text-gray-600 mb-1">Wilayah (IKK)</div>
-                                    <div class="font-bold text-gray-800">{{ $dam['ikk_wilayah'] ?? 'N/A' }}</div>
+                        <div class="step-card mt-6 border-emerald-200">
+                            <div class="step-header">
+                                <div class="step-badge" style="background: #059669;"><i class="fas fa-hard-hat text-white" style="font-size:0.8rem"></i></div>
+                                <div>
+                                    <h3 class="text-sm sm:text-base font-extrabold text-slate-800 tracking-wide flex items-center gap-2">
+                                        PERENCANAAN PEMBANGUNAN BENDUNGAN
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Estimasi PUPR & LPSE</span>
+                                    </h3>
+                                    <p class="text-xs text-slate-500">Estimasi Biaya Konstruksi, Jadwal Pelaksanaan, dan Referensi Realisasi Proyek Serupa</p>
                                 </div>
                             </div>
 
-                            <!-- Dimensi Tampungan -->
-                            @if(isset($dam['dimensi']))
-                                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
-                                    <div class="bg-blue-50 rounded p-3">
-                                        <div class="text-xs text-gray-600 mb-1">Volume Tampungan</div>
-                                        <div class="font-bold text-lg text-blue-700">{{ number_format($dam['dimensi']['v_tampungan_m3'] ?? 0, 0, ',', '.') }} m³</div>
+                            <div class="p-5 sm:p-6 space-y-5">
+                                <!-- Info Bangunan & Dimensi Tampungan -->
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                        <span class="text-[11px] font-semibold text-slate-400 block mb-0.5 uppercase tracking-wider">Tipe Bangunan</span>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-800">{{ $dam['tipe_bangunan'] ?? 'N/A' }}</span>
                                     </div>
-                                    <div class="bg-blue-50 rounded p-3">
-                                        <div class="text-xs text-gray-600 mb-1">Tinggi Rata-rata</div>
-                                        <div class="font-bold text-lg text-blue-700">{{ number_format($dam['dimensi']['h_rata_m'] ?? 0, 2, ',', '.') }} m</div>
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                        <span class="text-[11px] font-semibold text-slate-400 block mb-0.5 uppercase tracking-wider">Provinsi</span>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-800">{{ $dam['provinsi'] ?? 'N/A' }}</span>
                                     </div>
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                        <span class="text-[11px] font-semibold text-slate-400 block mb-0.5 uppercase tracking-wider">Wilayah (IKK)</span>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-800">{{ $dam['ikk_wilayah'] ?? 'N/A' }}</span>
+                                    </div>
+                                    @if(isset($dam['dimensi']))
+                                        <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200">
+                                            <span class="text-[11px] font-semibold text-blue-600 block mb-0.5 uppercase tracking-wider">Vol. Tampungan</span>
+                                            <span class="text-xs sm:text-sm font-black text-blue-900">{{ number_format($dam['dimensi']['v_tampungan_m3'] ?? 0, 0, ',', '.') }} m³</span>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
 
-                            <!-- Estimasi HPS (Harga Perkiraan Sendiri) -->
-                            <div class="mb-4">
-                                <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
-                                    <i class="fas fa-calculator text-gray-500 mr-1"></i>
-                                    Estimasi HPS (Harga Perkiraan Sendiri)
+                                <!-- Estimasi HPS (Harga Perkiraan Sendiri) -->
+                                <div>
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center justify-between">
+                                        <span class="flex items-center gap-1.5"><i class="fas fa-calculator text-blue-600"></i> Estimasi HPS (Harga Perkiraan Sendiri)</span>
+                                        @if(!empty($hps['sumber']))
+                                            <span class="text-[10px] font-normal text-slate-400 normal-case"><i class="fas fa-info-circle mr-1"></i>Sumber: {{ $hps['sumber'] }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <div class="p-3.5 bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-emerald-200 shadow-sm">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Skenario Minimum</span>
+                                                <span class="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-semibold rounded">Efisiensi</span>
+                                            </div>
+                                            <div class="font-black text-lg sm:text-xl text-emerald-800 font-mono">Rp {{ number_format($hps['minimum_rp'] ?? 0, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="p-3.5 bg-gradient-to-br from-amber-50 to-white rounded-xl border border-amber-300 shadow-sm relative overflow-hidden">
+                                            <div class="absolute top-0 right-0 w-2 h-full bg-amber-400"></div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Skenario Moderat</span>
+                                                <span class="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-900 font-bold rounded">Paling Disarankan</span>
+                                            </div>
+                                            <div class="font-black text-lg sm:text-xl text-amber-900 font-mono">Rp {{ number_format($hps['moderat_rp'] ?? 0, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="p-3.5 bg-gradient-to-br from-rose-50 to-white rounded-xl border border-rose-200 shadow-sm">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider">Skenario Maksimum</span>
+                                                <span class="text-[10px] px-1.5 py-0.5 bg-rose-100 text-rose-800 font-semibold rounded">Kontingensi Penuh</span>
+                                            </div>
+                                            <div class="font-black text-lg sm:text-xl text-rose-800 font-mono">Rp {{ number_format($hps['maksimum_rp'] ?? 0, 0, ',', '.') }}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                                    <div class="bg-emerald-50 rounded p-3">
-                                        <div class="text-xs text-gray-600 mb-1">Minimum</div>
-                                        <div class="font-bold text-xl text-emerald-700">Rp {{ number_format($hps['minimum_rp'] ?? 0, 0, ',', '.') }}</div>
+
+                                <!-- Skenario Total Proyek (RAB) Table -->
+                                <div>
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center gap-1.5">
+                                        <i class="fas fa-layer-group text-indigo-600"></i>
+                                        Skenario Total Proyek (RAB & Estimasi Kontrak)
                                     </div>
-                                    <div class="bg-amber-50 rounded p-3">
-                                        <div class="text-xs text-gray-600 mb-1">Moderat</div>
-                                        <div class="font-bold text-xl text-amber-700">Rp {{ number_format($hps['moderat_rp'] ?? 0, 0, ',', '.') }}</div>
-                                    </div>
-                                    <div class="bg-red-50 rounded p-3">
-                                        <div class="text-xs text-gray-600 mb-1">Maksimum</div>
-                                        <div class="font-bold text-xl text-red-700">Rp {{ number_format($hps['maksimum_rp'] ?? 0, 0, ',', '.') }}</div>
+                                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                                        <table class="w-full text-xs">
+                                            <thead>
+                                                <tr class="bg-slate-100/80 border-b border-slate-200 text-slate-600 font-bold">
+                                                    <th class="text-left p-3">Skenario Anggaran</th>
+                                                    <th class="text-right p-3">Total Pagu Proyek</th>
+                                                    <th class="text-right p-3">Estimasi Kontrak Menang</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-slate-100 font-mono text-[11px] sm:text-xs">
+                                                <tr class="hover:bg-slate-50 transition-colors">
+                                                    <td class="p-3 font-sans font-bold text-emerald-700 flex items-center gap-2">
+                                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Minimum
+                                                    </td>
+                                                    <td class="p-3 text-right font-semibold text-slate-800">Rp {{ number_format($skenario['minimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                    <td class="p-3 text-right font-bold text-emerald-800">Rp {{ number_format($skenario['minimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                </tr>
+                                                <tr class="bg-amber-50/60 hover:bg-amber-50 transition-colors">
+                                                    <td class="p-3 font-sans font-black text-amber-900 flex items-center gap-2">
+                                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> Moderat (Acuan Realistis)
+                                                    </td>
+                                                    <td class="p-3 text-right font-extrabold text-slate-900">Rp {{ number_format($moderat['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                    <td class="p-3 text-right font-black text-amber-900">Rp {{ number_format($moderat['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                </tr>
+                                                <tr class="hover:bg-slate-50 transition-colors">
+                                                    <td class="p-3 font-sans font-bold text-rose-700 flex items-center gap-2">
+                                                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> Maksimum
+                                                    </td>
+                                                    <td class="p-3 text-right font-semibold text-slate-800">Rp {{ number_format($skenario['maksimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                    <td class="p-3 text-right font-bold text-rose-800">Rp {{ number_format($skenario['maksimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                @if(!empty($hps['sumber']))
-                                    <div class="text-xs text-gray-500 mt-2">
-                                        <i class="fas fa-info-circle mr-1"></i>Sumber: {{ $hps['sumber'] }}
+
+                                <!-- Komponen Biaya (Breakdown skenario moderat) -->
+                                @if(!empty($moderat['komponen_biaya']))
+                                    <div class="pt-4 border-t border-slate-200">
+                                        <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-1.5">
+                                            <i class="fas fa-cubes text-teal-600"></i>
+                                            Komponen Alokasi Pekerjaan (Skenario Moderat):
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                            @foreach($moderat['komponen_biaya'] as $komponen => $detail)
+                                                <div class="bg-slate-50 hover:bg-slate-100/80 transition-colors rounded-xl p-3 border border-slate-200 flex flex-col justify-between">
+                                                    <div class="flex items-start justify-between gap-2">
+                                                        <span class="text-xs font-semibold text-slate-700">{{ $komponen }}</span>
+                                                        <span class="px-2 py-0.5 rounded-md bg-teal-100 text-teal-800 font-extrabold text-[11px] shrink-0">{{ $detail['persentase_pct'] ?? 0 }}%</span>
+                                                    </div>
+                                                    <div class="text-right font-mono font-bold text-slate-800 text-xs sm:text-sm mt-1.5">
+                                                        Rp {{ number_format($detail['jumlah_rp'] ?? 0, 0, ',', '.') }}
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
-                            </div>
-
-                            <!-- Skenario Total Proyek -->
-                            <div class="mb-4">
-                                <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
-                                    <i class="fas fa-chart-bar text-gray-500 mr-1"></i>
-                                    Skenario Total Proyek (RAB)
-                                </div>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-xs border-collapse">
-                                        <thead>
-                                            <tr class="bg-gray-100">
-                                                <th class="text-left p-2 border">Skenario</th>
-                                                <th class="text-right p-2 border">Total Proyek</th>
-                                                <th class="text-right p-2 border">Estimasi Kontrak</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="p-2 border font-medium text-emerald-700">Minimum</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['minimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['minimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
-                                            </tr>
-                                            <tr class="bg-amber-50">
-                                                <td class="p-2 border font-medium text-amber-700">Moderat</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($moderat['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($moderat['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-2 border font-medium text-red-700">Maksimum</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['maksimum']['total_proyek_rp'] ?? 0, 0, ',', '.') }}</td>
-                                                <td class="p-2 border text-right">Rp {{ number_format($skenario['maksimum']['estimasi_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Komponen Biaya (Breakdown skenario moderat) -->
-                            @if(!empty($moderat['komponen_biaya']))
-                                <div class="mb-4 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">Komponen Biaya (Skenario Moderat):</div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        @foreach($moderat['komponen_biaya'] as $komponen => $detail)
-                                            <div class="bg-gray-50 rounded p-2 text-xs">
-                                                <div class="flex justify-between">
-                                                    <span class="text-gray-600">{{ $komponen }}</span>
-                                                    <span class="font-bold text-gray-800">{{ $detail['persentase_pct'] ?? 0 }}%</span>
-                                                </div>
-                                                <div class="text-right text-gray-700 mt-1">Rp {{ number_format($detail['jumlah_rp'] ?? 0, 0, ',', '.') }}</div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
 
                             @if(!empty($moderat['breakdown']))
-                                <div class="mb-4 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">Rincian Breakdown (Moderat):</div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                @php
+                                    $labelMap = [
+                                        'fisik_rp' => 'Biaya Fisik Konstruksi',
+                                        'overhead_rp' => 'Overhead & Keuntungan (15%)',
+                                        'ppn_rp' => 'PPN (11%)',
+                                        'ded_rp' => 'Perencanaan Teknis (DED)',
+                                        'pengawasan_rp' => 'Pengawasan Konstruksi',
+                                        'amdal_rp' => 'AMDAL & Studi Lingkungan',
+                                        'tanah_rp' => 'Pengadaan Lahan / Tanah',
+                                        'lainnya_rp' => 'Biaya Lainnya / Kontingensi',
+                                    ];
+                                @endphp
+                                <div class="mb-4 pt-4 border-t border-slate-200">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-1.5">
+                                        <i class="fas fa-file-invoice-dollar text-emerald-600"></i>
+                                        Rincian Struktur Biaya (Skenario Moderat):
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                         @foreach($moderat['breakdown'] as $item => $nilai)
-                                            <div class="bg-gray-50 rounded p-2 text-xs flex justify-between">
-                                                <span class="text-gray-600">{{ $item }}:</span>
-                                                <span class="font-bold text-gray-800">
+                                            @php
+                                                $cleanKey = strtolower(trim($item));
+                                                $displayLabel = $labelMap[$cleanKey] ?? ucwords(str_replace(['_', 'rp', 'pct'], [' ', '', '%'], $item));
+                                            @endphp
+                                            <div class="bg-slate-50 hover:bg-emerald-50/40 transition-colors border border-slate-200 rounded-xl p-3 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-sm">
+                                                <span class="text-slate-600 font-medium flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                    {{ $displayLabel }}
+                                                </span>
+                                                <span class="font-extrabold text-slate-900 font-mono text-sm">
                                                     @if(is_numeric($nilai))
                                                         Rp {{ number_format($nilai, 0, ',', '.') }}
                                                     @else
@@ -1965,59 +2004,59 @@
                             <!-- Rasio Kontrak / HPS -->
                             @if(!empty($dam['rasio_kontrak_hps']))
                                 @php $rasio = $dam['rasio_kontrak_hps']; @endphp
-                                <div class="mb-4 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">Rasio Kontrak terhadap HPS (Benchmark LPSE):</div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                        <div class="bg-purple-50 rounded p-2 text-xs text-center">
-                                            <div class="text-gray-600">Q1</div>
-                                            <div class="font-bold text-purple-700">{{ number_format($rasio['q1'] ?? 0, 1) }}%</div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center justify-between">
+                                        <span class="flex items-center gap-1.5"><i class="fas fa-percent text-purple-600"></i> Rasio Kontrak terhadap HPS (Benchmark LPSE PUPR)</span>
+                                        @if(!empty($rasio['sumber']))
+                                            <span class="text-[10px] font-normal text-slate-400 normal-case"><i class="fas fa-info-circle mr-1"></i>{{ $rasio['sumber'] }} (n={{ $rasio['n'] ?? 0 }} paket)</span>
+                                        @endif
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-3 text-center">
+                                            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kuartil 1 (Q1)</div>
+                                            <div class="font-black text-purple-700 text-base sm:text-lg mt-0.5">{{ number_format($rasio['q1'] ?? 0, 1) }}%</div>
                                         </div>
-                                        <div class="bg-purple-100 rounded p-2 text-xs text-center">
-                                            <div class="text-gray-600">Median</div>
-                                            <div class="font-bold text-purple-800">{{ number_format($rasio['median'] ?? 0, 1) }}%</div>
+                                        <div class="bg-purple-100/70 border border-purple-300 rounded-xl p-3 text-center shadow-xs">
+                                            <div class="text-[11px] font-black text-purple-900 uppercase tracking-wider">Median</div>
+                                            <div class="font-black text-purple-950 text-base sm:text-lg mt-0.5">{{ number_format($rasio['median'] ?? 0, 1) }}%</div>
                                         </div>
-                                        <div class="bg-purple-50 rounded p-2 text-xs text-center">
-                                            <div class="text-gray-600">Q3</div>
-                                            <div class="font-bold text-purple-700">{{ number_format($rasio['q3'] ?? 0, 1) }}%</div>
+                                        <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-3 text-center">
+                                            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kuartil 3 (Q3)</div>
+                                            <div class="font-black text-purple-700 text-base sm:text-lg mt-0.5">{{ number_format($rasio['q3'] ?? 0, 1) }}%</div>
                                         </div>
                                     </div>
-                                    @if(!empty($rasio['sumber']))
-                                        <div class="text-xs text-gray-500 mt-1">
-                                            <i class="fas fa-info-circle mr-1"></i>{{ $rasio['sumber'] }} (n={{ $rasio['n'] ?? 0 }} paket)
-                                        </div>
-                                    @endif
                                 </div>
                             @endif
 
                             <!-- Jadwal Pelaksanaan -->
                             @if(isset($dam['jadwal']))
-                                <div class="mb-4 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
-                                        <i class="fas fa-calendar-alt text-gray-500 mr-1"></i>
-                                        Jadwal Pelaksanaan
+                                <div class="pt-4 border-t border-slate-200">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center gap-1.5">
+                                        <i class="fas fa-calendar-alt text-indigo-600"></i>
+                                        Estimasi Jadwal & Tahapan Pelaksanaan
                                     </div>
-                                    <div class="grid grid-cols-2 gap-3 text-sm mb-3">
-                                        <div class="bg-indigo-50 rounded p-3">
-                                            <div class="text-xs text-gray-600 mb-1">Durasi</div>
-                                            <div class="font-bold text-indigo-700">{{ $jadwal['total_bulan'] ?? 0 }} bulan ({{ $jadwal['total_tahun'] ?? 0 }} tahun)</div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                        <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3 flex items-center justify-between">
+                                            <span class="text-xs font-semibold text-indigo-900">Total Durasi</span>
+                                            <span class="font-black text-indigo-950 text-sm">{{ $jadwal['total_bulan'] ?? 0 }} Bulan <span class="font-normal text-xs text-indigo-700">({{ $jadwal['total_tahun'] ?? 0 }} Tahun)</span></span>
                                         </div>
-                                        <div class="bg-indigo-50 rounded p-3">
-                                            <div class="text-xs text-gray-600 mb-1">Rentang Waktu</div>
-                                            <div class="font-bold text-indigo-700">{{ $jadwal['rentang_bulan'] ?? 'N/A' }}</div>
+                                        <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3 flex items-center justify-between">
+                                            <span class="text-xs font-semibold text-indigo-900">Rentang Waktu</span>
+                                            <span class="font-black text-indigo-950 text-sm">{{ $jadwal['rentang_bulan'] ?? 'N/A' }}</span>
                                         </div>
                                     </div>
 
                                     @if(!empty($jadwal['tahapan']))
                                         <div class="space-y-2">
                                             @foreach($jadwal['tahapan'] as $tahap)
-                                                <div class="bg-gray-50 rounded p-3 flex items-center justify-between gap-3">
-                                                    <div class="flex items-center gap-3">
-                                                        <span class="bg-indigo-600 text-white rounded-full w-14 h-6 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+                                                <div class="bg-slate-50 hover:bg-indigo-50/40 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3 transition-colors">
+                                                    <div class="flex items-center gap-3 min-w-0">
+                                                        <span class="bg-indigo-600 text-white rounded-lg px-2.5 py-1 text-[11px] font-black shrink-0 tracking-wide font-mono">
                                                             Bln {{ $tahap['mulai_bulan'] }}-{{ $tahap['selesai_bulan'] }}
                                                         </span>
-                                                        <div class="text-xs font-medium text-gray-800">{{ $tahap['tahap'] }}</div>
+                                                        <div class="text-xs font-semibold text-slate-800 truncate">{{ $tahap['tahap'] }}</div>
                                                     </div>
-                                                    <div class="text-xs text-gray-500 flex-shrink-0">{{ $tahap['durasi_bulan'] }} bln</div>
+                                                    <span class="text-xs font-bold text-slate-500 shrink-0 bg-slate-200/60 px-2 py-0.5 rounded-md">{{ $tahap['durasi_bulan'] }} bln</span>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -2025,45 +2064,46 @@
                                 </div>
                             @endif
 
-                            <!-- Paket LPSE Serupa (data pembanding dari hasil scraping) -->
+                            <!-- Paket LPSE Serupa -->
                             @if(!empty($dam['paket_lpse_serupa']))
-                                <div class="mb-4 pt-3 border-t">
-                                    <div class="text-xs font-medium text-gray-700 mb-2 flex items-center">
-                                        <i class="fas fa-file-contract text-gray-500 mr-1"></i>
-                                        Paket LPSE Serupa — Data Pembanding ({{ count($dam['paket_lpse_serupa']) }} referensi)
+                                <div class="pt-4 border-t border-slate-200">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center gap-1.5">
+                                        <i class="fas fa-file-contract text-emerald-600"></i>
+                                        Paket LPSE Serupa — Data Pembanding ({{ count($dam['paket_lpse_serupa']) }} referensi kontrak)
                                     </div>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-xs border-collapse">
+                                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                                        <table class="w-full text-xs">
                                             <thead>
-                                                <tr class="bg-gray-100">
-                                                    <th class="text-left p-2 border">Nama Paket</th>
-                                                    <th class="text-left p-2 border">Provinsi</th>
-                                                    <th class="text-left p-2 border">Tahun</th>
-                                                    <th class="text-right p-2 border">HPS</th>
-                                                    <th class="text-right p-2 border">Nilai Kontrak</th>
-                                                    <th class="text-right p-2 border">% Kontrak/HPS</th>
+                                                <tr class="bg-slate-100/80 border-b border-slate-200 text-slate-600 font-bold">
+                                                    <th class="text-left p-3">Nama Paket Proyek</th>
+                                                    <th class="text-left p-3">Lokasi / Tahun</th>
+                                                    <th class="text-right p-3">Pagu HPS</th>
+                                                    <th class="text-right p-3">Nilai Kontrak</th>
+                                                    <th class="text-right p-3">% Rasio</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="divide-y divide-slate-100">
                                                 @foreach($dam['paket_lpse_serupa'] as $paket)
-                                                    <tr>
-                                                        <td class="p-2 border">
+                                                    <tr class="hover:bg-slate-50 transition-colors">
+                                                        <td class="p-3">
                                                             @if(!empty($paket['url_detail']))
-                                                                <a href="{{ $paket['url_detail'] }}" target="_blank" class="text-blue-600 hover:underline">
+                                                                <a href="{{ $paket['url_detail'] }}" target="_blank" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">
                                                                     {{ $paket['nama_paket'] ?? '-' }}
                                                                 </a>
                                                             @else
-                                                                {{ $paket['nama_paket'] ?? '-' }}
+                                                                <span class="font-semibold text-slate-800">{{ $paket['nama_paket'] ?? '-' }}</span>
                                                             @endif
                                                             @if(!empty($paket['tahapan_status']))
-                                                                <span class="block text-[10px] text-gray-500">{{ $paket['tahapan_status'] }}</span>
+                                                                <span class="block text-[10px] text-slate-400 mt-0.5 font-medium">{{ $paket['tahapan_status'] }}</span>
                                                             @endif
                                                         </td>
-                                                        <td class="p-2 border">{{ $paket['provinsi'] ?? '-' }}</td>
-                                                        <td class="p-2 border">{{ $paket['tahun_anggaran'] ?? '-' }}</td>
-                                                        <td class="p-2 border text-right">Rp {{ number_format($paket['hps_rp'] ?? 0, 0, ',', '.') }}</td>
-                                                        <td class="p-2 border text-right">Rp {{ number_format($paket['nilai_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
-                                                        <td class="p-2 border text-right">{{ isset($paket['pct_kontrak_vs_hps']) ? number_format($paket['pct_kontrak_vs_hps'], 1) . '%' : '-' }}</td>
+                                                        <td class="p-3 text-slate-600 whitespace-nowrap">
+                                                            <div class="font-medium text-slate-800">{{ $paket['provinsi'] ?? '-' }}</div>
+                                                            <div class="text-[10px] text-slate-400">TA {{ $paket['tahun_anggaran'] ?? '-' }}</div>
+                                                        </td>
+                                                        <td class="p-3 text-right font-mono text-slate-700 whitespace-nowrap">Rp {{ number_format($paket['hps_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                        <td class="p-3 text-right font-mono font-bold text-slate-900 whitespace-nowrap">Rp {{ number_format($paket['nilai_kontrak_rp'] ?? 0, 0, ',', '.') }}</td>
+                                                        <td class="p-3 text-right font-mono font-black text-emerald-700 whitespace-nowrap">{{ isset($paket['pct_kontrak_vs_hps']) ? number_format($paket['pct_kontrak_vs_hps'], 1) . '%' : '-' }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -2074,22 +2114,28 @@
 
                             <!-- Referensi & Disclaimer -->
                             @if(!empty($dam['referensi']) || !empty($dam['disclaimer']))
-                                <div class="mt-3 pt-3 border-t text-xs text-gray-500">
+                                <div class="pt-4 border-t border-slate-200 text-[11px] text-slate-500 space-y-2">
                                     @if(!empty($dam['referensi']))
-                                        <div class="mb-1">
-                                            <i class="fas fa-book mr-1"></i><strong>Referensi:</strong>
-                                            @foreach($dam['referensi'] as $ref)
-                                                <span class="block ml-4">- {{ $ref }}</span>
-                                            @endforeach
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                            <p class="font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                                                <i class="fas fa-book text-slate-400"></i> Referensi Pedoman & Regulasi:
+                                            </p>
+                                            <ul class="list-disc list-inside space-y-0.5 text-slate-600 ml-1">
+                                                @foreach($dam['referensi'] as $ref)
+                                                    <li>{{ $ref }}</li>
+                                                @endforeach
+                                            </ul>
                                         </div>
                                     @endif
                                     @if(!empty($dam['disclaimer']))
-                                        <div class="italic">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>{{ $dam['disclaimer'] }}
+                                        <div class="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-amber-900 flex items-start gap-2">
+                                            <i class="fas fa-exclamation-triangle text-amber-500 mt-0.5 shrink-0"></i>
+                                            <span class="italic leading-relaxed">{{ $dam['disclaimer'] }}</span>
                                         </div>
                                     @endif
                                 </div>
                             @endif
+                            </div>
                         </div>
                     @elseif(isset($summary['dam_cost_estimate']['status']))
                         <div class="bg-white rounded-lg p-4 mt-4 shadow-sm border border-gray-200">
@@ -2192,265 +2238,7 @@
                 </div>
             @endif --}}
 
-            <!-- 🌊 Interactive River Network Map Section  -->
-            @php
-                $riverMapHtml     = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.html');
-                $riverMapPng      = $job->files->firstWhere('filename', 'RIVANA_Peta_Aliran_Sungai.png');
-                $riverMapMetadata = $job->files->firstWhere('filename', 'RIVANA_Metadata_Peta.json');
 
-                \Log::info('Map Files Check', [
-                    'job_id'          => $job->id,
-                    'all_files'       => $job->files->pluck('filename')->toArray(),
-                    'html_found'      => $riverMapHtml     ? 'YES' : 'NO',
-                    'png_found'       => $riverMapPng      ? 'YES' : 'NO',
-                    'metadata_found'  => $riverMapMetadata ? 'YES' : 'NO',
-                ]);
-            @endphp
-
-            @if($riverMapHtml || $riverMapPng)
-            <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl shadow-xl p-4 sm:p-6 border-2 border-cyan-200 mb-6">
-
-                {{-- Header --}}
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                            <i class="fas fa-water text-white text-lg sm:text-xl"></i>
-                        </div>
-                        <div class="min-w-0">
-                            <h3 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center flex-wrap gap-2">
-                                🌊 {{ __('messages.interactive_river_map') }}
-                                <span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full animate-pulse">NEW</span>
-                            </h3>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ __('messages.river_network_visualization') }}</p>
-                        </div>
-                    </div>
-
-                    {{-- Action Buttons --}}
-                    <div class="flex flex-wrap gap-2 shrink-0">
-                        @if($riverMapHtml)
-                        <button onclick="openMapFullscreen()"
-                            class="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                            <i class="fas fa-expand mr-1 sm:mr-2"></i>Fullscreen
-                        </button>
-                        <a href="/hidrologi/file/download/{{ $riverMapHtml->id }}"
-                            class="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                            <i class="fas fa-download mr-1 sm:mr-2"></i>HTML
-                        </a>
-                        @endif
-                        @if($riverMapPng)
-                        <a href="/hidrologi/file/download/{{ $riverMapPng->id }}"
-                            class="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105 text-xs sm:text-sm whitespace-nowrap">
-                            <i class="fas fa-image mr-1 sm:mr-2"></i>PNG
-                        </a>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Map Container --}}
-                <div class="bg-white rounded-xl shadow-inner border-2 border-gray-200 overflow-hidden mb-4 relative">
-
-                    @if($riverMapHtml)
-                    {{-- Interactive HTML Map --}}
-                    <div class="relative map-container">
-                        <div id="mapLoadingOverlay" class="absolute inset-0 bg-white flex items-center justify-center z-10">
-                            <div class="text-center">
-                                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-                                <p class="text-gray-600 font-semibold">{{ __('messages.map_loading') }}</p>
-                                <p class="text-sm text-gray-400 mt-1">{{ __('messages.map_loading_wait') }}</p>
-                            </div>
-                        </div>
-                        <iframe
-                            id="riverMapFrame"
-                            src="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}"
-                            class="w-full border-0"
-                            style="height: 600px; min-height: 600px;"
-                            title="{{ __('messages.interactive_river_map') }}"
-                            onload="setTimeout(function(){ document.getElementById('mapLoadingOverlay').style.display='none'; }, 500);"
-                        ></iframe>
-                    </div>
-
-                    {{-- Info Banner --}}
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-t-2 border-blue-200 p-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div class="flex items-center gap-2 text-sm text-gray-600">
-                                <i class="fas fa-info-circle text-blue-500 shrink-0"></i>
-                                <span>{{ __('messages.map_info_tip') }}</span>
-                            </div>
-                            <div class="flex gap-2 shrink-0">
-                                <a href="{{ route('hidrologi.file.preview', $riverMapHtml->id) }}" target="_blank"
-                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition inline-flex items-center gap-2 whitespace-nowrap">
-                                    <i class="fas fa-external-link-alt"></i>Fullscreen
-                                </a>
-                                <a href="{{ route('hidrologi.file.download', $riverMapHtml->id) }}"
-                                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition inline-flex items-center gap-2 whitespace-nowrap">
-                                    <i class="fas fa-download"></i>{{ __('messages.download') }}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    @elseif($riverMapPng)
-                    {{-- Static PNG Fallback --}}
-                    <img
-                        src="{{ route('hidrologi.file.preview', $riverMapPng->id) }}"
-                        alt="{{ __('messages.interactive_river_map') }}"
-                        class="w-full h-auto"
-                        style="max-height: 600px; object-fit: contain;"
-                        onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2216%22%3EImage not available%3C/text%3E%3C/svg%3E';"
-                    />
-                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-t-2 border-yellow-200 p-3">
-                        <div class="flex items-center gap-2 text-sm text-yellow-800">
-                            <i class="fas fa-exclamation-triangle text-yellow-600 shrink-0"></i>
-                            <span>{{ __('messages.map_static_fallback') }}</span>
-                        </div>
-                    </div>
-
-                    @else
-                    {{-- No map at all --}}
-                    <div class="flex items-center justify-center py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
-                        <div class="text-center max-w-sm">
-                            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                                <i class="fas fa-map text-yellow-600 text-3xl"></i>
-                            </div>
-                            <h4 class="text-lg font-bold text-gray-800 mb-2">{{ __('messages.map_not_ready_title') }}</h4>
-                            <p class="text-gray-500 text-sm mb-4">{{ __('messages.map_not_ready_desc') }}</p>
-                            <button onclick="location.reload()"
-                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:scale-105">
-                                <i class="fas fa-sync-alt mr-2"></i>{{ __('messages.refresh_page') }}
-                            </button>
-                        </div>
-                    </div>
-                    @endif
-
-                </div>
-
-                {{-- Map Info Cards --}}
-                @if($riverMapPng || $riverMapHtml)
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                                <i class="fas fa-map-marker-alt text-blue-600"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_analysis_location') }}</p>
-                                <p class="text-sm font-bold text-gray-800 truncate">{{ $job->location_name ?? 'N/A' }}</p>
-                            </div>
-                        </div>
-                        <div class="text-xs text-gray-500 bg-blue-50 rounded-lg px-2 py-1.5 font-mono">
-                            <i class="fas fa-crosshairs mr-1 text-blue-400"></i>
-                            {{ number_format($job->latitude, 4) }}, {{ number_format($job->longitude, 4) }}
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                                <i class="fas fa-layer-group text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_layers') }}</p>
-                                <p class="text-sm font-bold text-gray-800">4 {{ __('messages.map_data_sources') }}</p>
-                            </div>
-                        </div>
-                        <div class="text-xs text-gray-500 bg-green-50 rounded-lg px-2 py-1.5">
-                            <i class="fas fa-database mr-1 text-green-400"></i>
-                            HydroSHEDS, JRC GSW, SRTM, OSM
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
-                                <i class="fas fa-expand-arrows-alt text-purple-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wide">{{ __('messages.map_buffer_area') }}</p>
-                                <p class="text-sm font-bold text-gray-800">10 km radius</p>
-                            </div>
-                        </div>
-                        <div class="text-xs text-gray-500 bg-purple-50 rounded-lg px-2 py-1.5">
-                            <i class="fas fa-ruler-combined mr-1 text-purple-400"></i>
-                            {{ __('messages.map_river_network_area') }}
-                        </div>
-                    </div>
-
-                </div>
-
-                {{-- Metadata Accordion --}}
-                @if($riverMapMetadata)
-                <div class="mt-4 bg-white rounded-xl p-4 shadow-sm border border-cyan-200">
-                    <button onclick="toggleRiverMetadata()" class="w-full flex items-center justify-between text-left">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-info-circle text-cyan-600"></i>
-                            <span class="font-semibold text-gray-800">{{ __('messages.map_metadata_detail') }}</span>
-                        </div>
-                        <i id="metadataChevron" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
-                    </button>
-                    <div id="riverMetadataContent" class="hidden mt-4 pt-4 border-t border-gray-100">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-blue-50 rounded-xl p-3">
-                                <p class="text-xs font-semibold text-blue-700 mb-2">📊 {{ __('messages.map_data_sources') }}</p>
-                                <ul class="text-sm text-gray-700 space-y-1">
-                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>HydroSHEDS - Flow Accumulation</li>
-                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>JRC Global Surface Water</li>
-                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>SRTM DEM - Elevation</li>
-                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>OpenStreetMap - Basemap</li>
-                                </ul>
-                            </div>
-                            <div class="bg-green-50 rounded-xl p-3">
-                                <p class="text-xs font-semibold text-green-700 mb-2">🗺️ {{ __('messages.map_features') }}</p>
-                                <ul class="text-sm text-gray-700 space-y-1">
-                                    <li><i class="fas fa-water text-blue-500 mr-2"></i>River network visualization</li>
-                                    <li><i class="fas fa-tint text-cyan-500 mr-2"></i>Water occurrence overlay</li>
-                                    <li><i class="fas fa-mountain text-amber-500 mr-2"></i>Topography (DEM)</li>
-                                    <li><i class="fas fa-layer-group text-purple-500 mr-2"></i>Interactive layer control</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="mt-4 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200">
-                            <p class="text-xs text-gray-600">
-                                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
-                                <strong>{{ __('messages.tip') }}:</strong> {{ __('messages.map_usage_tip') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                @endif
-
-            </div>
-
-            @else
-            {{-- No map available fallback --}}
-            <div class="bg-yellow-50 rounded-xl border-2 border-yellow-200 p-5 text-center mb-6">
-                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-map-marked-alt text-yellow-600 text-2xl"></i>
-                </div>
-                <h3 class="text-base sm:text-lg font-bold text-yellow-800 mb-2">{{ __('messages.map_not_available') }}</h3>
-                <p class="text-yellow-700 text-sm mb-1">{{ __('messages.map_not_available_desc') }}</p>
-                @if($riverMapPng)
-                <p class="text-yellow-600 text-xs mb-4">
-                    <i class="fas fa-info-circle mr-1"></i>
-                    {{ __('messages.map_png_available_hint') }}
-                </p>
-                @else
-                <div class="mb-4"></div>
-                @endif
-                <div class="flex flex-col sm:flex-row justify-center gap-2">
-                    <button onclick="location.reload()"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition text-sm">
-                        <i class="fas fa-sync-alt mr-2"></i>{{ __('messages.refresh_page') }}
-                    </button>
-                    @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                    <span class="px-4 py-2 bg-gray-100 text-gray-500 font-semibold rounded-xl text-sm inline-flex items-center justify-center gap-2">
-                        <i class="fas fa-clock"></i>{{ __('messages.map_being_processed') }}
-                    </span>
-                    @endif
-                </div>
-            </div>
-            @endif
             <!-- Generated Files -->
             @if($job->files->count() > 0)
                 <div class="step-card">
