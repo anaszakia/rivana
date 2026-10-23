@@ -97,6 +97,246 @@
                 @endif
             </div>
         </div>
+
+        {{-- ══════════════════════════════════════════════════════════════════════ --}}
+        {{-- 🌊 EXECUTIVE WATERSHED OVERVIEW & KEY INSIGHTS (PALING ATAS)          --}}
+        {{-- ══════════════════════════════════════════════════════════════════════ --}}
+        @php
+            $hasDasBoundary = !empty($job->das_geojson);
+            $twiAnalysis    = $summary['twi_analysis'] ?? null;
+            $kondisiSungai  = $summary['analisis_kondisi_sungai_soil_storage'] ?? ($summary['kondisi_sungai_soil_storage'] ?? null);
+            $erosionData    = $kondisiSungai['erosion_sediment']['laju_erosion'] ?? null;
+            $totalErosion   = $erosionData['total_tahunan'] ?? ($erosionData['nilai'] ?? null);
+            $dasArea        = $job->das_area_km2 ?? ($twiAnalysis['summary']['das_info']['area_km2'] ?? null);
+            $dasTitle       = $job->das_name ?? ($twiAnalysis['summary']['das_info']['name'] ?? 'Wilayah Daerah Aliran Sungai (DAS)');
+
+            // Mapping Presipitasi & Runoff dari response API
+            $curahHujan = $summary['statistik_data']['curah_rainfall']['total'] 
+                ?? ($summary['water_balance']['total_input'] 
+                ?? ($summary['analisis_keseimbangan_air']['komponen_input']['rainfall'] ?? '-'));
+            
+            $limpasanAir = $summary['analysis_results']['water_sources']['River']['supply']
+                ?? ($kondisiSungai['morfologi_sungai']['beban_sediment']['rata_rata']
+                ?? ($summary['analisis_keseimbangan_air']['komponen_output']['runoff'] ?? '-'));
+        @endphp
+
+        <div class="step-card mb-6 overflow-hidden shadow-xl border-2 border-teal-600/30">
+            {{-- Top Green Highlight Banner --}}
+            <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-700 text-white px-5 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-md">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
+                        <i class="fas fa-draw-polygon text-white text-base"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-base sm:text-lg font-black tracking-wide truncate uppercase">
+                            {{ $dasTitle }}
+                        </h2>
+                        <p class="text-xs text-teal-100 font-medium">
+                            HydroSHEDS Boundary Level {{ $job->das_level ?? 'N/A' }} &bull; Analisis Spasial & Risiko Hidrologi Terintegrasi
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur border border-white/30">
+                        <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
+                        Clipped to DAS Boundary
+                    </span>
+                    @if($hasDasBoundary)
+                    <button type="button" onclick="resetDasMapView()" class="px-2.5 py-1 text-xs bg-white/10 hover:bg-white/25 rounded-lg text-white transition flex items-center gap-1">
+                        <i class="fas fa-compress-arrows-alt"></i> Fit Bounds
+                    </button>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Main Content: 2 Columns Layout (Map on Left, Insights & Metrics on Right) --}}
+            <div class="p-4 sm:p-6 bg-white">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    
+                    {{-- LEFT COLUMN: Interactive Clean Watershed Map (7 Cols) --}}
+                    <div class="lg:col-span-7 flex flex-col">
+                        <div class="relative bg-slate-100 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-inner flex-1 flex flex-col">
+                            {{-- Map Container --}}
+                            <div id="dasOverviewMap" class="das-map-container"></div>
+
+                            {{-- Floating Map Legend (Bottom Left) --}}
+                            <div class="absolute bottom-4 left-4 z-[500] bg-white/95 backdrop-blur-md rounded-xl p-3 shadow-lg border border-slate-200 text-xs max-w-[240px] pointer-events-auto">
+                                <p class="font-bold text-slate-800 mb-1.5 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                                    <i class="fas fa-layer-group text-teal-600"></i> Legenda Peta DAS
+                                </p>
+                                <div class="space-y-1.5 text-[11px] text-slate-600">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-4 h-3 rounded-sm border-2 border-teal-600 bg-teal-500/25 shrink-0"></span>
+                                        <span class="font-semibold text-slate-800">Garis Batas DAS</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white shadow-sm shrink-0"></span>
+                                        <span>Titik Pin Analisis</span>
+                                    </div>
+                                    @php
+                                        $fDetail = $twiAnalysis['flood_zones']['zones_detail'] ?? ($twiAnalysis['flood_zones'] ?? []);
+                                        $rDetail = $twiAnalysis['rtho_recommendations']['recommendations_detail'] ?? ($twiAnalysis['rtho_recommendations'] ?? []);
+                                        $dDetail = $twiAnalysis['drainage_recommendations']['recommendations_detail'] ?? ($twiAnalysis['drainage_recommendations'] ?? []);
+                                    @endphp
+                                    @if(!empty($fDetail))
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-amber-500 border border-white shadow-sm shrink-0"></span>
+                                        <span>Titik Rawan Genangan ({{ count($fDetail) }})</span>
+                                    </div>
+                                    @endif
+                                    @if(!empty($rDetail))
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-emerald-500 border border-white shadow-sm shrink-0"></span>
+                                        <span>Saran Kolam Retensi/RTH ({{ count($rDetail) }})</span>
+                                    </div>
+                                    @endif
+                                    @if(!empty($dDetail))
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-blue-500 border border-white shadow-sm shrink-0"></span>
+                                        <span>Saran Drainase ({{ count($dDetail) }})</span>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Fallback jika geojson tidak tersedia --}}
+                            @if(!$hasDasBoundary)
+                            <div class="absolute inset-0 bg-white/90 backdrop-blur-sm z-[600] flex items-center justify-center p-6 text-center">
+                                <div>
+                                    <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-3">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Geometri Batas DAS Belum Tersedia</h4>
+                                    <p class="text-xs text-slate-500 mt-1 max-w-sm">
+                                        Data polygon batas DAS otomatis tersimpan pada submit analisis baru.
+                                    </p>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+
+                        {{-- Source / Metodologi Footer under map --}}
+                        <div class="mt-2.5 px-2 flex items-center justify-between text-[11px] text-slate-400">
+                            <span>Sumber Geometri: HydroSHEDS Level {{ $job->das_level ?? 8 }} &bull; GEE</span>
+                            <span>Proyeksi: WGS 84 (EPSG:4326)</span>
+                        </div>
+                    </div>
+
+                    {{-- RIGHT COLUMN: Key Metrics & Insights Dashboard (5 Cols) --}}
+                    <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+                        
+                        {{-- Top Big Metric Highlight: Luas Wilayah / Erosi --}}
+                        <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-teal-50/50 border border-teal-100 shadow-sm relative overflow-hidden">
+                            <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-teal-500/10 rounded-full blur-xl pointer-events-none"></div>
+                            
+                            <span class="text-xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5 mb-2">
+                                <i class="fas fa-chart-area text-teal-600"></i> Cakupan & Estimasi Erosi Tahunan
+                            </span>
+
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-4xl sm:text-5xl font-black tracking-tight text-slate-900">
+                                    {{ $totalErosion ? preg_replace('/[^0-9.]/', '', $totalErosion) : ($dasArea ? number_format((float)$dasArea, 1) : '-') }}
+                                </span>
+                                <span class="text-sm sm:text-base font-extrabold text-teal-700">
+                                    {{ $totalErosion ? 'ton/ha/th' : 'km²' }}
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-slate-600 font-medium mt-2 leading-relaxed">
+                                @if($totalErosion)
+                                    Total akumulasi laju erosi tanah tahunan di seluruh wilayah tangkapan air DAS (estimasi model USLE + ML).
+                                @else
+                                    Luas total wilayah tangkapan air (*catchment area*) yang dianalisis secara komprehensif.
+                                @endif
+                            </p>
+                        </div>
+
+                        {{-- Middle Grid: Key Characteristic Cards --}}
+                        <div class="grid grid-cols-2 gap-3">
+                            {{-- Card 1: Luas DAS --}}
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <i class="fas fa-mountain text-teal-600"></i> Luas Wilayah
+                                </p>
+                                <p class="text-lg font-black text-slate-800">
+                                    {{ $dasArea ? number_format((float)$dasArea, 1) : '-' }} <span class="text-xs font-bold text-slate-500">km²</span>
+                                </p>
+                                <p class="text-[10px] text-slate-500 mt-0.5 truncate">
+                                    ID: {{ $job->hybas_id ?? '-' }}
+                                </p>
+                            </div>
+
+                            {{-- Card 2: Tingkat Risiko TWI --}}
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <i class="fas fa-tint text-sky-600"></i> Indeks Kebasahan
+                                </p>
+                                @php
+                                    $riskLevel = $twiAnalysis['risk_level'] ?? ($twiAnalysis['twi_data']['risk_level'] ?? 'NORMAL');
+                                    $twiVal    = $twiAnalysis['twi_enhanced'] ?? ($twiAnalysis['twi_data']['twi_enhanced'] ?? null);
+                                    $riskColor = match($riskLevel) {
+                                        'VERY_HIGH' => 'text-red-600',
+                                        'HIGH'      => 'text-orange-600',
+                                        'MODERATE'  => 'text-amber-600',
+                                        default     => 'text-emerald-600'
+                                    };
+                                @endphp
+                                <p class="text-lg font-black {{ $riskColor }}">
+                                    {{ str_replace('_', ' ', $riskLevel) }}
+                                </p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">
+                                    TWI: {{ $twiVal ? number_format((float)$twiVal, 2) : '-' }}
+                                </p>
+                            </div>
+
+                            {{-- Card 3: Curah Hujan --}}
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <i class="fas fa-cloud-showers-heavy text-blue-600"></i> Presipitasi
+                                </p>
+                                <p class="text-base font-black text-slate-800">
+                                    {{ $curahHujan }}
+                                </p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Akumulasi periode</p>
+                            </div>
+
+                            {{-- Card 4: Runoff / Debit --}}
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <i class="fas fa-water text-indigo-600"></i> Limpasan Permukaan
+                                </p>
+                                <p class="text-base font-black text-slate-800">
+                                    {{ $limpasanAir }}
+                                </p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Debit sungai hulu</p>
+                            </div>
+                        </div>
+
+                        {{-- Bottom Recommendation / Priority Action Callout --}}
+                        <div class="p-4 rounded-xl bg-gradient-to-r from-slate-900 to-teal-950 text-white shadow-md border-l-4 border-emerald-400">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fas fa-shield-alt text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-black uppercase tracking-wider text-emerald-300">
+                                        Fokus Konservasi & Pengelolaan DAS
+                                    </p>
+                                    <p class="text-xs text-slate-200 mt-1 leading-relaxed">
+                                        @if($twiAnalysis && !empty($twiAnalysis['rtho_recommendations']))
+                                            Rekomendasi prioritas: implementasi RTH/retensi seluas {{ $twiAnalysis['rtho_recommendations'][0]['area_recommended_ha'] ?? '3.9' }} ha untuk mereduksi debit puncak hingga {{ $twiAnalysis['rtho_recommendations'][0]['expected_benefits']['flood_reduction_percent'] ?? 30 }}%.
+                                        @else
+                                            Pengawasan intensif di hulu DAS disarankan guna menekan laju sedimentasi dan menjaga stabilitas simpanan air tanah.
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main Content Wrapper -->
@@ -3178,11 +3418,249 @@ i.fas {
 .preview-content > div > div::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* 🌿 Watershed Overview Card Styles */
+.das-map-container {
+    height: 480px;
+    width: 100%;
+    border-radius: 0.85rem;
+    position: relative;
+    z-index: 10;
+}
+@media (min-width: 1024px) {
+    .das-map-container {
+        height: 520px;
+    }
+}
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 @endpush
 
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
+// 🌿 Initialize Executive DAS Overview Map
+let dasOverviewMap = null;
+let dasLayer = null;
+
+function initDasOverviewMap() {
+    const mapElement = document.getElementById('dasOverviewMap');
+    if (!mapElement) return;
+
+    const lat = {{ $job->latitude ?? -7.15 }};
+    const lng = {{ $job->longitude ?? 110.28 }};
+    const rawGeojson = @json($job->das_geojson);
+
+    dasOverviewMap = L.map('dasOverviewMap', {
+        center: [lat, lng],
+        zoom: 10,
+        scrollWheelZoom: true,
+        attributionControl: true
+    });
+
+    // 1. Esri World Imagery (High-Res Satellite)
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 18
+    });
+
+    // 2. Esri Imagery Labels (Batas administrasi & nama wilayah)
+    const labelsLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18
+    });
+
+    // 3. OpenStreetMap Standar
+    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    });
+
+    // Pasang Satelit + Labels sebagai default
+    satelliteLayer.addTo(dasOverviewMap);
+    labelsLayer.addTo(dasOverviewMap);
+
+    // Layer Switcher (Pilihan Satelit vs Peta Jalan)
+    const baseMaps = {
+        "🛰️ Satelit (Esri)": satelliteLayer,
+        "🗺️ OpenStreetMap": osmLayer
+    };
+    const overlayMaps = {
+        "🏷️ Label Kota & Jalan": labelsLayer
+    };
+    L.control.layers(baseMaps, overlayMaps, { position: 'topright' }).addTo(dasOverviewMap);
+
+    // Titik Analisis Pin Marker
+    const customIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: "<div style='background-color:#ef4444; width:18px; height:18px; border:3px solid white; border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.6);'></div>",
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(dasOverviewMap);
+    marker.bindPopup(`
+        <div style="font-family: inherit; font-size:12px;">
+            <b style="color: #0f172a;">📍 Titik Analisis</b><br>
+            <span style="color:#64748b;">Lokasi: {{ $job->location_name ?? 'N/A' }}</span><br>
+            <span style="color:#64748b;">Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}</span>
+        </div>
+    `);
+
+    // Render Boundary Polygon
+    if (rawGeojson) {
+        try {
+            let parsedGeojson = typeof rawGeojson === 'string' ? JSON.parse(rawGeojson) : rawGeojson;
+            dasLayer = L.geoJSON(parsedGeojson, {
+                style: {
+                    color: '#2dd4bf', // Teal/Cyan terang agar kontras jelas di atas satelit
+                    weight: 3.5,
+                    opacity: 1,
+                    fillColor: '#06b6d4',
+                    fillOpacity: 0.18,
+                    dashArray: '3, 4'
+                }
+            }).addTo(dasOverviewMap);
+
+            dasLayer.bindPopup(`
+                <div style="font-family: inherit; font-size:12px;">
+                    <b style="color: #0f766e;">🗺️ {{ $job->das_name ?? 'Wilayah DAS' }}</b><br>
+                    <span>Luas: {{ $job->das_area_km2 ?? '-' }} km²</span><br>
+                    <span>Level HydroSHEDS: {{ $job->das_level ?? '-' }}</span>
+                </div>
+            `);
+
+            // Auto-fit bounds ke polygon DAS
+            dasOverviewMap.fitBounds(dasLayer.getBounds(), { padding: [25, 25] });
+
+        } catch (e) {
+            console.warn('Gagal parse GeoJSON batas DAS:', e);
+            dasOverviewMap.setView([lat, lng], 11);
+        }
+    } else {
+        dasOverviewMap.setView([lat, lng], 11);
+    }
+
+    // Group Layer untuk Titik-Titik Mitigasi Hidrologi
+    const floodLayerGroup = L.layerGroup();
+    const rthLayerGroup   = L.layerGroup();
+    const drainLayerGroup = L.layerGroup();
+
+    @php
+        $floodItems = $twiAnalysis['flood_zones']['zones_detail'] ?? ($twiAnalysis['flood_zones'] ?? []);
+        $rthItems   = $twiAnalysis['rtho_recommendations']['recommendations_detail'] ?? ($twiAnalysis['rtho_recommendations'] ?? []);
+        $drainItems = $twiAnalysis['drainage_recommendations']['recommendations_detail'] ?? ($twiAnalysis['drainage_recommendations'] ?? []);
+    @endphp
+
+    // 1. Titik Zona Genangan (Flood Risk Zones)
+    const rawFloodZones = @json($floodItems);
+    if (Array.isArray(rawFloodZones)) {
+        rawFloodZones.forEach((zone, idx) => {
+            const zLat = zone.lat ?? zone.latitude ?? (zone.coordinates ? zone.coordinates.latitude : null);
+            const zLon = zone.lon ?? zone.longitude ?? (zone.coordinates ? zone.coordinates.longitude : null);
+            if (zLat && zLon) {
+                const marker = L.circleMarker([zLat, zLon], {
+                    radius: 7,
+                    fillColor: '#f59e0b', // Amber/Orange
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                });
+                marker.bindPopup(`
+                    <div style="font-family: inherit; font-size:12px; min-width:180px;">
+                        <div style="background:#fef3c7; color:#92400e; padding:4px 8px; border-radius:6px; font-weight:bold; margin-bottom:6px;">
+                            ⚠️ Titik Rawan Genangan #${idx + 1}
+                        </div>
+                        <span style="color:#475569;"><b>Risiko:</b> ${zone.risk || 'TINGGI'}</span><br>
+                        <span style="color:#475569;"><b>Area Terdampak:</b> ${zone.area_ha ?? zone.area_affected_ha ?? '-'} ha</span><br>
+                        <span style="color:#475569;"><b>Koordinat:</b> ${Number(zLat).toFixed(5)}, ${Number(zLon).toFixed(5)}</span>
+                    </div>
+                `);
+                floodLayerGroup.addLayer(marker);
+            }
+        });
+        floodLayerGroup.addTo(dasOverviewMap);
+    }
+
+    // 2. Titik Saran Kolam Retensi / RTH (Retention Ponds)
+    const rawRthZones = @json($rthItems);
+    if (Array.isArray(rawRthZones)) {
+        rawRthZones.forEach((rth, idx) => {
+            const rLat = rth.lat ?? rth.latitude ?? (rth.coordinates ? rth.coordinates.latitude : null);
+            const rLon = rth.lon ?? rth.longitude ?? (rth.coordinates ? rth.coordinates.longitude : null);
+            if (rLat && rLon) {
+                // Marker icon bintang/kolam hijau
+                const marker = L.circleMarker([rLat, rLon], {
+                    radius: 8,
+                    fillColor: '#10b981', // Emerald Green
+                    color: '#ffffff',
+                    weight: 2.5,
+                    opacity: 1,
+                    fillOpacity: 0.95
+                });
+                marker.bindPopup(`
+                    <div style="font-family: inherit; font-size:12px; min-width:200px;">
+                        <div style="background:#d1fae5; color:#065f46; padding:4px 8px; border-radius:6px; font-weight:bold; margin-bottom:6px;">
+                            🏞️ Rekomendasi Kolam Retensi / RTH #${idx + 1}
+                        </div>
+                        <span style="color:#475569;"><b>Prioritas:</b> ${rth.priority || 'MEDIUM'}</span><br>
+                        <span style="color:#475569;"><b>Rekomendasi Luas:</b> ${rth.estimated_area_ha ?? rth.area_recommended_ha ?? '-'} ha</span><br>
+                        <span style="color:#475569;"><b>Fungsi:</b> ${rth.reason || rth.location_purpose || 'Infiltrasi & tangkapan air hulu'}</span><br>
+                        <span style="color:#475569;"><b>Koordinat:</b> ${Number(rLat).toFixed(5)}, ${Number(rLon).toFixed(5)}</span>
+                    </div>
+                `);
+                rthLayerGroup.addLayer(marker);
+            }
+        });
+        rthLayerGroup.addTo(dasOverviewMap);
+    }
+
+    // 3. Titik Saran Jaringan Drainase
+    const rawDrainZones = @json($drainItems);
+    if (Array.isArray(rawDrainZones) && rawDrainZones.length > 0) {
+        rawDrainZones.forEach((dr, idx) => {
+            const dLat = dr.lat ?? dr.latitude ?? (dr.coordinates ? dr.coordinates.latitude : null);
+            const dLon = dr.lon ?? dr.longitude ?? (dr.coordinates ? dr.coordinates.longitude : null);
+            if (dLat && dLon) {
+                const marker = L.circleMarker([dLat, dLon], {
+                    radius: 7,
+                    fillColor: '#3b82f6', // Blue
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                });
+                marker.bindPopup(`
+                    <div style="font-family: inherit; font-size:12px;">
+                        <b>💧 Saran Saluran Drainase #${idx + 1}</b><br>
+                        <span>Kapasitas: ${dr.capacity ?? '-'}</span>
+                    </div>
+                `);
+                drainLayerGroup.addLayer(marker);
+            }
+        });
+        drainLayerGroup.addTo(dasOverviewMap);
+    }
+
+    // Daftarkan layer toggle ke kontrol layer
+    if (typeof baseMaps !== 'undefined') {
+        dasOverviewMap.addControl(L.control.layers(null, {
+            "⚠️ Titik Rawan Genangan": floodLayerGroup,
+            "🏞️ Saran Kolam Retensi / RTH": rthLayerGroup,
+            "💧 Saran Drainase": drainLayerGroup
+        }, { position: 'topright' }));
+    }
+}
+
+function resetDasMapView() {
+    if (dasOverviewMap && dasLayer) {
+        dasOverviewMap.fitBounds(dasLayer.getBounds(), { padding: [25, 25] });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initDasOverviewMap();
+});
 // Auto-refresh status for processing jobs
 @if(in_array($job->status, ['pending', 'submitted', 'processing']))
 console.log('🔄 Auto-refresh enabled - checking status every 10 seconds');

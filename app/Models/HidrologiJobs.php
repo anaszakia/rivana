@@ -24,6 +24,7 @@ class HidrologiJobs extends Model
         'das_area_km2',
         'das_level',
         'hybas_id',
+        'das_geojson',
         'status',
         'progress',
         'status_message',

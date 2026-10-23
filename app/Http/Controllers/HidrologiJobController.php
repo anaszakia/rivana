@@ -61,6 +61,7 @@ class HidrologiJobController extends Controller
             'das_area_km2'       => 'nullable|numeric',
             'das_level'          => 'nullable|integer|between:3,8',
             'hybas_id'           => 'nullable|numeric',
+            'das_geojson'        => 'nullable|string',
         ]);
 
         DB::beginTransaction();
@@ -75,6 +76,11 @@ class HidrologiJobController extends Controller
                 'end_date' => $validated['end_date'],
                 'location_name' => $validated['location_name'] ?? null,
                 'location_description' => $validated['location_description'] ?? null,
+                'das_name' => $validated['das_name'] ?? null,
+                'das_area_km2' => $validated['das_area_km2'] ?? null,
+                'das_level' => $validated['das_level'] ?? null,
+                'hybas_id' => $validated['hybas_id'] ?? null,
+                'das_geojson' => $validated['das_geojson'] ?? null,
                 'status' => 'pending',
                 'progress' => 0,
                 'status_message' => 'Mengirim request ke API...'

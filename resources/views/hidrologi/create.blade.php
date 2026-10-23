@@ -432,6 +432,7 @@
                 <input type="hidden" name="das_name"     id="das_name"     value="">
                 <input type="hidden" name="das_area_km2" id="das_area_km2" value="">
                 <input type="hidden" name="hybas_id"     id="hybas_id"     value="">
+                <input type="hidden" name="das_geojson"  id="das_geojson"  value="">
 
                 {{-- ══════════════════════════════════════ --}}
                 {{-- STEP 1 — Pilih Lokasi di Peta         --}}
@@ -636,9 +637,22 @@
                             </div>
                         </div>
 
-                        <div class="note-strip warning">
-                            <i class="fas fa-exclamation-triangle flex-shrink-0 mt-0.5" style="font-size:0.75rem"></i>
-                            <span>{!! __('messages.date_validation_important') !!}</span>
+                        {{-- Dynamic Duration Badge & Recommendation --}}
+                        <div id="date-duration-box" class="hidden mt-3 p-3.5 rounded-xl border transition-all">
+                            <div class="flex items-start gap-2.5">
+                                <i id="date-duration-icon" class="fas fa-info-circle text-sm mt-0.5 shrink-0"></i>
+                                <div class="text-xs">
+                                    <p class="font-bold text-slate-800" id="date-duration-title">Rentang Waktu Terpilih: <span id="date-duration-days">0</span> Hari</p>
+                                    <p class="mt-0.5 leading-relaxed" id="date-duration-desc"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="note-strip warning mt-3">
+                            <i class="fas fa-lightbulb text-amber-500 flex-shrink-0 mt-0.5" style="font-size:0.8rem"></i>
+                            <span>
+                                <b>Panduan Akurasi Model:</b> Rentang minimal adalah <b>90 hari</b>. Namun, untuk hasil model Machine Learning dan neraca air yang <b>jauh lebih presisi dan valid</b>, sangat direkomendasikan memilih rentang <b>1 hingga 3 tahun</b> (siklus musim hujan & kemarau penuh).
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -997,6 +1011,7 @@ async function fetchDasPolygon(lat, lng, level) {
         document.getElementById('das_name').value     = data.name || `DAS Level ${level}`;
         document.getElementById('das_area_km2').value = data.area_km2 || 0;
         document.getElementById('hybas_id').value     = data.hybas_id || '';
+        document.getElementById('das_geojson').value  = data.geometry ? JSON.stringify(data.geometry) : '';
 
         document.getElementById('das-info-name').textContent  = data.name || `DAS Level ${level}`;
         document.getElementById('das-info-area').textContent  = `${parseFloat(data.area_km2 || 0).toFixed(1)} km²`;
@@ -1025,6 +1040,7 @@ async function fetchDasPolygon(lat, lng, level) {
         document.getElementById('das_name').value     = '';
         document.getElementById('das_area_km2').value = '';
         document.getElementById('hybas_id').value     = '';
+        document.getElementById('das_geojson').value  = '';
     } finally {
         document.getElementById('step2-loading').classList.add('hidden');
         checkSubmitReady();
@@ -1117,9 +1133,47 @@ function fetchLocationName(lat, lng) {
 function validateDates() {
     const s = document.getElementById('start_date').value;
     const e = document.getElementById('end_date').value;
-    if (s && e && new Date(e) < new Date(s)) {
-        document.getElementById('end_date').value = '';
+    const box = document.getElementById('date-duration-box');
+    const icon = document.getElementById('date-duration-icon');
+    const daysEl = document.getElementById('date-duration-days');
+    const descEl = document.getElementById('date-duration-desc');
+
+    if (s && e) {
+        const start = new Date(s);
+        const end   = new Date(e);
+
+        if (end < start) {
+            document.getElementById('end_date').value = '';
+            if (box) box.classList.add('hidden');
+            checkSubmitReady();
+            return;
+        }
+
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        if (box) {
+            box.classList.remove('hidden');
+            daysEl.textContent = diffDays;
+
+            if (diffDays < 90) {
+                box.className = 'mt-3 p-3.5 rounded-xl border bg-red-50 border-red-200 text-red-700';
+                icon.className = 'fas fa-exclamation-circle text-red-600 text-sm mt-0.5 shrink-0';
+                descEl.innerHTML = `<b class="text-red-800">Rentang terlalu pendek!</b> Minimal durasi adalah 90 hari agar pemodelan hidrologi dapat berjalan.`;
+            } else if (diffDays >= 90 && diffDays < 365) {
+                box.className = 'mt-3 p-3.5 rounded-xl border bg-amber-50 border-amber-200 text-amber-800';
+                icon.className = 'fas fa-info-circle text-amber-600 text-sm mt-0.5 shrink-0';
+                descEl.innerHTML = `Durasi memenuhi syarat (≥90 hari). Namun, akurasi model ML & neraca air akan <b>jauh lebih sempurna</b> jika memilih rentang <b>1–3 tahun (365–1095 hari)</b>.`;
+            } else {
+                box.className = 'mt-3 p-3.5 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-800';
+                icon.className = 'fas fa-check-circle text-emerald-600 text-sm mt-0.5 shrink-0';
+                descEl.innerHTML = `<b>Pilihan Optimal!</b> Durasi mencakup siklus musim hujan & kemarau penuh sehingga validasi model ML akan mencapai skor akurasi tertinggi.`;
+            }
+        }
+    } else {
+        if (box) box.classList.add('hidden');
     }
+
     checkSubmitReady();
 }
 
@@ -1146,11 +1200,21 @@ function checkSubmitReady() {
         txtEl.textContent = trans.submitPeriod;
         if (statusEl) statusEl.textContent = '';
     } else {
-        btn.disabled = false;
-        txtEl.textContent = trans.createAnalysis;
-        if (statusEl) statusEl.textContent = '';
-        updateRail(4, 'done');
-        updateStepCard(4, 'done');
+        const sVal = new Date(document.getElementById('start_date').value);
+        const eVal = new Date(document.getElementById('end_date').value);
+        const dDays = Math.ceil(Math.abs(eVal - sVal) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (dDays < 90) {
+            btn.disabled = true;
+            txtEl.textContent = 'Pilih Minimal 90 Hari';
+            if (statusEl) statusEl.textContent = 'Durasi saat ini: ' + dDays + ' hari (kurang ' + (90 - dDays) + ' hari lagi)';
+        } else {
+            btn.disabled = false;
+            txtEl.textContent = trans.createAnalysis;
+            if (statusEl) statusEl.textContent = '';
+            updateRail(4, 'done');
+            updateStepCard(4, 'done');
+        }
     }
 }
 
