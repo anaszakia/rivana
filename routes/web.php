@@ -11,7 +11,6 @@ use App\Http\Controllers\HidrologiFileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\LanguageController;
 
-
 // Welcome route - replace login
 Route::get('/welcome', [WelcomeController::class, 'welcome'])
      ->name('welcome');
@@ -32,22 +31,6 @@ Route::group([], function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])
         ->name('dashboard');
     
-    // User management routes
-    // Route::get('/users', [UserController::class, 'index'])
-    //     ->name('users.index');
-    // Route::get('/users/create', [UserController::class, 'create'])
-    //     ->name('users.create');
-    // Route::post('/users', [UserController::class, 'store'])
-    //     ->name('users.store');
-    // Route::get('/users/{user}', [UserController::class, 'show'])
-    //     ->name('users.show');
-    // Route::get('/users/{user}/edit', [UserController::class, 'edit'])
-    //     ->name('users.edit');
-    // Route::put('/users/{user}', [UserController::class, 'update'])
-    //     ->name('users.update');
-    // Route::delete('/users/{user}', [UserController::class, 'destroy'])
-    //     ->name('users.destroy');
-    
     // Audit Log routes
     Route::get('/audit', [AuditLogController::class, 'index'])
         ->name('audit.index');
@@ -55,28 +38,7 @@ Route::group([], function () {
         ->name('audit.show');
     Route::post('/audit/export', [AuditLogController::class, 'export'])
         ->name('audit.export');
-    
-    // // Role management routes
-    // Route::resource('roles', App\Http\Controllers\RoleController::class);
-    // Route::get('/roles/{role}', [App\Http\Controllers\RoleController::class, 'show'])
-    //     ->name('roles.show');
-    // Route::get('/roles/{role}/edit', [App\Http\Controllers\RoleController::class, 'edit'])
-    //     ->name('roles.edit');
-    // Route::put('/roles/{role}', [App\Http\Controllers\RoleController::class, 'update'])
-    //     ->name('roles.update');
-    // Route::delete('/roles/{role}', [App\Http\Controllers\RoleController::class, 'destroy'])
-    //     ->name('roles.destroy');
-    
-    // // Permission management routes
-    // Route::resource('permissions', App\Http\Controllers\PermissionController::class);
-    // Route::get('/permissions/{permission}', [App\Http\Controllers\PermissionController::class, 'show'])
-    //     ->name('permissions.show');
-    // Route::get('/permissions/{permission}/edit', [App\Http\Controllers\PermissionController::class, 'edit'])
-    //     ->name('permissions.edit');
-    // Route::put('/permissions/{permission}', [App\Http\Controllers\PermissionController::class, 'update'])
-    //     ->name('permissions.update');
-    // Route::delete('/permissions/{permission}', [App\Http\Controllers\PermissionController::class, 'destroy'])
-    //     ->name('permissions.destroy');
+
 
     // Hidrologi job routes
     Route::prefix('hidrologi')->name('hidrologi.')->group(function () {

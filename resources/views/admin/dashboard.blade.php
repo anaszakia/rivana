@@ -251,7 +251,7 @@
                     </div>
                 </div>
                 <p class="text-sm md:text-base font-medium mt-3" style="color: rgba(255,255,255,.92);">
-                    {{ __('messages.welcome_to_rivana') }}
+                    Selamat datang di sistem RIVANA! Pantau pekerjaan dan hasil analisis hidrologi Anda secara real-time.
                 </p>
 
                 <div class="flex flex-wrap items-center gap-2.5 mt-4">
@@ -286,8 +286,8 @@
                x-data="{ count: 0 }"
                x-init="$nextTick(() => { let target = {{ $totalHidrologiJobs }}; let increment = target / 50; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 20); });"
                x-text="Math.floor(count).toLocaleString()">{{ number_format($totalHidrologiJobs) }}</p>
-            <p class="stat-label">{{ __('messages.total_analysis') }}</p>
-            <p class="stat-caption">{{ __('messages.today') }}</p>
+            <p class="stat-label">Total Analisis</p>
+            <p class="stat-caption">hari ini</p>
         </div>
 
         {{-- Successful --}}
@@ -302,8 +302,8 @@
                x-data="{ count: 0 }"
                x-init="$nextTick(() => { let target = {{ $completedJobs }}; let increment = target / 30; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 30); });"
                x-text="Math.floor(count).toLocaleString()">{{ number_format($completedJobs) }}</p>
-            <p class="stat-label">{{ __('messages.successful') }}</p>
-            <p class="stat-caption">{{ __('messages.failed') }}</p>
+            <p class="stat-label">Berhasil</p>
+            <p class="stat-caption">gagal</p>
         </div>
 
         {{-- Running --}}
@@ -318,8 +318,8 @@
                x-data="{ count: 0 }"
                x-init="$nextTick(() => { let target = {{ $runningJobs }}; let increment = target / 25; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 40); });"
                x-text="Math.floor(count).toLocaleString()">{{ number_format($runningJobs) }}</p>
-            <p class="stat-label">{{ __('messages.running') }}</p>
-            <p class="stat-caption">{{ __('messages.this_week') }}</p>
+            <p class="stat-label">Sedang Berjalan</p>
+            <p class="stat-caption">minggu ini</p>
         </div>
 
         {{-- Total Files --}}
@@ -334,8 +334,8 @@
                x-data="{ count: 0 }"
                x-init="$nextTick(() => { let target = {{ $totalFiles }}; let increment = target / 40; let timer = setInterval(() => { count += increment; if (count >= target) { count = target; clearInterval(timer); } }, 25); });"
                x-text="Math.floor(count).toLocaleString()">{{ number_format($totalFiles) }}</p>
-            <p class="stat-label">{{ __('messages.total_files') }}</p>
-            <p class="stat-caption">{{ __('messages.this_month') }}</p>
+            <p class="stat-label">Total File</p>
+            <p class="stat-caption">bulan ini</p>
         </div>
     </div>
 
@@ -345,10 +345,10 @@
             <div class="step-header">
                 <div class="step-badge" style="background: linear-gradient(135deg, #14b8a6, var(--c-teal-dk));"><i class="fas fa-chart-line" style="font-size:0.8rem"></i></div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.hydrology_growth') }}</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.hydrology_growth_desc') }}</p>
+                    <h3 class="text-sm font-extrabold text-gray-900">Pertumbuhan Analisis Hidrologi</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Jumlah pekerjaan analisis per bulan</p>
                 </div>
-                <span class="tag-pill">{{ __('messages.last_7_months') }}</span>
+                <span class="tag-pill">7 Bulan Terakhir</span>
             </div>
             <div class="p-4">
                 <div class="relative" style="height: 18rem;">
@@ -361,10 +361,10 @@
             <div class="step-header">
                 <div class="step-badge" style="background: linear-gradient(135deg, #34d399, #059669);"><i class="fas fa-chart-bar" style="font-size:0.8rem"></i></div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.analysis_status') }}</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.analysis_status_desc') }}</p>
+                    <h3 class="text-sm font-extrabold text-gray-900">Status Analisis</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Analisis berhasil vs gagal per hari</p>
                 </div>
-                <span class="tag-pill">{{ __('messages.last_7_days') }}</span>
+                <span class="tag-pill">7 Hari Terakhir</span>
             </div>
             <div class="p-4">
                 <div class="relative" style="height: 18rem;">
@@ -382,11 +382,11 @@
             <div class="step-header">
                 <div class="step-badge" style="background: linear-gradient(135deg, #14b8a6, var(--c-teal-dk));"><i class="fas fa-water" style="font-size:0.8rem"></i></div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.latest_analysis') }}</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.latest_analysis_desc') }}</p>
+                    <h3 class="text-sm font-extrabold text-gray-900">Analisis Terbaru</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Pekerjaan analisis hidrologi terkini</p>
                 </div>
                 <a href="{{ route('hidrologi.index') }}" class="view-all-link">
-                    {{ __('messages.view_all') }}
+                    Lihat Semua
                     <i class="fas fa-arrow-right" style="font-size:0.65rem"></i>
                 </a>
             </div>
@@ -438,8 +438,8 @@
                 @empty
                     <div class="text-center py-10">
                         <div class="empty-state-icon"><i class="fas fa-water"></i></div>
-                        <p class="text-gray-600 font-semibold text-sm">{{ __('messages.no_analysis_yet') }}</p>
-                        <p class="text-gray-400 text-xs mt-1">{{ __('messages.new_analysis_will_appear') }}</p>
+                        <p class="text-gray-600 font-semibold text-sm">Belum ada analisis</p>
+                        <p class="text-gray-400 text-xs mt-1">Analisis baru akan muncul di sini</p>
                     </div>
                 @endforelse
             </div>
@@ -450,11 +450,11 @@
             <div class="step-header">
                 <div class="step-badge" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);"><i class="fas fa-history" style="font-size:0.8rem"></i></div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.recent_activity') }}</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.recent_activity_desc') }}</p>
+                    <h3 class="text-sm font-extrabold text-gray-900">Aktivitas Terbaru</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Log aktivitas sistem dan aksi pengguna terkini</p>
                 </div>
                 <a href="{{ route('audit.index') }}" class="view-all-link" style="background:#7c3aed;">
-                    {{ __('messages.view_all') }}
+                    Lihat Semua
                     <i class="fas fa-arrow-right" style="font-size:0.65rem"></i>
                 </a>
             </div>
@@ -491,8 +491,8 @@
                 @empty
                     <div class="text-center py-10">
                         <div class="empty-state-icon"><i class="fas fa-history"></i></div>
-                        <p class="text-gray-600 font-semibold text-sm">{{ __('messages.no_activity_yet') }}</p>
-                        <p class="text-gray-400 text-xs mt-1">{{ __('messages.activity_will_appear') }}</p>
+                        <p class="text-gray-600 font-semibold text-sm">Belum ada aktivitas</p>
+                        <p class="text-gray-400 text-xs mt-1">Aktivitas sistem akan muncul di sini</p>
                     </div>
                 @endforelse
             </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('messages.hydrology_analysis'))
+@section('title', 'Analisis Hidrologi')
 
 @push('styles')
 <style>
@@ -150,13 +150,13 @@
     {{-- ── Header halaman ── --}}
     <div class="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-            <p class="text-xs text-gray-400 font-medium mb-0.5">{{ __('messages.hydrology') }}</p>
-            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">{{ __('messages.hydrology_analysis') }}</h1>
-            <p class="text-xs text-gray-400 mt-1">{{ __('messages.manage_monitor_hydrology_jobs') }}</p>
+            <p class="text-xs text-gray-400 font-medium mb-0.5">Hidrologi</p>
+            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">Analisis Hidrologi</h1>
+            <p class="text-xs text-gray-400 mt-1">Kelola dan pantau pekerjaan analisis hidrologi</p>
         </div>
         <a href="{{ route('hidrologi.create') }}" class="btn-submit">
             <i class="fas fa-plus" style="font-size:0.75rem"></i>
-            {{ __('messages.new_analysis') }}
+            Analisis Baru
         </a>
     </div>
 
@@ -166,28 +166,28 @@
             <div class="stat-icon" style="background: var(--c-teal);"><i class="fas fa-tasks"></i></div>
             <div>
                 <div class="stat-value">{{ $jobs->total() }}</div>
-                <div class="stat-label">{{ __('messages.total_jobs') }}</div>
+                <div class="stat-label">Total Pekerjaan</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background:#d97706;"><i class="fas fa-spinner fa-spin"></i></div>
             <div>
                 <div class="stat-value">{{ $jobs->where('status', 'processing')->count() }}</div>
-                <div class="stat-label">{{ __('messages.being_processed') }}</div>
+                <div class="stat-label">Sedang Diproses</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background:#10b981;"><i class="fas fa-check-circle"></i></div>
             <div>
                 <div class="stat-value">{{ $jobs->whereIn('status', ['completed', 'completed_with_warning'])->count() }}</div>
-                <div class="stat-label">{{ __('messages.completed') }}</div>
+                <div class="stat-label">Selesai</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background:#ef4444;"><i class="fas fa-exclamation-circle"></i></div>
             <div>
                 <div class="stat-value">{{ $jobs->where('status', 'failed')->count() }}</div>
-                <div class="stat-label">{{ __('messages.failed') }}</div>
+                <div class="stat-label">Gagal</div>
             </div>
         </div>
     </div>
@@ -197,17 +197,17 @@
         <div class="step-header">
             <div class="step-badge"><i class="fas fa-list-ul" style="font-size:0.8rem"></i></div>
             <div class="flex-1 min-w-0">
-                <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.job_list') }}</h3>
-                <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.monitor_progress_status') }}</p>
+                <h3 class="text-sm font-extrabold text-gray-900">Daftar Pekerjaan</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Pantau progres dan status analisis hidrologi</p>
             </div>
             <div class="flex items-center gap-2">
                 <button id="bulkDeleteBtn" onclick="bulkDelete()"
                         class="hidden items-center gap-2 btn-danger"
-                        title="{{ __('messages.delete_selected') }}">
+                        title="Hapus Terpilih">
                     <i class="fas fa-trash-alt"></i>
-                    <span>{{ __('messages.delete_selected') }} (<span id="selectedCount">0</span>)</span>
+                    <span>Hapus Terpilih (<span id="selectedCount">0</span>)</span>
                 </button>
-                <button onclick="location.reload()" class="icon-btn" title="{{ __('messages.refresh') }}">
+                <button onclick="location.reload()" class="icon-btn" title="Muat Ulang">
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
@@ -220,14 +220,14 @@
                         <th class="w-10">
                             <input type="checkbox" id="selectAll" class="chk" onchange="toggleSelectAll(this)">
                         </th>
-                        <th>{{ __('messages.job_id') }}</th>
-                        <th>{{ __('messages.location') }}</th>
-                        <th>{{ __('messages.date_range') }}</th>
-                        <th>{{ __('messages.status') }}</th>
-                        <th>{{ __('messages.progress') }}</th>
-                        <th>{{ __('messages.files') }}</th>
-                        <th>{{ __('messages.created') }}</th>
-                        <th class="text-right">{{ __('messages.actions') }}</th>
+                        <th>ID Pekerjaan</th>
+                        <th>Lokasi</th>
+                        <th>Rentang Tanggal</th>
+                        <th>Status</th>
+                        <th>Progres</th>
+                        <th>File</th>
+                        <th>Dibuat</th>
+                        <th class="text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -245,38 +245,38 @@
                             </td>
 
                             <td>
-                                <div class="text-sm font-bold text-gray-900">
-                                    <i class="fas fa-map-marker-alt text-red-400" style="font-size:0.7rem"></i>
-                                    {{ $job->location_name ?? __('messages.unknown') }}
-                                </div>
-                                <div class="text-xs text-gray-400 mt-0.5">{{ $job->latitude }}, {{ $job->longitude }}</div>
+                                 <div class="text-sm font-bold text-gray-900">
+                                     <i class="fas fa-map-marker-alt text-red-400" style="font-size:0.7rem"></i>
+                                     {{ $job->location_name ?? 'Lokasi Tidak Diketahui' }}
+                                 </div>
+                                 <div class="text-xs text-gray-400 mt-0.5">{{ $job->latitude }}, {{ $job->longitude }}</div>
                             </td>
 
                             <td class="whitespace-nowrap">
-                                <div class="text-sm font-semibold text-gray-700">
-                                    <i class="fas fa-calendar text-gray-400" style="font-size:0.7rem"></i>
-                                    {{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}
-                                </div>
-                                <div class="text-xs text-gray-400 mt-0.5">{{ __('messages.to') }} {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
+                                 <div class="text-sm font-semibold text-gray-700">
+                                     <i class="fas fa-calendar text-gray-400" style="font-size:0.7rem"></i>
+                                     {{ \Carbon\Carbon::parse($job->start_date)->format('d M Y') }}
+                                 </div>
+                                 <div class="text-xs text-gray-400 mt-0.5">hingga {{ \Carbon\Carbon::parse($job->end_date)->format('d M Y') }}</div>
                             </td>
 
                             <td class="whitespace-nowrap">
-                                @php
-                                    $statusConfig = [
-                                        'pending' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-clock', 'label' => __('messages.waiting')],
-                                        'submitted' => ['bg' => '#e0f2fe', 'text' => '#0369a1', 'icon' => 'fa-paper-plane', 'label' => __('messages.sent')],
-                                        'processing' => ['bg' => '#fef3c7', 'text' => '#b45309', 'icon' => 'fa-spinner fa-spin', 'label' => __('messages.processed')],
-                                        'completed' => ['bg' => '#d1fae5', 'text' => '#047857', 'icon' => 'fa-check-circle', 'label' => __('messages.completed')],
-                                        'completed_with_warning' => ['bg' => '#ffedd5', 'text' => '#c2410c', 'icon' => 'fa-exclamation-triangle', 'label' => __('messages.completed_with_warning')],
-                                        'failed' => ['bg' => '#fee2e2', 'text' => '#b91c1c', 'icon' => 'fa-times-circle', 'label' => __('messages.failed')],
-                                        'cancelled' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-ban', 'label' => __('messages.cancelled')],
-                                    ];
-                                    $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
-                                @endphp
-                                <span class="status-pill" style="background: {{ $config['bg'] }}; color: {{ $config['text'] }};">
-                                    <i class="fas {{ $config['icon'] }}" style="font-size:0.65rem"></i>
-                                    {{ $config['label'] }}
-                                </span>
+                                 @php
+                                     $statusConfig = [
+                                         'pending' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-clock', 'label' => 'Menunggu'],
+                                         'submitted' => ['bg' => '#e0f2fe', 'text' => '#0369a1', 'icon' => 'fa-paper-plane', 'label' => 'Terkirim'],
+                                         'processing' => ['bg' => '#fef3c7', 'text' => '#b45309', 'icon' => 'fa-spinner fa-spin', 'label' => 'Diproses'],
+                                         'completed' => ['bg' => '#d1fae5', 'text' => '#047857', 'icon' => 'fa-check-circle', 'label' => 'Selesai'],
+                                         'completed_with_warning' => ['bg' => '#ffedd5', 'text' => '#c2410c', 'icon' => 'fa-exclamation-triangle', 'label' => 'Selesai (Peringatan)'],
+                                         'failed' => ['bg' => '#fee2e2', 'text' => '#b91c1c', 'icon' => 'fa-times-circle', 'label' => 'Gagal'],
+                                         'cancelled' => ['bg' => '#f1f5f9', 'text' => '#475569', 'icon' => 'fa-ban', 'label' => 'Dibatalkan'],
+                                     ];
+                                     $config = $statusConfig[$job->status] ?? $statusConfig['pending'];
+                                 @endphp
+                                 <span class="status-pill" style="background: {{ $config['bg'] }}; color: {{ $config['text'] }};">
+                                     <i class="fas {{ $config['icon'] }}" style="font-size:0.65rem"></i>
+                                     {{ $config['label'] }}
+                                 </span>
                             </td>
 
                             <td class="whitespace-nowrap" style="min-width:140px;">
@@ -295,7 +295,7 @@
                                         {{ $job->total_files }}
                                     </span>
                                 @else
-                                    <span class="text-gray-400 text-xs">{{ __('messages.no_files') }}</span>
+                                    <span class="text-gray-400 text-xs">Belum ada file</span>
                                 @endif
                             </td>
 
@@ -305,17 +305,17 @@
 
                             <td class="text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1.5">
-                                    <a href="{{ route('hidrologi.show', $job->id) }}" class="icon-btn icon-btn-view" title="{{ __('messages.detail') }}">
+                                    <a href="{{ route('hidrologi.show', $job->id) }}" class="icon-btn icon-btn-view" title="Detail">
                                         <i class="fas fa-eye" style="font-size:0.8rem"></i>
                                     </a>
 
                                     @if(in_array($job->status, ['pending', 'submitted', 'processing']))
-                                        <button onclick="cancelJob({{ $job->id }})" class="icon-btn icon-btn-warn" title="{{ __('messages.cancel_action') }}">
+                                        <button onclick="cancelJob({{ $job->id }})" class="icon-btn icon-btn-warn" title="Batalkan">
                                             <i class="fas fa-stop-circle" style="font-size:0.8rem"></i>
                                         </button>
                                     @endif
 
-                                    <button onclick="deleteJob({{ $job->id }})" class="icon-btn icon-btn-danger" title="{{ __('messages.delete_action') }}">
+                                    <button onclick="deleteJob({{ $job->id }})" class="icon-btn icon-btn-danger" title="Hapus">
                                         <i class="fas fa-trash" style="font-size:0.8rem"></i>
                                     </button>
                                 </div>
@@ -328,11 +328,11 @@
                                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background: var(--c-teal-lt);">
                                         <i class="fas fa-folder-open text-2xl" style="color: var(--c-teal);"></i>
                                     </div>
-                                    <h3 class="text-base font-extrabold text-gray-800 mb-1">{{ __('messages.no_analysis_jobs_yet') }}</h3>
-                                    <p class="text-sm text-gray-400 mb-5 max-w-sm">{{ __('messages.start_first_analysis') }}</p>
+                                    <h3 class="text-base font-extrabold text-gray-800 mb-1">Belum ada pekerjaan analisis</h3>
+                                    <p class="text-sm text-gray-400 mb-5 max-w-sm">Mulai buat analisis hidrologi baru untuk wilayah Anda.</p>
                                     <a href="{{ route('hidrologi.create') }}" class="btn-submit">
                                         <i class="fas fa-plus" style="font-size:0.75rem"></i>
-                                        {{ __('messages.create_first_analysis') }}
+                                        Buat Analisis Pertama
                                     </a>
                                 </div>
                             </td>

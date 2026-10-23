@@ -1,30 +1,22 @@
+<!-- Google Translate Script Element -->
+<div id="google_translate_element" style="display:none"></div>
+
 <!-- Language Switcher for Welcome Page - Fixed Top Right -->
 <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50" x-data="{ open: false }">
     <button 
         @click="open = !open" 
         @click.away="open = false"
+        type="button"
         class="flex items-center space-x-2 sm:space-x-3 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-md border-2 border-blue-200 hover:border-blue-400 text-gray-800 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
-        title="Change Language"
+        title="Ubah Bahasa / Change Language"
     >
         <i class="fas fa-language text-lg sm:text-2xl text-blue-600"></i>
         <div class="hidden sm:flex flex-col items-start">
-            <span class="text-xs text-gray-500 font-medium uppercase">Language</span>
-            <span class="text-sm font-bold">
-                @if(app()->getLocale() === 'en')
-                    English 🇬🇧
-                @else
-                    Indonesia 🇮🇩
-                @endif
-            </span>
+            <span class="text-xs text-gray-500 font-medium uppercase">Bahasa</span>
+            <span class="text-sm font-bold" data-lang-label>Indonesia 🇮🇩</span>
         </div>
         <!-- Mobile version - show flag only -->
-        <span class="sm:hidden text-xl">
-            @if(app()->getLocale() === 'en')
-                🇬🇧
-            @else
-                🇮🇩
-            @endif
-        </span>
+        <span class="sm:hidden text-xl" data-lang-flag>🇮🇩</span>
         <i class="fas fa-chevron-down text-xs sm:text-sm text-gray-500 transition-transform duration-200" 
            :class="{ 'rotate-180': open }"></i>
     </button>
@@ -44,84 +36,81 @@
         <div class="px-4 sm:px-5 py-2 sm:py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-cyan-50">
             <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center">
                 <i class="fas fa-globe-americas mr-2 text-blue-600"></i>
-                Choose Your Language
+                Pilih Bahasa
             </p>
         </div>
         
         <!-- Indonesian -->
-        <form action="{{ route('language.switch') }}" method="POST" class="block">
-            @csrf
-            <input type="hidden" name="locale" value="id">
-            <button 
-                type="submit" 
-                class="w-full text-left px-4 sm:px-5 py-3 sm:py-4 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group {{ app()->getLocale() === 'id' ? 'bg-gradient-to-r from-blue-100 to-cyan-100' : '' }}"
-            >
-                <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-200">🇮🇩</span>
-                <div class="flex-1">
-                    <div class="font-bold text-sm sm:text-base text-gray-800 group-hover:text-blue-600 transition-colors {{ app()->getLocale() === 'id' ? 'text-blue-700' : '' }}">
-                        Bahasa Indonesia
-                    </div>
-                    <div class="text-xs text-gray-500 mt-0.5">Indonesia • Indonesian</div>
+        <button 
+            type="button" 
+            onclick="window.changeLanguage('id')"
+            @click="open = false"
+            data-lang-opt="id"
+            class="w-full text-left px-4 sm:px-5 py-3 sm:py-4 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group"
+        >
+            <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-200">🇮🇩</span>
+            <div class="flex-1">
+                <div class="font-bold text-sm sm:text-base text-gray-800 group-hover:text-blue-600 transition-colors">
+                    Bahasa Indonesia
                 </div>
-                @if(app()->getLocale() === 'id')
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-check-circle text-blue-600 text-base sm:text-lg animate-pulse"></i>
-                        <span class="hidden sm:inline text-xs font-semibold text-blue-600">Active</span>
-                    </div>
-                @else
-                    <i class="fas fa-arrow-right text-gray-300 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-200"></i>
-                @endif
-            </button>
-        </form>
+                <div class="text-xs text-gray-500 mt-0.5">Indonesia • Asli</div>
+            </div>
+            <i class="fas fa-check-circle text-blue-600 text-base sm:text-lg" data-lang-check="id"></i>
+        </button>
         
         <!-- English -->
-        <form action="{{ route('language.switch') }}" method="POST" class="block">
-            @csrf
-            <input type="hidden" name="locale" value="en">
-            <button 
-                type="submit" 
-                class="w-full text-left px-4 sm:px-5 py-3 sm:py-4 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group {{ app()->getLocale() === 'en' ? 'bg-gradient-to-r from-blue-100 to-cyan-100' : '' }}"
-            >
-                <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-200">🇬🇧</span>
-                <div class="flex-1">
-                    <div class="font-bold text-sm sm:text-base text-gray-800 group-hover:text-blue-600 transition-colors {{ app()->getLocale() === 'en' ? 'text-blue-700' : '' }}">
-                        English
-                    </div>
-                    <div class="text-xs text-gray-500 mt-0.5">United Kingdom • English</div>
+        <button 
+            type="button" 
+            onclick="window.changeLanguage('en')"
+            @click="open = false"
+            data-lang-opt="en"
+            class="w-full text-left px-4 sm:px-5 py-3 sm:py-4 text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group"
+        >
+            <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-200">🇬🇧</span>
+            <div class="flex-1">
+                <div class="font-bold text-sm sm:text-base text-gray-800 group-hover:text-blue-600 transition-colors">
+                    English
                 </div>
-                @if(app()->getLocale() === 'en')
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-check-circle text-blue-600 text-base sm:text-lg animate-pulse"></i>
-                        <span class="hidden sm:inline text-xs font-semibold text-blue-600">Active</span>
-                    </div>
-                @else
-                    <i class="fas fa-arrow-right text-gray-300 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-200"></i>
-                @endif
-            </button>
-        </form>
+                <div class="text-xs text-gray-500 mt-0.5">United Kingdom • English</div>
+            </div>
+            <i class="fas fa-check-circle text-blue-600 text-base sm:text-lg hidden" data-lang-check="en"></i>
+        </button>
         
         <!-- Footer Info -->
         <div class="px-4 sm:px-5 py-2 sm:py-3 border-t border-gray-100 bg-gray-50">
             <p class="text-xs text-gray-500 flex items-center">
-                <i class="fas fa-info-circle mr-2 text-blue-500"></i>
-                <span class="hidden sm:inline">Language will be saved to your session</span>
-                <span class="sm:hidden">Language saved to session</span>
+                <i class="fab fa-google mr-2 text-blue-500"></i>
+                <span>Google Full-Page Translate</span>
             </p>
         </div>
     </div>
 </div>
 
 <style>
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
+/* Sembunyikan frame bawaan Google Translate agar tampilan tetap bersih */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
 }
-
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+body {
+    top: 0px !important;
+    position: static !important;
+}
+.goog-logo-link,
+.goog-te-gadget span {
+    display: none !important;
+}
+.goog-tooltip {
+    display: none !important;
+}
+.goog-tooltip:hover {
+    display: none !important;
+}
+.goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 </style>

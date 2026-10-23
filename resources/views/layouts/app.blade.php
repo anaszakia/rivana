@@ -118,6 +118,40 @@
                 transform: translateY(0) scale(1);
             }
         }
+
+        /* ── Sembunyikan Google Translate Top Banner & Frame ── */
+        .goog-te-banner-frame,
+        .goog-te-banner-frame.skiptranslate,
+        iframe.goog-te-banner-frame,
+        iframe[id=":1.container"],
+        iframe[id=":2.container"],
+        .VIpgJd-ZVi9C-OR9Mb-Oxf5Fd,
+        .VIpgJd-ZVi9C-bLu3Nc {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            border: none !important;
+        }
+
+        html, body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        .goog-tooltip,
+        .goog-tooltip:hover {
+            display: none !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        #google_translate_element {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -262,6 +296,11 @@
         }
     </script>
     
+
+    <!-- Google Full Page Translate -->
+    <script src="/js/google-translator.js"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     @stack('scripts')
     @yield('scripts')
 </body>

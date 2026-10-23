@@ -27,6 +27,40 @@
             background-size: 1000px 100%;
             animation: shimmer 3s infinite;
         }
+
+        /* ── Sembunyikan Google Translate Top Banner & Frame ── */
+        .goog-te-banner-frame,
+        .goog-te-banner-frame.skiptranslate,
+        iframe.goog-te-banner-frame,
+        iframe[id=":1.container"],
+        iframe[id=":2.container"],
+        .VIpgJd-ZVi9C-OR9Mb-Oxf5Fd,
+        .VIpgJd-ZVi9C-bLu3Nc {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            border: none !important;
+        }
+
+        html, body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        .goog-tooltip,
+        .goog-tooltip:hover {
+            display: none !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        #google_translate_element {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 min-h-screen overflow-x-hidden">
@@ -82,10 +116,10 @@
                     
                     <div class="space-y-3">
                         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                            {{ __('messages.river_dna_analysis') }}
+                            Analisis DNA Sungai
                         </h2>
                         <p class="text-lg sm:text-xl lg:text-2xl text-cyan-200/90 max-w-4xl mx-auto leading-relaxed px-4">
-                            {{ __('messages.rivana_description') }}
+                            Platform Analisis Hidrologi Berbasis Kecerdasan Buatan (Machine Learning) dan Citra Satelit Resolusi Tinggi untuk Konservasi DAS & Mitigasi Risiko Banjir
                         </p>
                     </div>
                 </div>
@@ -97,7 +131,7 @@
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div class="relative flex items-center gap-3">
                             <i class="fas fa-water text-2xl group-hover:scale-110 transition-transform"></i>
-                            <span>{{ __('messages.start_analysis') }}</span>
+                            <span>Mulai Analisis</span>
                             <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </a>
@@ -106,7 +140,7 @@
                        class="group px-12 py-5 bg-white/10 backdrop-blur-xl text-white font-bold text-xl rounded-2xl border-2 border-cyan-400/50 hover:bg-white/20 hover:border-cyan-300 transition-all duration-300">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-info-circle group-hover:rotate-12 transition-transform"></i>
-                            <span>{{ __('messages.learn_more') }}</span>
+                            <span>Pelajari Selengkapnya</span>
                         </div>
                     </a>
                 </div>
@@ -120,7 +154,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-4xl font-black text-cyan-300 mb-2">12+</div>
-                        <div class="text-sm font-medium text-cyan-200/70">ML Models</div>
+                        <div class="text-sm font-medium text-cyan-200/70">Model ML & Hidrologi</div>
                     </div>
                 </div>
 
@@ -130,7 +164,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-4xl font-black text-blue-300 mb-2">100%</div>
-                        <div class="text-sm font-medium text-blue-200/70">Real-time</div>
+                        <div class="text-sm font-medium text-blue-200/70">Komputasi Cloud</div>
                     </div>
                 </div>
 
@@ -140,7 +174,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-4xl font-black text-teal-300 mb-2">99.9%</div>
-                        <div class="text-sm font-medium text-teal-200/70">Akurasi</div>
+                        <div class="text-sm font-medium text-teal-200/70">Akurasi Prediksi</div>
                     </div>
                 </div>
 
@@ -150,7 +184,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-4xl font-black text-sky-300 mb-2">∞</div>
-                        <div class="text-sm font-medium text-sky-200/70">Big Data</div>
+                        <div class="text-sm font-medium text-sky-200/70">Big Data Geospatial</div>
                     </div>
                 </div>
             </div>
@@ -159,10 +193,10 @@
             <div id="features" class="space-y-12 animate-fadeUp" style="animation-delay: 0.4s;">
                 <div class="text-center space-y-4">
                     <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">
-                        {{ __('messages.key_features') }}
+                        Fitur Utama Sistem
                     </h2>
                     <p class="text-xl text-cyan-200/80 max-w-2xl mx-auto">
-                        {{ __('messages.latest_technology') }}
+                        Didukung teknologi geospasial mutakhir dan pemodelan kecerdasan buatan terdepan
                     </p>
                 </div>
 
@@ -172,9 +206,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-cyan-500/50">
                             <i class="fas fa-water text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.hydrological_analysis') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Analisis Hidrologi & Erosi</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.hydrological_analysis_desc') }}
+                            Simulasi erosi lahan USLE terintegrasi dengan indeks kebasahan topografi (TWI) dan limpasan debit air.
                         </p>
                     </div>
 
@@ -183,20 +217,20 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-blue-500/50">
                             <i class="fas fa-globe-asia text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.google_earth_engine') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Google Earth Engine (GEE)</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.google_earth_engine_desc') }}
+                            Akses langsung ke dataset satelit CHIRPS, MODIS, Copernicus, dan HydroSHEDS secara otomatis.
                         </p>
                     </div>
 
                     <!-- Feature 3 -->
-                    <div class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/10 hover:border-teal-400/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-teal-500/20">
+                    <div class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-teal-400/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-teal-500/20">
                         <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-teal-500/50">
                             <i class="fas fa-chart-area text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.interactive_visualization') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Visualisasi Peta Satelit Interaktif</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.interactive_visualization_desc') }}
+                            Peta deliniasi DAS resolusi tinggi dengan navigasi layer Esri Satelit, topografi DEM, dan titik mitigasi.
                         </p>
                     </div>
 
@@ -205,9 +239,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-sky-500/50">
                             <i class="fas fa-cloud-upload-alt text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.upload_process') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Proses Otomatis & Cepat</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.upload_process_desc') }}
+                            Cukup masukkan koordinat dan rentang tanggal, sistem menjalankan pipeline komputasi hidrologi mandiri.
                         </p>
                     </div>
 
@@ -216,9 +250,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-indigo-500/50">
                             <i class="fas fa-file-export text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.export_report') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Estimasi Biaya PUPR & Ekspor Laporan</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.export_report_desc') }}
+                            Perhitungan RAB konstruksi bendungan, benchmark HPS LPSE, serta unduh hasil grafik PNG, CSV, dan JSON.
                         </p>
                     </div>
 
@@ -227,9 +261,9 @@
                         <div class="w-20 h-20 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl shadow-emerald-500/50">
                             <i class="fas fa-shield-alt text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">{{ __('messages.secure_reliable') }}</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4">Aman & Terverifikasi</h3>
                         <p class="text-cyan-200/80 leading-relaxed">
-                            {{ __('messages.secure_reliable_desc') }}
+                            Arsitektur server terenkripsi dengan audit log lengkap dan autentikasi terpercaya untuk institusi dan periset.
                         </p>
                     </div>
                 </div>
@@ -238,12 +272,15 @@
             <!-- Footer -->
             <div class="text-center pt-12 border-t border-cyan-400/20 animate-fadeUp" style="animation-delay: 0.6s;">
                 <p class="text-cyan-200/60 text-base">
-                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis. {{ __('messages.all_rights_reserved') }}.
+                    © {{ date('Y') }} <span class="font-semibold text-cyan-300">RIVANA</span> - River DNA Analysis. Hak Cipta Dilindungi.
                 </p>
             </div>
 
         </div>
     </div>
 
+    <!-- Google Full Page Translate -->
+    <script src="/js/google-translator.js"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

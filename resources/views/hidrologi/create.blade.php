@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('messages.create_new_analysis'))
+@section('title', 'Buat Analisis Baru')
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -382,22 +382,22 @@
 <div class="progress-rail" id="progressRail">
     <div class="rail-step active" id="rail-1">
         <div class="rail-num active" id="rail-num-1">1</div>
-        <span class="rail-label">{{ __('messages.step1_title') }}</span>
+        <span class="rail-label">Pilih Lokasi</span>
     </div>
     <div class="rail-sep"></div>
     <div class="rail-step inactive" id="rail-2">
         <div class="rail-num inactive" id="rail-num-2">2</div>
-        <span class="rail-label">{{ __('messages.step2_title') }}</span>
+        <span class="rail-label">Level DAS</span>
     </div>
     <div class="rail-sep"></div>
     <div class="rail-step inactive" id="rail-3">
         <div class="rail-num inactive" id="rail-num-3">3</div>
-        <span class="rail-label">{{ __('messages.step3_title') }}</span>
+        <span class="rail-label">Info Lokasi</span>
     </div>
     <div class="rail-sep"></div>
     <div class="rail-step inactive" id="rail-4">
         <div class="rail-num inactive" id="rail-num-4">4</div>
-        <span class="rail-label">{{ __('messages.step4_title') }}</span>
+        <span class="rail-label">Periode Analisis</span>
     </div>
 </div>
 
@@ -410,11 +410,11 @@
         </a>
         <div>
             <p class="text-xs text-gray-400 font-medium mb-0.5">
-                <a href="{{ route('hidrologi.index') }}" class="hover:text-teal-600 transition-colors">{{ __('messages.hydrology') }}</a>
+                <a href="{{ route('hidrologi.index') }}" class="hover:text-teal-600 transition-colors">Hidrologi</a>
                 <span class="mx-1.5">·</span>
-                {{ __('messages.create_new_analysis') }}
+                Buat Analisis Baru
             </p>
-            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">{{ __('messages.create_new_hydrology_analysis') }}</h1>
+            <h1 class="text-xl font-extrabold text-gray-900 leading-tight">Buat Analisis Hidrologi Baru</h1>
         </div>
     </div>
 
@@ -441,13 +441,13 @@
                     <div class="step-header">
                         <div class="step-badge active" id="step1-dot">1</div>
                         <div>
-                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step1_title') }}</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step1_desc') }}</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">Pilih Titik Lokasi pada Peta</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Klik pada peta atau cari nama lokasi/koordinat untuk menentukan titik outlet analisis</p>
                         </div>
                         {{-- Loading indicator --}}
                         <div id="step2-loading" class="ml-auto hidden flex items-center gap-1.5 text-teal-600 text-xs font-semibold bg-teal-50 px-2.5 py-1 rounded-full">
                             <i class="fas fa-spinner fa-spin text-xs"></i>
-                            <span>{{ __('messages.step2_loading') }}</span>
+                            <span>Mencari batas DAS...</span>
                         </div>
                     </div>
 
@@ -457,7 +457,7 @@
                             <div id="map"></div>
                             <div class="map-overlay-hint" id="mapHint">
                                 <i class="fas fa-mouse-pointer text-xs"></i>
-                                {!! __('messages.step1_hint') !!}
+                                <span>Klik di mana saja pada peta untuk menentukan titik analisis</span>
                             </div>
                         </div>
 
@@ -498,20 +498,20 @@
                     <div class="step-header">
                         <div class="step-badge inactive" id="step2-dot">2</div>
                         <div>
-                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step2_title') }}</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step2_desc') }}</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">Pilih Batas Daerah Aliran Sungai (DAS)</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Pilih tingkat kedalaman skala DAS yang mencakup titik lokasi Anda</p>
                         </div>
                     </div>
 
                     <div class="p-4 space-y-3">
                         @php
                         $levels = [
-                            3 => ['name' => __('messages.das_level_large'),       'range' => __('messages.das_level_large_range'),       'icon' => 'fa-mountain'],
-                            4 => ['name' => __('messages.das_level_medium'),      'range' => __('messages.das_level_medium_range'),      'icon' => 'fa-water'],
-                            5 => ['name' => __('messages.das_level_sub'),         'range' => __('messages.das_level_sub_range'),         'icon' => 'fa-stream'],
-                            6 => ['name' => __('messages.das_level_small_sub'),   'range' => __('messages.das_level_small_sub_range'),   'icon' => 'fa-tint'],
-                            7 => ['name' => __('messages.das_level_micro'),       'range' => __('messages.das_level_micro_range'),       'icon' => 'fa-tint-slash'],
-                            8 => ['name' => __('messages.das_level_micro_small'), 'range' => __('messages.das_level_micro_small_range'), 'icon' => 'fa-circle'],
+                            3 => ['name' => 'DAS Sangat Besar', 'range' => '> 100.000 km²', 'icon' => 'fa-mountain'],
+                            4 => ['name' => 'DAS Besar',        'range' => '30.000 - 100.000 km²', 'icon' => 'fa-water'],
+                            5 => ['name' => 'Sub DAS Utama',    'range' => '10.000 - 30.000 km²', 'icon' => 'fa-stream'],
+                            6 => ['name' => 'Sub DAS Sedang',   'range' => '3.000 - 10.000 km²', 'icon' => 'fa-tint'],
+                            7 => ['name' => 'Sub DAS Kecil',    'range' => '500 - 3.000 km²', 'icon' => 'fa-tint-slash'],
+                            8 => ['name' => 'Mikro DAS',        'range' => '< 500 km²', 'icon' => 'fa-circle'],
                         ];
                         @endphp
 
@@ -536,7 +536,7 @@
                                     <i class="fas fa-check text-sm"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-semibold text-emerald-600 mb-0.5">{{ __('messages.das_selected_label') }}</p>
+                                    <p class="text-xs font-semibold text-emerald-600 mb-0.5">DAS Terpilih</p>
                                     <p class="text-sm font-extrabold text-gray-900 truncate" id="das-info-name">—</p>
                                     <div class="flex flex-wrap gap-2 mt-1">
                                         <span class="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
@@ -556,7 +556,7 @@
                         <div id="das-error-panel" class="hidden">
                             <div class="note-strip error">
                                 <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
-                                <span id="das-error-msg">{{ __('messages.das_level_not_available') }}</span>
+                                <span id="das-error-msg">Level DAS ini tidak tersedia untuk titik yang dipilih.</span>
                             </div>
                         </div>
                     </div>
@@ -569,12 +569,12 @@
                     <div class="step-header">
                         <div class="step-badge inactive" id="step3-dot">3</div>
                         <div>
-                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step3_title') }}</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step3_desc') }}</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">Informasi Lokasi & Alamat</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Alamat diperoleh otomatis melalui reverse geocoding</p>
                         </div>
                         <span id="location-loading" class="ml-auto hidden text-xs text-sky-600 font-semibold bg-sky-50 px-2.5 py-1 rounded-full flex items-center gap-1.5">
                             <i class="fas fa-spinner fa-spin text-xs"></i>
-                            {{ __('messages.fetching_name_short') }}
+                            Memuat nama...
                         </span>
                     </div>
 
@@ -582,21 +582,21 @@
                         <div>
                             <label class="field-label">
                                 <i class="fas fa-map-pin text-red-400"></i>
-                                {{ __('messages.location_name') }}
+                                Nama Lokasi
                             </label>
                             <input type="text" name="location_name" id="location_name" readonly
                                 class="field-input"
-                                placeholder="{{ __('messages.location_name_placeholder') }}">
+                                placeholder="Nama lokasi akan muncul otomatis setelah titik dipilih">
                         </div>
                         <div>
                             <label class="field-label">
                                 <i class="fas fa-file-alt text-purple-400"></i>
-                                {{ __('messages.location_description') }}
+                                Deskripsi Alamat Lengkap
                             </label>
                             <textarea name="location_description" id="location_description" rows="2" readonly
                                 class="field-input resize-none"
                                 style="resize: none;"
-                                placeholder="{{ __('messages.location_desc_placeholder') }}"></textarea>
+                                placeholder="Deskripsi alamat lengkap wilayah"></textarea>
                         </div>
                     </div>
                 </div>
@@ -608,8 +608,8 @@
                     <div class="step-header">
                         <div class="step-badge inactive" id="step4-dot">4</div>
                         <div>
-                            <h3 class="text-sm font-extrabold text-gray-900">{{ __('messages.step4_title') }}</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">{{ __('messages.step4_desc') }}</p>
+                            <h3 class="text-sm font-extrabold text-gray-900">Periode Waktu Analisis</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Tentukan rentang tanggal data satelit yang akan dianalisis</p>
                         </div>
                     </div>
 
@@ -618,7 +618,7 @@
                             <div>
                                 <label for="start_date" class="field-label">
                                     <i class="fas fa-calendar-check text-emerald-500"></i>
-                                    {{ __('messages.start_date') }}
+                                    Tanggal Mulai
                                     <span class="text-red-500 ml-0.5">*</span>
                                 </label>
                                 <input type="date" name="start_date" id="start_date"
@@ -628,7 +628,7 @@
                             <div>
                                 <label for="end_date" class="field-label">
                                     <i class="fas fa-calendar-times text-red-400"></i>
-                                    {{ __('messages.end_date') }}
+                                    Tanggal Selesai
                                     <span class="text-red-500 ml-0.5">*</span>
                                 </label>
                                 <input type="date" name="end_date" id="end_date"
@@ -662,7 +662,7 @@
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                         <a href="{{ route('hidrologi.index') }}" class="btn-back">
                             <i class="fas fa-arrow-left text-xs"></i>
-                            {{ __('messages.back') }}
+                            Kembali
                         </a>
 
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
@@ -670,7 +670,7 @@
                             <div id="submit-status" class="text-xs text-gray-400 font-semibold text-center sm:text-right hidden sm:block"></div>
                             <button type="submit" id="submitBtn" disabled class="btn-submit">
                                 <i class="fas fa-paper-plane" id="submitIcon" style="font-size:0.8rem"></i>
-                                <span id="submitText">{{ __('messages.submit_select_das_first') }}</span>
+                                <span id="submitText">Pilih DAS Terlebih Dahulu</span>
                             </button>
                         </div>
                     </div>
@@ -694,19 +694,22 @@
             <div class="guide-card">
                 <div class="guide-head">
                     <div class="guide-icon"><i class="fas fa-info-circle"></i></div>
-                    <span class="guide-title">{{ __('messages.how_it_works') }}</span>
+                    <span class="guide-title">Cara Kerja</span>
                 </div>
                 <div class="guide-body">
-                    @foreach([
-                        ['icon'=>'fa-mouse-pointer', 'key'=>'how_it_works_step1'],
-                        ['icon'=>'fa-layer-group',   'key'=>'how_it_works_step2'],
-                        ['icon'=>'fa-draw-polygon',  'key'=>'how_it_works_step3'],
-                        ['icon'=>'fa-calendar-alt',  'key'=>'how_it_works_step4'],
-                        ['icon'=>'fa-paper-plane',   'key'=>'how_it_works_step5'],
-                    ] as $i => $step)
+                    @php
+                    $stepsGuide = [
+                        ['icon'=>'fa-mouse-pointer', 'text'=>'Klik pada peta untuk menentukan titik koordinat atau cari lokasi yang diinginkan.'],
+                        ['icon'=>'fa-layer-group',   'text'=>'Pilih level DAS (Daerah Aliran Sungai) yang sesuai dengan luas kajian analisis.'],
+                        ['icon'=>'fa-draw-polygon',  'text'=>'Sistem otomatis memuat poligon batas DAS dari HydroSHEDS.'],
+                        ['icon'=>'fa-calendar-alt',  'text'=>'Tentukan rentang tanggal mulai dan selesai data historis.'],
+                        ['icon'=>'fa-paper-plane',   'text'=>'Kirim analisis untuk memproses data satelit dan permodelan hidrologi.'],
+                    ];
+                    @endphp
+                    @foreach($stepsGuide as $i => $step)
                     <div class="guide-row">
                         <div class="guide-num">{{ $i + 1 }}</div>
-                        <span class="guide-row-text">{{ __('messages.'.$step['key']) }}</span>
+                        <span class="guide-row-text">{{ $step['text'] }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -716,7 +719,7 @@
             <div class="guide-card">
                 <div class="guide-head" style="background: linear-gradient(135deg, #f0fdfa, #e0f2fe); border-bottom-color: #bae6fd;">
                     <div class="guide-icon" style="background: var(--c-ocean)"><i class="fas fa-layer-group"></i></div>
-                    <span class="guide-title">{{ __('messages.das_level_guide') }}</span>
+                    <span class="guide-title">Panduan Level DAS</span>
                 </div>
                 <div class="guide-body" style="padding: 0.625rem 1rem;">
                     @foreach($levels as $lvl => $info)
@@ -729,7 +732,7 @@
                     @endforeach
                     <p class="mt-2 text-xs text-gray-400 pt-2" style="border-top: 1px solid var(--c-border);">
                         <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
-                        {{ __('messages.das_level_guide_tip_level8') }}
+                        Level 8 memberikan presisi batas DAS mikro terbaik untuk analisis lokal.
                     </p>
                 </div>
             </div>
@@ -738,19 +741,22 @@
             <div class="guide-card">
                 <div class="guide-head" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border-bottom-color: #fde68a;">
                     <div class="guide-icon" style="background: #d97706"><i class="fas fa-exclamation-triangle"></i></div>
-                    <span class="guide-title">{{ __('messages.important_notes') }}</span>
+                    <span class="guide-title">Catatan Penting</span>
                 </div>
                 <div class="guide-body">
-                    @foreach([
-                        ['icon'=>'fa-clock', 'key'=>'processing_time'],
-                        ['icon'=>'fa-bell',  'key'=>'notification'],
-                        ['icon'=>'fa-save',  'key'=>'storage'],
-                    ] as $note)
+                    @php
+                    $notes = [
+                        ['icon'=>'fa-clock', 'text'=>'Proses analisis membutuhkan waktu <b>1-3 menit</b> tergantung rentang periode dan luas wilayah DAS.'],
+                        ['icon'=>'fa-bell',  'text'=>'Anda dapat meninggalkan halaman ini, notifikasi status akan diperbarui otomatis.'],
+                        ['icon'=>'fa-save',  'text'=>'Seluruh hasil kalkulasi dan grafik akan tersimpan secara permanen di riwayat akun Anda.'],
+                    ];
+                    @endphp
+                    @foreach($notes as $note)
                     <div class="guide-row">
                         <div class="guide-num" style="background: #fef3c7; color: #d97706;">
                             <i class="fas {{ $note['icon'] }}" style="font-size:0.55rem"></i>
                         </div>
-                        <span class="guide-row-text">{!! __('messages.'.$note['key']) !!}</span>
+                        <span class="guide-row-text">{!! $note['text'] !!}</span>
                     </div>
                     @endforeach
                 </div>
@@ -780,28 +786,28 @@ let dasReady    = false;
 // TRANSLATIONS
 // ════════════════════════════════════════════════════════════════
 const trans = {
-    submitClickMap:       @json(__('messages.submit_click_map_first')),
-    submitSelectDas:      @json(__('messages.submit_select_das_first')),
-    submitPeriod:         @json(__('messages.submit_complete_period')),
-    submitSending:        @json(__('messages.submit_sending')),
-    createAnalysis:       @json(__('messages.create_analysis')),
-    swalNoPointTitle:     @json(__('messages.swal_no_point_title')),
-    swalNoPointText:      @json(__('messages.swal_no_point_text')),
-    swalNoDasTitle:       @json(__('messages.swal_no_das_title')),
-    swalNoDasText:        @json(__('messages.swal_no_das_text')),
-    submitSuccessText:    @json(__('messages.submit_success_text')),
-    dasNotFoundMsg:       @json(__('messages.das_not_found_msg')),
-    dasErrorNotFound:     @json(__('messages.das_error_not_found')),
-    dasErrorGeneric:      @json(__('messages.das_error_generic')),
-    timeoutError:         @json(__('messages.timeout_error')),
-    responseNotJson:      @json(__('messages.response_not_json')),
-    checkConsole:         @json(__('messages.check_console')),
-    failedTitle:          @json(__('messages.failed_title')),
-    successTitle:         @json(__('messages.success')),
-    mapPopupPoint:        @json(__('messages.map_popup_selected_point')),
-    mapPopupArea:         @json(__('messages.map_popup_area')),
-    mapPopupLevel:        @json(__('messages.map_popup_level')),
-    geocoderPlaceholder:  @json(__('messages.geocoder_placeholder')),
+    submitClickMap:       "Klik Peta Terlebih Dahulu",
+    submitSelectDas:      "Pilih DAS Terlebih Dahulu",
+    submitPeriod:         "Lengkapi Periode Tanggal",
+    submitSending:        "Mengirim Analisis...",
+    createAnalysis:       "Buat Analisis",
+    swalNoPointTitle:     "Titik Belum Dipilih",
+    swalNoPointText:      "Silakan klik pada peta terlebih dahulu untuk menentukan titik outlet lokasi analisis.",
+    swalNoDasTitle:       "DAS Belum Dipilih",
+    swalNoDasText:        "Silakan pilih level DAS yang sesuai sebelum melanjutkan analisis.",
+    submitSuccessText:    "Analisis Anda berhasil dibuat dan sedang diproses di server.",
+    dasNotFoundMsg:       "Batas DAS tidak ditemukan untuk titik ini pada level tersebut.",
+    dasErrorNotFound:     "Batas DAS tidak ditemukan pada titik koordinat ini.",
+    dasErrorGeneric:      "Terjadi kendala saat memuat batas DAS.",
+    timeoutError:         "Waktu permintaan habis (timeout). Silakan coba lagi.",
+    responseNotJson:      "Format respons server tidak sesuai.",
+    checkConsole:         "Silakan periksa log konsol untuk detail kesalahan.",
+    failedTitle:          "Gagal",
+    successTitle:         "Berhasil",
+    mapPopupPoint:        "Titik Analisis Terpilih",
+    mapPopupArea:         "Luas",
+    mapPopupLevel:        "Level",
+    geocoderPlaceholder:  "Cari lokasi atau masukkan koordinat...",
 };
 
 // ════════════════════════════════════════════════════════════════

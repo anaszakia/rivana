@@ -47,12 +47,12 @@ class SecurityHeaders
             // For show page, allow iframe-src for embedding
             $response->headers->set('Content-Security-Policy', 
                 "default-src 'self'; " .
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
-                "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; " .
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://*.gstatic.com https://*.google.com; " .
+                "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://translate.googleapis.com https://*.gstatic.com; " .
                 "img-src 'self' data: https:; " .
-                "font-src 'self' https://cdnjs.cloudflare.com; " .
-                "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com; " .
-                "frame-src 'self'; " . // IMPORTANT: Allow same-origin iframes
+                "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " .
+                "connect-src 'self' https://nominatim.openstreetmap.org https://unpkg.com https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com https://*.google.com https://*.gstatic.com; " .
+                "frame-src 'self' https://translate.google.com https://translate.googleapis.com; " . // IMPORTANT: Allow same-origin iframes + Google Translate
                 "frame-ancestors 'self';" // Allow this page to be iframed by same origin
             );
         }
