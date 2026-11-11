@@ -30,15 +30,6 @@ Route::group([], function () {
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])
         ->name('dashboard');
-    
-    // Audit Log routes
-    Route::get('/audit', [AuditLogController::class, 'index'])
-        ->name('audit.index');
-    Route::get('/audit/{auditLog}', [AuditLogController::class, 'show'])
-        ->name('audit.show');
-    Route::post('/audit/export', [AuditLogController::class, 'export'])
-        ->name('audit.export');
-
 
     // Hidrologi job routes
     Route::prefix('hidrologi')->name('hidrologi.')->group(function () {
@@ -73,14 +64,6 @@ Route::group([], function () {
         // Cancel job
         Route::post('/cancel/{id}', [HidrologiJobController::class, 'cancel'])
             ->name('cancel');
-        
-        // Delete job
-        Route::delete('/delete/{id}', [HidrologiJobController::class, 'destroy'])
-            ->name('destroy');
-        
-        // Bulk delete jobs
-        Route::post('/bulk-delete', [HidrologiJobController::class, 'bulkDestroy'])
-            ->name('bulk-destroy');
 
         //das info
         Route::post('/das-info', [HidrologiJobController::class, 'dasInfo'])

@@ -75,13 +75,6 @@
                             </a>
                         @endcan
                         
-                        @can('view audit logs')
-                            <a href="{{ route('audit.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
-                                <i class="fas fa-clipboard-check w-4 h-4 mr-3"></i>
-                                <span class="sidebar-text">Audit Log</span>
-                            </a>
-                        @endcan
-                        
                         @can('view roles')
                             <a href="{{ route('roles.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
                                 <i class="fas fa-user-shield w-4 h-4 mr-3"></i>

@@ -22,16 +22,7 @@ class LogSensitiveActions
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-
-        // Log hanya untuk aksi sensitif
-        $action = $request->route()?->getActionMethod();
-        
-        if (in_array($action, $this->sensitiveActions)) {
-            $this->logAction($request, $response);
-        }
-
-        return $response;
+        return $next($request);
     }
 
     /**

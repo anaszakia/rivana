@@ -375,7 +375,7 @@
     </div>
 
     {{-- ── Recent lists ── --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4">
 
         {{-- Latest Analysis --}}
         <div class="step-card" style="overflow:hidden;">
@@ -440,59 +440,6 @@
                         <div class="empty-state-icon"><i class="fas fa-water"></i></div>
                         <p class="text-gray-600 font-semibold text-sm">Belum ada analisis</p>
                         <p class="text-gray-400 text-xs mt-1">Analisis baru akan muncul di sini</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-
-        {{-- Recent Activity --}}
-        <div class="step-card" style="overflow:hidden;">
-            <div class="step-header">
-                <div class="step-badge" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);"><i class="fas fa-history" style="font-size:0.8rem"></i></div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-sm font-extrabold text-gray-900">Aktivitas Terbaru</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Log aktivitas sistem dan aksi pengguna terkini</p>
-                </div>
-                <a href="{{ route('audit.index') }}" class="view-all-link" style="background:#7c3aed;">
-                    Lihat Semua
-                    <i class="fas fa-arrow-right" style="font-size:0.65rem"></i>
-                </a>
-            </div>
-            <div class="p-3">
-                @forelse($recentActivity as $activity)
-                    @php
-                        switch ($activity->action) {
-                            case 'Login':
-                                $aIcon = 'fa-sign-in-alt'; $aBg = '#10b981';
-                                break;
-                            case 'Logout':
-                                $aIcon = 'fa-sign-out-alt'; $aBg = '#ef4444';
-                                break;
-                            default:
-                                $aIcon = 'fa-cog'; $aBg = 'var(--c-ocean)';
-                        }
-                    @endphp
-                    <div class="list-row">
-                        <div class="list-icon" style="background: {{ $aBg }};">
-                            <i class="fas {{ $aIcon }}"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between gap-2 mb-0.5">
-                                <p class="text-sm font-bold text-gray-900 truncate">
-                                    {{ $activity->user ? $activity->user->name : 'Unknown User' }}
-                                </p>
-                                <span class="list-badge" style="background: var(--c-surface); color: var(--c-slate); border-color: var(--c-border);">
-                                    {{ $activity->action }}
-                                </span>
-                            </div>
-                            <p class="text-xs text-gray-400">{{ $activity->created_at->diffForHumans() }}</p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center py-10">
-                        <div class="empty-state-icon"><i class="fas fa-history"></i></div>
-                        <p class="text-gray-600 font-semibold text-sm">Belum ada aktivitas</p>
-                        <p class="text-gray-400 text-xs mt-1">Aktivitas sistem akan muncul di sini</p>
                     </div>
                 @endforelse
             </div>

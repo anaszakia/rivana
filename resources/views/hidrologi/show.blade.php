@@ -31,10 +31,6 @@
                             <span class="hidden sm:inline ml-1">Batalkan</span>
                         </button>
                     @endif
-                    <button onclick="deleteJob({{ $job->id }})" class="px-3 sm:px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 font-bold text-xs sm:text-sm rounded-lg transition">
-                        <i class="fas fa-trash"></i>
-                        <span class="hidden sm:inline ml-1">Hapus</span>
-                    </button>
                 </div>
             </div>
 
@@ -3582,73 +3578,6 @@ function cancelJob(jobId) {
                     icon: 'error',
                     title: 'Error!',
                     text: 'Terjadi kesalahan saat membatalkan pekerjaan'
-                });
-            });
-        }
-    });
-}
-
-function deleteJob(jobId) {
-    Swal.fire({
-        title: 'Hapus Pekerjaan?',
-        html: "Apakah Anda yakin ingin menghapus pekerjaan ini?<br><strong class='text-red-600'>Tindakan ini tidak dapat dibatalkan!</strong>",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Show loading
-            Swal.fire({
-                title: 'Menghapus...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch(`/hidrologi/delete/${jobId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP error! status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: data.message || 'Pekerjaan berhasil dihapus.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(function() {
-                        window.location.href = '/hidrologi';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: data.message || 'Gagal menghapus pekerjaan'
-                    });
-                }
-            })
-            .catch(function(error) {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Terjadi kesalahan saat menghapus pekerjaan: ' + error.message
                 });
             });
         }

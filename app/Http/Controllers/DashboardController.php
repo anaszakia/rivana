@@ -64,12 +64,7 @@ class DashboardController extends Controller
             'thisMonthRegistrations' => User::whereMonth('created_at', Carbon::now()->month)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->count(),
-            'todayLogins' => AuditLog::where('action', 'Login')
-                ->whereDate('created_at', today())
-                ->count(),
-            'totalAuditLogs' => AuditLog::count(),
             'recentUsers' => User::latest()->take(5)->get(),
-            'recentActivity' => AuditLog::with('user')->latest()->take(10)->get(),
             
             // Hidrologi Data
             'totalHidrologiJobs' => \App\Models\HidrologiJobs::count(),
